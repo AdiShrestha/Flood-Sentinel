@@ -1,0 +1,52 @@
+# Internal tooling and dropboxes
+factory/
+project/
+bootstrap.sh
+DROP_HERE/
+TAKE_THIS/
+
+# Compressed archives and raw dumps
+*.zip
+*.tar.gz
+*.tgz
+ziajxs70
+
+# Python and environment artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+htmlcov/
+
+# System / OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
