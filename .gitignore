@@ -1,52 +1,45 @@
-# Internal tooling and dropboxes
-factory/
-project/
-bootstrap.sh
-DROP_HERE/
-TAKE_THIS/
-
-# Compressed archives and raw dumps
-*.zip
-*.tar.gz
-*.tgz
-ziajxs70
-
-# Python and environment artifacts
+# Local interpreter/build/cache state
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-.venv/
-env/
-venv/
-ENV/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Testing & Linting
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .coverage
 htmlcov/
-
-# System / OS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# Credentials and machine-local configuration
+.env
+.env.*
+!.env.example
+.aws/
+.codex/
+.agents/
+*.pem
+*.key
+
+# Local factory state is preserved for evidence, not automatically published.
+# Selected releases/handoffs must archive required attempts and hashes explicitly.
+project/.factory/
+inbox_implementor/*
+inbox_gatekeeper/*
+handoff_*.zip
+
+# Research storage: track acquisition code/manifests and lawful release subsets.
+data/raw/
+data/cache/
+data/normalized/
+data/features/
+data/checkpoints/
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+/outputs/
+/logs/

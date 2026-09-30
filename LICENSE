@@ -1,21 +1,28 @@
-MIT License
+PROPRIETARY SOURCE CODE LICENSE
 
-Copyright (c) 2026 Flood Sentinel Research Consortium
+Copyright (c) 2026 Aditya Shrestha <yours.only.adi@gmail.com>.
+All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This software, its architecture, schemas, gatekeeper implementations, documentation, specifications, templates, tests, and associated artifacts ("Software") are the confidential and proprietary property of Aditya Shrestha.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. PROPRIETARY RIGHTS:
+All title, ownership, intellectual property rights, and copyright in and to the Software remain exclusively with Aditya Shrestha.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. RESTRICTIONS ON USE:
+No person, entity, or organization may:
+a) Copy, reproduce, distribute, publish, display, perform, modify, create derivative works from, or transmit the Software or any part thereof in any form or by any means;
+b) Use, execute, or integrate the Software for commercial, research, academic, or personal purposes without express prior written authorization from Aditya Shrestha;
+c) Reverse engineer, decompile, disassemble, or derive source code, architecture, or schemas from the Software;
+d) Sublicense, lease, rent, loan, sell, or otherwise transfer any rights in the Software.
+
+3. NO IMPLIED LICENSE:
+Nothing contained herein shall be construed as granting, by implication, estoppel, or otherwise, any license or right to use this Software or any intellectual property rights embodied herein.
+
+4. CONFIDENTIALITY:
+The Software contains valuable trade secrets and proprietary information. Any unauthorized access, disclosure, dissemination, or copying of this Software is strictly prohibited and constitutes an infringement of copyright and trade secret laws.
+
+5. DISCLAIMER OF WARRANTY:
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+For inquiries, permissions, or licensing requests, contact:
+Aditya Shrestha (yours.only.adi@gmail.com)
