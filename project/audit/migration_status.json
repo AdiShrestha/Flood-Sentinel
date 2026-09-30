@@ -1,11 +1,11 @@
 {
-  "status": "legacy_preserved_new_tree_prepared",
+  "status": "published_and_verified",
   "legacy_commit": "6078b04f4c104e7b14a96a4719c3f744b0782dd8",
   "legacy_tag": "legacy-pre-research-rebuild-2026-10-01",
   "legacy_tag_object": "1a4d26e933ead92eb6f50f8d631e39dcc3c59bfc",
   "legacy_tag_remote_verified": true,
   "preservation_scope": "Published tracked tree. Ignored local artifacts remain in the unchanged old local folder; their inventory is portable here.",
-  "new_main_publication": "prepared; pending commit/push/readback",
+  "new_main_publication": "normal successor commit pushed and read back successfully",
   "history_policy": "Normal successor commit; no force push or legacy history rewrite.",
   "engine_validation": {
     "passed": 31,
@@ -22,5 +22,13 @@
     "unique_content_hashes": 921
   },
   "handoff_plan": "plan.md",
-  "old_local_folder_retained": true
+  "old_local_folder_retained": true,
+  "verified_published_migration_commit": "e7b384980333365a875f7ada2e8ae1ebfe1e5878",
+  "remote": "git@github.com:AdiShrestha/Flood-Sentinel.git",
+  "branch": "main",
+  "publication_verification": "git ls-remote readback matched the migration commit and the tag dereferenced to the original legacy commit.",
+  "receipt_scope": "Receipt records verification of the migration commit above. This receipt and final documentation are saved in a successor commit whose identity is obtained from Git, avoiding a self-referential SHA.",
+  "old_local_head_after_migration": "6078b04f4c104e7b14a96a4719c3f744b0782dd8",
+  "old_local_tracked_status_after_migration": "clean",
+  "plan_words_at_receipt": 19463
 }
