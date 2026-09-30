@@ -1,0 +1,1138 @@
+{
+  "purpose": "forensic artifact inspection; none of these metrics are admissible new research results",
+  "nwm_formula_matches": [
+    {
+      "site_no": "01372500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "01445500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "01463500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "01646500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "02083500",
+      "pilot": true,
+      "finite_pairs": 12415,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "02085000",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "02322500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "03335500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "03345500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "05420500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "05431486",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "05435500",
+      "pilot": true,
+      "finite_pairs": 12417,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "06805500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "06888500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "08167000",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "08167500",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "14137000",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "14211720",
+      "pilot": true,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "01034500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "01137500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "01184000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "01434000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "01541000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "02138500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "02175000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "02202500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "040851385",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "04122500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "04193500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "03164000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "03217500",
+      "pilot": false,
+      "finite_pairs": 5205,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "03438000",
+      "pilot": false,
+      "finite_pairs": 11139,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "03497300",
+      "pilot": false,
+      "finite_pairs": 12416,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "05286000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "05389500",
+      "pilot": false,
+      "finite_pairs": 7971,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "07288500",
+      "pilot": false,
+      "finite_pairs": 7761,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "07375500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "06025500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "06478500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "06719505",
+      "pilot": false,
+      "finite_pairs": 12417,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "07144100",
+      "pilot": false,
+      "finite_pairs": 11049,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "07197000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "07261000",
+      "pilot": false,
+      "finite_pairs": 12415,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "08068000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "08101000",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "08144500",
+      "pilot": false,
+      "finite_pairs": 10957,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "09070500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "09112500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "09444500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "09498500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "12447200",
+      "pilot": false,
+      "finite_pairs": 12417,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "13317000",
+      "pilot": false,
+      "finite_pairs": 12417,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "14181500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    },
+    {
+      "site_no": "11264500",
+      "pilot": false,
+      "finite_pairs": 12418,
+      "max_error_to_legacy_usgs_formula": 0.0,
+      "fraction_exact_to_rounded_formula": 1.0
+    }
+  ],
+  "snow_formula_matches": [
+    {
+      "site_no": "01034500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "01137500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "01184000",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "01434000",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "01541000",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "040851385",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "04122500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "04193500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "03164000",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "03217500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "03438000",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "03497300",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "05286000",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "05389500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "06025500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "06478500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "06719505",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "09070500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "09112500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "09498500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "12447200",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "13317000",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "14181500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    },
+    {
+      "site_no": "11264500",
+      "rows": 7397,
+      "max_error_to_degree_day_formula": 0.0
+    }
+  ],
+  "source_quality": [
+    {
+      "site_no": "01372500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -27.05,
+      "tmax_max": 37.95
+    },
+    {
+      "site_no": "01445500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -27.65,
+      "tmax_max": 37.55
+    },
+    {
+      "site_no": "01463500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -24.25,
+      "tmax_max": 39.15
+    },
+    {
+      "site_no": "01646500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -23.25,
+      "tmax_max": 41.75
+    },
+    {
+      "site_no": "02083500",
+      "discharge_missing_fraction": 0.00024158479626348848,
+      "stage_missing_fraction": 0.167659848606861,
+      "tmin_min": -19.55,
+      "tmax_max": 42.95
+    },
+    {
+      "site_no": "02085000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.1720083749396038,
+      "tmin_min": -18.45,
+      "tmax_max": 41.45
+    },
+    {
+      "site_no": "02322500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.39434691576743436,
+      "tmin_min": -9.05,
+      "tmax_max": 40.75
+    },
+    {
+      "site_no": "03335500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -29.55,
+      "tmax_max": 43.85
+    },
+    {
+      "site_no": "03345500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.0671605733612498,
+      "tmin_min": -25.95,
+      "tmax_max": 44.25
+    },
+    {
+      "site_no": "05420500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -34.35,
+      "tmax_max": 45.15
+    },
+    {
+      "site_no": "05431486",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -36.95,
+      "tmax_max": 44.25
+    },
+    {
+      "site_no": "05435500",
+      "discharge_missing_fraction": 8.052826542116283e-05,
+      "stage_missing_fraction": 0.13198582702528588,
+      "tmin_min": -36.35,
+      "tmax_max": 44.15
+    },
+    {
+      "site_no": "06805500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.01650829441133838,
+      "tmin_min": -31.65,
+      "tmax_max": 45.95
+    },
+    {
+      "site_no": "06888500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.009341278788854887,
+      "tmin_min": -27.75,
+      "tmax_max": 45.05
+    },
+    {
+      "site_no": "08167000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.046384280882589786,
+      "tmin_min": -15.95,
+      "tmax_max": 42.25
+    },
+    {
+      "site_no": "08167500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.05757770977613142,
+      "tmin_min": -14.55,
+      "tmax_max": 42.85
+    },
+    {
+      "site_no": "14137000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -18.95,
+      "tmax_max": 41.15
+    },
+    {
+      "site_no": "14211720",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -15.75,
+      "tmax_max": 45.35
+    },
+    {
+      "site_no": "01034500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -36.85,
+      "tmax_max": 35.45
+    },
+    {
+      "site_no": "01137500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -33.65,
+      "tmax_max": 33.45
+    },
+    {
+      "site_no": "01184000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.15042679980673215,
+      "tmin_min": -25.35,
+      "tmax_max": 38.05
+    },
+    {
+      "site_no": "01434000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -27.35,
+      "tmax_max": 36.55
+    },
+    {
+      "site_no": "01541000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -28.05,
+      "tmax_max": 36.15
+    },
+    {
+      "site_no": "02138500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.3566596875503302,
+      "tmin_min": -20.85,
+      "tmax_max": 37.65
+    },
+    {
+      "site_no": "02175000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.13915284264776936,
+      "tmin_min": -11.25,
+      "tmax_max": 40.15
+    },
+    {
+      "site_no": "02202500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.016588822676759544,
+      "tmin_min": -11.85,
+      "tmax_max": 41.35
+    },
+    {
+      "site_no": "040851385",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -35.75,
+      "tmax_max": 40.55
+    },
+    {
+      "site_no": "04122500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -26.55,
+      "tmax_max": 38.05
+    },
+    {
+      "site_no": "04193500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -27.45,
+      "tmax_max": 40.95
+    },
+    {
+      "site_no": "03164000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -24.75,
+      "tmax_max": 35.65
+    },
+    {
+      "site_no": "03217500",
+      "discharge_missing_fraction": 0.5808503784828475,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -29.95,
+      "tmax_max": 39.45
+    },
+    {
+      "site_no": "03438000",
+      "discharge_missing_fraction": 0.10299565147366725,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -24.35,
+      "tmax_max": 40.95
+    },
+    {
+      "site_no": "03497300",
+      "discharge_missing_fraction": 0.00016105653084232566,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -26.15,
+      "tmax_max": 35.85
+    },
+    {
+      "site_no": "05286000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -37.05,
+      "tmax_max": 40.55
+    },
+    {
+      "site_no": "05389500",
+      "discharge_missing_fraction": 0.3581091963279111,
+      "stage_missing_fraction": 0.640924464487035,
+      "tmin_min": -35.75,
+      "tmax_max": 45.45
+    },
+    {
+      "site_no": "07288500",
+      "discharge_missing_fraction": 0.3750201320663553,
+      "stage_missing_fraction": 0.3316959252697697,
+      "tmin_min": -14.35,
+      "tmax_max": 44.25
+    },
+    {
+      "site_no": "07375500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.1893219520051538,
+      "tmin_min": -11.15,
+      "tmax_max": 40.75
+    },
+    {
+      "site_no": "06025500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -36.05,
+      "tmax_max": 37.15
+    },
+    {
+      "site_no": "06478500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.7900628120470286,
+      "tmin_min": -31.95,
+      "tmax_max": 44.65
+    },
+    {
+      "site_no": "06719505",
+      "discharge_missing_fraction": 8.052826542116283e-05,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -27.55,
+      "tmax_max": 35.95
+    },
+    {
+      "site_no": "07144100",
+      "discharge_missing_fraction": 0.11024319536157191,
+      "stage_missing_fraction": 0.13037526171686262,
+      "tmin_min": -26.35,
+      "tmax_max": 43.95
+    },
+    {
+      "site_no": "07197000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -23.45,
+      "tmax_max": 45.65
+    },
+    {
+      "site_no": "07261000",
+      "discharge_missing_fraction": 0.00024158479626348848,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -20.55,
+      "tmax_max": 44.55
+    },
+    {
+      "site_no": "08068000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.2654211628281527,
+      "tmin_min": -12.15,
+      "tmax_max": 44.45
+    },
+    {
+      "site_no": "08101000",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 0.035754549846996296,
+      "tmin_min": -17.05,
+      "tmax_max": 43.65
+    },
+    {
+      "site_no": "08144500",
+      "discharge_missing_fraction": 0.1176517957803189,
+      "stage_missing_fraction": 0.5367208890320503,
+      "tmin_min": -16.75,
+      "tmax_max": 42.45
+    },
+    {
+      "site_no": "09070500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -30.55,
+      "tmax_max": 36.45
+    },
+    {
+      "site_no": "09112500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -32.15,
+      "tmax_max": 31.85
+    },
+    {
+      "site_no": "09444500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -16.15,
+      "tmax_max": 44.25
+    },
+    {
+      "site_no": "09498500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -13.25,
+      "tmax_max": 46.05
+    },
+    {
+      "site_no": "12447200",
+      "discharge_missing_fraction": 8.052826542116283e-05,
+      "stage_missing_fraction": 0.2714607827347399,
+      "tmin_min": -26.45,
+      "tmax_max": 45.05
+    },
+    {
+      "site_no": "13317000",
+      "discharge_missing_fraction": 8.052826542116283e-05,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -22.75,
+      "tmax_max": 42.85
+    },
+    {
+      "site_no": "14181500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -21.45,
+      "tmax_max": 39.15
+    },
+    {
+      "site_no": "11264500",
+      "discharge_missing_fraction": 0.0,
+      "stage_missing_fraction": 1.0,
+      "tmin_min": -20.95,
+      "tmax_max": 35.95
+    }
+  ],
+  "test_rows": 520,
+  "test_positive_rows": 7,
+  "test_basins": [
+    {
+      "gauge_id": "01034500",
+      "positives": 0,
+      "negatives": 49,
+      "auroc_estimable": false
+    },
+    {
+      "gauge_id": "01184000",
+      "positives": 1,
+      "negatives": 48,
+      "auroc_estimable": true
+    },
+    {
+      "gauge_id": "01541000",
+      "positives": 1,
+      "negatives": 46,
+      "auroc_estimable": true
+    },
+    {
+      "gauge_id": "02083500",
+      "positives": 1,
+      "negatives": 45,
+      "auroc_estimable": true
+    },
+    {
+      "gauge_id": "02202500",
+      "positives": 1,
+      "negatives": 43,
+      "auroc_estimable": true
+    },
+    {
+      "gauge_id": "02322500",
+      "positives": 0,
+      "negatives": 49,
+      "auroc_estimable": false
+    },
+    {
+      "gauge_id": "03438000",
+      "positives": 1,
+      "negatives": 48,
+      "auroc_estimable": true
+    },
+    {
+      "gauge_id": "06478500",
+      "positives": 1,
+      "negatives": 48,
+      "auroc_estimable": true
+    },
+    {
+      "gauge_id": "07375500",
+      "positives": 1,
+      "negatives": 39,
+      "auroc_estimable": true
+    },
+    {
+      "gauge_id": "08068000",
+      "positives": 0,
+      "negatives": 49,
+      "auroc_estimable": false
+    },
+    {
+      "gauge_id": "08167500",
+      "positives": 0,
+      "negatives": 49,
+      "auroc_estimable": false
+    }
+  ],
+  "recomputed_legacy_metrics": {
+    "score_a_cal_iqr_max7d": {
+      "auroc": 0.8295739348370926,
+      "average_precision": 0.15231341812087154
+    },
+    "score_b_cal_iqr_max7d": {
+      "auroc": 0.8150932887774993,
+      "average_precision": 0.14643046726380057
+    },
+    "score_c_cal_iqr_max7d": {
+      "auroc": 0.7878028404344194,
+      "average_precision": 0.0651146568892199
+    },
+    "score_nwm_cal_iqr_max7d": {
+      "auroc": 0.9069896964633807,
+      "average_precision": 0.38754862967551235
+    },
+    "score_persist_cal_iqr_max7d": {
+      "auroc": 0.9167362851573377,
+      "average_precision": 0.3995743696507055
+    },
+    "score_ea_lstm_prob": {
+      "auroc": 0.8128654970760234,
+      "average_precision": 0.08132296671351548
+    }
+  },
+  "prediction_spacing_days_counts": {
+    "30.0": 792
+  },
+  "primary_events": 2838,
+  "primary_onsets_equal_peak_date_plus_noon": 2838,
+  "calibration_window_counts": {
+    "train": [
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305,
+      305
+    ],
+    "val": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "test": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "checkpoint_parameter_count": 146950,
+  "checkpoint_finite": true,
+  "training_summary": {
+    "model_architecture": "C-ENCODER (Dilated Causal TCN + Causal Transformer)",
+    "total_parameters": 146950,
+    "epochs_completed": 10,
+    "batch_size": 64,
+    "dataset_windows_used": 9760,
+    "final_training_loss": 5.423724,
+    "initial_training_loss": 6.660817,
+    "loss_reduction_pct": 18.57,
+    "total_wallclock_seconds": 1759.96,
+    "history": [
+      {
+        "epoch": 1,
+        "loss": 6.660817,
+        "lr": 0.0009758,
+        "duration_sec": 142.056
+      },
+      {
+        "epoch": 2,
+        "loss": 5.867736,
+        "lr": 0.0009055,
+        "duration_sec": 149.611
+      },
+      {
+        "epoch": 3,
+        "loss": 5.814361,
+        "lr": 0.000796,
+        "duration_sec": 169.781
+      },
+      {
+        "epoch": 4,
+        "loss": 5.669597,
+        "lr": 0.000658,
+        "duration_sec": 170.84
+      },
+      {
+        "epoch": 5,
+        "loss": 5.644686,
+        "lr": 0.000505,
+        "duration_sec": 171.396
+      },
+      {
+        "epoch": 6,
+        "loss": 5.525701,
+        "lr": 0.000352,
+        "duration_sec": 175.742
+      },
+      {
+        "epoch": 7,
+        "loss": 5.549311,
+        "lr": 0.000214,
+        "duration_sec": 180.189
+      },
+      {
+        "epoch": 8,
+        "loss": 5.562688,
+        "lr": 0.0001045,
+        "duration_sec": 177.043
+      },
+      {
+        "epoch": 9,
+        "loss": 5.462541,
+        "lr": 3.42e-05,
+        "duration_sec": 208.574
+      },
+      {
+        "epoch": 10,
+        "loss": 5.423724,
+        "lr": 1e-05,
+        "duration_sec": 213.814
+      }
+    ],
+    "checkpoint_file": "project/chunks/chunk04/checkpoints/c_encoder_pretrained.pt"
+  },
+  "environment": {
+    "python": "3.12.8 (v3.12.8:2dc476bcb91, Dec  3 2024, 14:43:19) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "architecture": "arm64",
+    "versions": {
+      "numpy": "2.5.0",
+      "pandas": "3.0.3",
+      "pyarrow": "24.0.0",
+      "torch": "2.12.1",
+      "scikit-learn": "1.9.0",
+      "scipy": "1.18.0",
+      "pytest": "9.1.1"
+    }
+  }
+}

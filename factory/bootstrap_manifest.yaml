@@ -1,0 +1,12 @@
+factory_version: 3.3.0
+active_files:
+  - factory/gatekeeper.py
+  - factory/constitution_coverage.yaml
+  - factory/engine
+  - factory/constitution.md
+  - factory/factory_spec.md
+  - factory/architect_spec.md
+  - factory/implementor_spec.md
+  - factory/verify_bundle_standalone.py
+operator_directories: [project, source, data, DROP_HERE, TAKE_THIS]
+legacy: factory/legacy/v2_6_0

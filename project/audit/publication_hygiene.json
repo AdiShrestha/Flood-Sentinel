@@ -1,0 +1,8 @@
+{
+  "tracked_files_reviewed": 124,
+  "credential_pattern_hits_redacted": [],
+  "scope": "Known token/private-key pattern scan; no guarantee of all possible secrets. No matched secret values are emitted.",
+  "readme_link_errors": [],
+  "draft_plan": "intentionally rejected by native validator: experiments must be a nonempty list",
+  "legacy_raw_data_and_checkpoints_tracked": false
+}

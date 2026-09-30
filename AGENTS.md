@@ -1,0 +1,15 @@
+# Flood Sentinel research rebuild: agent instructions
+
+Read the complete root `plan.md`, `project/methodology.md` and the Flood Sentinel-specific `project/audit/` evidence before choosing or implementing a research design. Read the active factory v3.3 specifications and constitution before planning a freeze. The user's instructions govern scope and authorization. This folder is the new working repository; no dependence on the old local folder is permitted in the research pipeline.
+
+The current system is an audited engineering foundation and an **unregistered research draft**. No observational cohort, trained model, empirical improvement, journal submission or scientific certification is established. Legacy results are invalid forensic diagnostics, even where they look negative. The supplied factory `docs/` and v2.6 history describe another demonstration; do not attribute its metrics to Flood Sentinel.
+
+Follow P00–P14 in dependency order. First resolve runtime/domain compatibility and genuine source feasibility. Reuse the migrated tested primitives with their documented limits. Do not create dummy experiments/data/receipts to satisfy a gate. Implementor challenges Architect decisions before freeze, especially availability, label intervals, independent units, comparator budgets and scope.
+
+Never generate observations under provider names; fabricate logs, IDs or exact onset times; silently replace missing with zero; fit transforms/calibration on prohibited test data; expose withheld targets; insert fixed results into plots; or stop/tune/select seeds based on desired test outcomes. Unknown data, rights, availability or support remains unknown or causes an explicit scoped exclusion. Constructed fixtures/simulations are disclosed and kept outside observational evidence.
+
+A critical bug preserves failed evidence and the old plan epoch, stops the affected claim, and requires an explicit amendment/test-exposure assessment. A passing software gate does not establish source authenticity, hydrological validity or population inference. Native `seed_fixed_test` inference is conditional on one corpus; domain claims require lossless, independently recomputed adapters or narrower conclusions.
+
+Run relevant engineering/factory checks, record the real command/environment/exit status and retain failed attempts. Do not modify the supplied factory to bypass isolation, origin, freeze or statistical checks. An extension needs a versioned contract, independent tests and scientific review. CPU correctness precedes measured MPS use; plan actual resources on the user's M3 Air rather than promise performance.
+
+Keep raw/large data, credentials, caches and local runtime out of ordinary Git, while preserving required evidence through declared archives/handoffs. Root proprietary factory licensing and inherited engine attribution stay intact. Resolve licenses separately; never blanket-license providers' data. The legacy tag and history are preserved; future commits belong in this new checkout. Report negative, inconclusive, feasibility and invalid-method outcomes distinctly.

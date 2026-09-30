@@ -1,0 +1,5 @@
+# Migrating v2.6 projects
+
+V3 does not silently bless v2.6 artifacts. Keep the old Factory under `factory/legacy/v2_6_0/` for historical reproduction. Create a new plan that names the real source/data, recompute every prediction with `factory/engine/metrics.py`, repair labels and group splits, rerun all preregistered seeds with a real stopping policy, and derive failure analysis from prediction IDs. A v2.6 `contract_report.md`, SHA-256, or PASS line is not a v3 receipt.
+
+The supplied 2.6 test project is intentionally not migrated as evidence. Its independent forensic report is `docs/v26_forensic_results.json`; the read-only tool is `docs/audit_tools/audit_v26_project.py`. It records 50 two-epoch runs, 12 rows per run, 43 AUROC disagreements, 26 AUPRC disagreements, six binary-only probability files, and four taxonomy IDs absent from the prediction corpus. The v3 metric oracle corrects the original rank direction and distinguishes average precision from threshold precision. The project’s random negative construction and estimated/hardcoded hardware telemetry remain findings requiring a genuine rerun.

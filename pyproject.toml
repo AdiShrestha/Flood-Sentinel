@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "flood-sentinel-engine"
+version = "0.1.0"
+description = "Audited primitives for prospective flood-warning research; no validated performance claims"
+requires-python = ">=3.12"
+dependencies = ["numpy", "torch"]
+
+[tool.setuptools.packages.find]
+where = ["source"]
+include = ["flood_sentinel*"]
+
+[tool.setuptools.package-data]
+flood_sentinel = ["LICENSE"]
+
+[tool.pytest.ini_options]
+pythonpath = ["source"]
+testpaths = ["source/tests"]

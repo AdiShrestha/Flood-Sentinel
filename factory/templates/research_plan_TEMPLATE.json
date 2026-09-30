@@ -1,0 +1,23 @@
+{
+  "schema_version": 3,
+  "factory_version": "3.3.0",
+  "project_id": "replace-with-stable-id",
+  "profile": "binary_classification",
+  "intent": "research",
+  "data_origin": "observational",
+  "population": "who/what the data represents and sampling frame",
+  "license": "access/license and restrictions",
+  "independence_rationale": "why group, seed, and test units are independent for this estimand",
+  "sampling_rationale": "power/precision calculation and inclusion/exclusion rules",
+  "cohort": "data/cohort.csv",
+  "source_records": "data/source_records.csv",
+  "methodology": "project/methodology.md",
+  "dependency_lock": "source/requirements.lock",
+  "frozen_paths": ["source", "data", "project/methodology.md"],
+  "experiments": [],
+  "comparisons": [],
+  "claims": [],
+  "analyses": {"failures": [], "sensitivity": [], "ablations": []},
+  "release_files": [],
+  "policy": {"min_test_groups": 2, "min_class_count": 2, "min_seeds": 5, "metric_tolerance": 0.00000001}
+}

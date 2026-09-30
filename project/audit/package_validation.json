@@ -1,0 +1,11 @@
+{
+  "command": "python3 -m pip wheel . --no-deps --no-build-isolation",
+  "wheel_sha256": "6ed241aae589c6faa1cd7b0770f07ce93cdfe166db8e599dbd5f2761f4513d57",
+  "module_count": 9,
+  "all_engine_modules_included": true,
+  "inherited_notice_included": true,
+  "wheel_import_smoke_exit_code": 0,
+  "wheel_import_path": "/private/tmp/flood-engine-wheel/flood_sentinel_engine-0.1.0-py3-none-any.whl/flood_sentinel/__init__.py",
+  "initial_check_failure": "An initial smoke harness incorrectly expected ten modules; actual nine modules were verified against the source manifest. No missing package module.",
+  "scope": "Packaging/development import smoke only; does not solve the factory -S runtime or establish scientific results."
+}

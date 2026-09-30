@@ -1,0 +1,37 @@
+{
+  "factory_files_unchanged": true,
+  "typed_runtime_argv_example": [
+    "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+    "-I",
+    "-P",
+    "-B",
+    "-S",
+    "source/run_experiment.py",
+    "E01",
+    "/private/tmp/flood-compatibility-run",
+    "7"
+  ],
+  "isolated_third_party_import_probe": {
+    "argv": [
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+      "-I",
+      "-P",
+      "-B",
+      "-S",
+      "-c",
+      "import numpy"
+    ],
+    "exit_code": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'numpy'\n"
+  },
+  "known_limitations": [
+    "-S excludes site-packages and -I excludes the entrypoint package path; audited dependency loading needs a supervisor-compatible runtime.",
+    "Audit.experiment compares execution argv with legacy command literally; typed contract and command must agree including flags and argument order.",
+    "network=disabled is declared by typed contract but resolve_contract does not implement network isolation.",
+    "Built-in sampling_unit is seed_fixed_test, not basin-population inference."
+  ],
+  "self_tests": {
+    "sandbox": "275 passed, 1 Unix-socket bind permission error",
+    "outside_sandbox": "276 passed"
+  }
+}

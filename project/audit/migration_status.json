@@ -1,0 +1,26 @@
+{
+  "status": "legacy_preserved_new_tree_prepared",
+  "legacy_commit": "6078b04f4c104e7b14a96a4719c3f744b0782dd8",
+  "legacy_tag": "legacy-pre-research-rebuild-2026-10-01",
+  "legacy_tag_object": "1a4d26e933ead92eb6f50f8d631e39dcc3c59bfc",
+  "legacy_tag_remote_verified": true,
+  "preservation_scope": "Published tracked tree. Ignored local artifacts remain in the unchanged old local folder; their inventory is portable here.",
+  "new_main_publication": "prepared; pending commit/push/readback",
+  "history_policy": "Normal successor commit; no force push or legacy history rewrite.",
+  "engine_validation": {
+    "passed": 31,
+    "fixture_only": true
+  },
+  "factory_validation": {
+    "passed": 276,
+    "scope": "supplied factory software self-tests"
+  },
+  "scientific_status": "unregistered foundation; no validated flood skill or certification",
+  "audit_counts": {
+    "filesystem_files": 2186,
+    "archive_members": 5983,
+    "unique_content_hashes": 921
+  },
+  "handoff_plan": "plan.md",
+  "old_local_folder_retained": true
+}

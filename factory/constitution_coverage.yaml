@@ -1,0 +1,94 @@
+schema_version: 2
+principles:
+  C70:
+    level: A
+    mechanism: "Audit.training (D-074)"
+    rationale_if_null: null
+  C71:
+    level: A
+    mechanism: "verify_coverage_liveness (D-082)"
+    rationale_if_null: null
+  C72:
+    level: A
+    mechanism: "Audit.training_sufficiency (D-074)"
+    rationale_if_null: null
+  C73:
+    level: A
+    mechanism: "Audit.cohort (D-077)"
+    rationale_if_null: null
+  C74:
+    level: A
+    mechanism: "verify_result_plausibility (D-080)"
+    rationale_if_null: null
+  C75:
+    level: A
+    mechanism: "_result_findings (D-083)"
+    rationale_if_null: null
+  C76:
+    level: A
+    mechanism: "Audit.analyses_traceability (D-081)"
+    rationale_if_null: null
+  C77:
+    level: A
+    mechanism: "_acquisition_findings (D-076)"
+    rationale_if_null: null
+  C78:
+    level: A
+    mechanism: "tier_check (D-084)"
+    rationale_if_null: null
+  C79:
+    level: A
+    mechanism: "engine.io.read_json (D-087)"
+    rationale_if_null: null
+  C80:
+    level: A
+    mechanism: "certify (D-085)"
+    rationale_if_null: null
+  C81:
+    level: A
+    mechanism: "Audit.claims (D-089)"
+    rationale_if_null: null
+  C82:
+    level: A
+    mechanism: "engine.metrics.paired_inference (D-090)"
+    rationale_if_null: null
+  C83:
+    level: A
+    mechanism: "engine.metrics.binary_metrics (D-091)"
+    rationale_if_null: null
+  C84:
+    level: A
+    mechanism: "Audit.analyses_ablation (D-093)"
+    rationale_if_null: null
+  C85:
+    level: A
+    mechanism: "validate_contract (D-095)"
+    rationale_if_null: null
+  C86:
+    level: A
+    mechanism: "engine.io.merkle_root (D-096)"
+    rationale_if_null: null
+  C87:
+    level: A
+    mechanism: "build_receipt (D-097)"
+    rationale_if_null: null
+  C88:
+    level: A
+    mechanism: "expect_str (D-098)"
+    rationale_if_null: null
+  C89:
+    level: A
+    mechanism: "_deep_result_findings (D-099)"
+    rationale_if_null: null
+  C90:
+    level: A
+    mechanism: "_compute_assurance_level (D-100)"
+    rationale_if_null: null
+  C91:
+    level: A
+    mechanism: "_assurance_with_review (D-101)"
+    rationale_if_null: null
+  C92:
+    level: A
+    mechanism: "verify_attack_registry (D-102)"
+    rationale_if_null: null

@@ -1,0 +1,212 @@
+factory:
+  name: "Software Factory"
+  version: "2.6.0"
+  bootstrap_manifest_version: "2.6.0"
+
+bootstrap:
+
+  repository:
+    clone: true
+    checkout_reference: true
+    validate_factory: true
+
+  create_directories:
+
+    - factory/
+    - project/
+    - project/chunks/
+    - source/
+    - DROP_HERE/  # v1.1.3 -- generic inbox for handing files to the
+                  # Implementation Engineer; sorted deterministically by
+                  # `gatekeeper.py sort-dropbox` per DROP_HERE/dropbox_manifest.json.
+                  # Gitignored -- see gitignore.append_if_missing below.
+    - TAKE_THIS/  # v1.2.1 -- the reverse direction of DROP_HERE/: a place
+                  # for the Implementation Engineer to leave a completed
+                  # chunk's self-contained reports for the Human to grab in
+                  # one spot, instead of hunting through nested
+                  # project/chunks/chunkNN/reports/ directories. Populated by
+                  # `gatekeeper.py stage-takethis`, emptied by
+                  # `gatekeeper.py clear-takethis` when the next chunk
+                  # starts. Always a copy -- the permanent record stays
+                  # under project/. Gitignored -- see gitignore.append_if_missing below.
+
+  copy_factory_files:
+
+    - factory/constitution.md
+    - factory/factory_spec.md
+    - factory/dynamic_rules.md
+    - factory/gatekeeper_spec.md
+    - factory/gatekeeper.py
+    - factory/bootstrap_manifest.yaml
+    - factory/CHANGELOG.md
+    - factory/VERSION
+
+    # v2.2.0 -- architect_spec.md/implementor_spec.md are the primary role
+    # documents (see CHANGELOG.md's v2.2.0 entry). ClaudeInitialization.md
+    # and gemini_spec.md are kept and still copied below, but only as short
+    # pointer files with no operational content -- so a bootstrap run or
+    # muscle memory pointed at the old filenames doesn't hit a missing file.
+    - factory/architect_spec.md
+    - factory/implementor_spec.md
+    - factory/ClaudeInitialization.md
+    - factory/gemini_spec.md
+    - factory/domain_checklists.md
+
+    # v1.3.4 -- regression tests for gatekeeper.py, written and committed
+    # before each fix per the Factory's own stated practice (C14). Copied
+    # so a bootstrapped project carries the tests alongside the code they
+    # cover, not just the code.
+    - factory/tests/test_gatekeeper_v1_3_4.py
+    - factory/tests/test_gatekeeper_self_check.py
+
+    # v1.4.0 -- regression tests for release-check, and the two templates
+    # a project targeting a peer-reviewed venue or other external release
+    # needs at Project Initialization. Not copied for every project's use
+    # (venue_requirements.md/key_facts.md are project-specific once
+    # instantiated) -- these are the blank templates the Architect fills in.
+    - factory/tests/test_gatekeeper_v1_4_0.py
+    - factory/venue_requirements_TEMPLATE.md
+    - factory/key_facts_TEMPLATE.md
+
+    # v1.4.1 -- regression tests for evidence-check.
+    - factory/tests/test_gatekeeper_v1_4_1.py
+
+    # v1.4.2 -- regression tests for the self-check coverage fix and D-028
+    # (fabricated statistical input), and for the four new mechanical
+    # guards (verify-contract, lint-contract, recompute, stamp-report).
+    - factory/tests/test_gatekeeper_v1_4_2.py
+    - factory/tests/test_gatekeeper_v1_4_2_mechanical_guards.py
+
+    # v1.4.2 dated amendment -- regression tests for the Mandatory
+    # Mechanical Gate (D-032/D-033): a T-COMP/T-CAUSAL contract's `check`
+    # now mechanically requires Required Verification Commands,
+    # verify-contract, lint-contract, a passing Recompute Declaration,
+    # and an intact stamp, closing the "declared-but-optional" gap an
+    # independent review identified in the original v1.4.2 release. See
+    # CHANGELOG.md's dated amendment to the v1.4.2 entry and
+    # dynamic_rules.md's Third-party review disposition note.
+    - factory/tests/test_gatekeeper_v1_4_2_mandatory_gate.py
+
+    # v2.2.0 -- regression tests for tier-check (Fail-Closed Tier Inference,
+    # D-034, plus the three bundled WARNING heuristics D-035/D-036/D-037),
+    # `check`'s new unconditional tier-inference wiring, and release-certify
+    # (D-038). Includes a fixture reproducing the real, uploaded
+    # factory_v1.5.0 TDLCR project's C06-03_contract.md text verbatim.
+    - factory/tests/test_gatekeeper_v2_2_0.py
+    - factory/tests/test_gatekeeper_v2_3_0.py  # v2.3.0 -- see CHANGELOG.md
+    - factory/tests/test_gatekeeper_v2_4_0.py  # v2.4.0 -- see CHANGELOG.md
+    - factory/tests/test_gatekeeper_v2_5_0.py  # v2.5.0 -- see CHANGELOG.md
+    - factory/tests/test_gatekeeper_v2_6_0.py  # v2.6.0 -- see CHANGELOG.md
+
+  generated_files:
+
+    - project/factory_info.md
+    - project/factory_info.json
+    - DROP_HERE/dropbox_manifest.json  # v1.2.0 -- pre-populated with the
+                                        # fixed filename->destination
+                                        # patterns from factory_spec.md's
+                                        # Dropbox Specification. This is now
+                                        # a permanent Factory file, not
+                                        # something generated per chunk --
+                                        # see bootstrap.sh for the seed
+                                        # content and CHANGELOG.md v1.2.0.
+    - .gitignore
+
+validation:
+
+  require_factory_directory: true
+
+  require_version_file: true
+
+  # v1.1.0: these were `true` in v1.0.1, which directly contradicted the
+  # Idempotency section of factory_spec.md ("must always be safe to run").
+  # Bootstrap now checks each directory/file individually and fills only
+  # what's missing instead of refusing to run. See CHANGELOG v1.1.0.
+  fail_if_factory_exists: false
+  fail_if_project_exists: false
+  fail_if_source_exists: false
+
+  # A leftover .factory_temp means a previous run was interrupted before
+  # cleanup. It is disposable (reconstructed from a fresh clone), so this
+  # is self-healing rather than a hard failure.
+  fail_if_temp_exists: false
+  cleanup_stale_temp_directory: true
+
+  verify_consistency_if_exists: true
+
+execution:
+
+  cleanup_temp_directory: true
+
+  rollback_on_failure: true
+
+  overwrite_existing_files: false
+
+  verify_before_copy: true
+
+  record_factory_provenance: true
+
+  idempotent: true
+
+gitignore:
+
+  append_if_missing:
+
+    - factory/
+    - project/
+    - bootstrap.sh
+    - DROP_HERE/
+    - TAKE_THIS/
+
+outputs:
+
+  directories:
+
+    - factory/
+    - project/
+    - project/chunks/
+    - source/
+    - DROP_HERE/
+    - TAKE_THIS/
+
+  files:
+
+    - project/factory_info.md
+    - project/factory_info.json
+    - DROP_HERE/dropbox_manifest.json
+    - .gitignore
+
+ownership:
+
+  bootstrap: "bootstrap.sh"
+  verification: "gatekeeper_spec.md + factory/gatekeeper.py"  # gatekeeper.py is now a partial implementation, not spec-only — see gatekeeper_spec.md's Implementation Status section
+  planning: "Architect (currently Claude)"
+  execution: "Implementor (currently Gemini, or any sufficiently capable coding agent), per factory/implementor_spec.md"  # single permanent operations manual, no per-contract prompt file — v2.2.0 renaming, see CHANGELOG.md
+  approval: "Human"
+
+notes:
+
+  - "This manifest defines only the bootstrap process."
+  - "No project planning or chunk generation occurs during bootstrap."
+  - "Project documents are generated later according to factory_spec.md."
+  - "Chunk directories, execution manifests, contracts, evolution artifacts, telemetry, and experiments are outside the scope of bootstrap."
+  - "bootstrap_manifest_version versions this manifest schema independently from the Factory itself."
+  - "v1.1.0: idempotent is now true and enforced by bootstrap.sh; see CHANGELOG.md for why this changed from v1.0.1."
+  - "v1.1.3: DROP_HERE/ added -- a generic inbox for handing files to the Implementation Engineer without pre-sorting them by hand. Gitignored."
+  - "v1.1.4 (superseded by v1.2.0): factory/ClaudeInitialization.md was added to replace three separate Architect prompt files."
+  - "v1.2.0: the entire per-project-prompt-file workflow is retired. factory/gemini_spec.md added -- a permanent, bootstrapped Implementation Engineer manual replacing every Gemini-facing prompt file that used to be pasted per contract. DROP_HERE/dropbox_manifest.json is now itself a bootstrapped, permanent file (pre-populated with fixed filename patterns), not something regenerated per chunk -- Claude only ever appends project-specific entries to it. See CHANGELOG.md v1.2.0 and factory_spec.md's Dropbox Specification."
+  - "v1.2.1: TAKE_THIS/ added -- the reverse of DROP_HERE/. Gemini stages a completed chunk's self-contained reports there (`gatekeeper.py stage-takethis`) so the Human doesn't have to hunt through project/chunks/ by hand; it's cleared (`gatekeeper.py clear-takethis`) when the next chunk starts. Gitignored, always a copy, originals under project/ are permanent. See CHANGELOG.md v1.2.1 and factory_spec.md's TAKE_THIS Specification."
+  - "v1.3.0/v1.3.1: no bootstrap-file-set changes -- both releases are Contract Specification, Dynamic Rules, and gatekeeper.py (materialize, a check bugfix) additions driven by the Factory's first two completed-project retrospectives. Version bumped for cross-file consistency only. See CHANGELOG.md v1.3.0/v1.3.1."
+  - "v2.2.0: forks from v1.4.2's two-role architecture (Architect, Implementor -- no separate Auditor) rather than continuing a parallel v1.5.0/v2.0.0/v2.1.0 line. factory/architect_spec.md and factory/implementor_spec.md are now the primary role-document filenames; factory/ClaudeInitialization.md and factory/gemini_spec.md remain as short pointer files only, still bootstrapped so old references don't break. factory/domain_checklists.md added -- ML/topology-geometry/statistics review questions, reference only. New gatekeeper.py commands tier-check (Fail-Closed Tier Inference, D-034) and release-certify (D-038). See CHANGELOG.md v2.2.0."
+  - "v1.3.2: bootstrap.sh now also `git init`s a nested, independent repository inside project/ (idempotent -- only if project/.git doesn't already exist), so project/'s own contents get real git history despite remaining gitignored from the outer repository. This addresses an explicit Human requirement (no visible Factory fingerprint in the outer repo) while fixing a real defect the requirement's naive implementation had introduced (project/ previously had zero git history at all, discovered via a Chunk Review that tried to independently verify a file's edit history and found nothing). See CHANGELOG.md v1.3.2 and factory_spec.md's Project Repository Isolation."
+  - "v1.3.3: no bootstrap-file-set changes -- this release tightens ClaudeInitialization.md's existing guidance and files two new PROPOSED Dynamic Rules (D-008, D-009). Version bumped for cross-file consistency only. See CHANGELOG.md v1.3.3."
+  - "v1.3.4: bug-fix release for gatekeeper.py (parser scope, contract-ID padding, report-header matching, dropbox directory visibility, composite-failure reporting, repo-root resolution, a materialize docstring correction) plus ten documentation corrections and a new diagnostic-only `gatekeeper.py self-check` subcommand. factory/tests/ added to copy_factory_files -- regression tests now travel with the code they cover. bootstrap.sh's Finalizing step now runs self-check automatically (never fails bootstrap; python3 absence is a skip, not an error). See CHANGELOG.md v1.3.4."
+  - "v1.4.0: Scientific Validity Layer, evidenced by the GLOF project retrospective (Major Revision leaning Reject, IEEE TGRS). Adds Methodology Adversarial Review (MAR) and Reality Gate as mandatory phases either side of Chunk 01/first data-acquisition contract; venue_requirements.md and project/key_facts.md as new Frozen Files at Project Initialization; Scientific Claim Tier as a Contract Specification field; the Scientific Validity Invariant (SVI) category; three Chunk Review additions (Methodology Drift Check, Baseline Completeness Check, Title-Claim Audit); Constitution C51/C52/C53 and EP-007; dynamic_rules.md D-011 through D-018. Ships one new gatekeeper.py subcommand, `release-check` (D-017, implemented and unit-tested -- local-path/machine-identity leak scan plus key-fact consistency check), and one new exit code, 10. Reality Gate itself and MAR gates 1-3 are specified with a concrete data_manifest.json schema but not yet implemented in gatekeeper.py -- disclosed honestly, not implemented and claimed otherwise. Classified Minor per C50: new capabilities within the existing execution/ownership model, no architectural redesign. Engineering-hardening backlog (Allowed File Validation, cumulative regression, filing-log hashing, approval register, dual-repo atomic commit, crash/resume WAL) is explicitly unchanged by this release -- not evidenced by GLOF's actual failure, stays queued in dynamic_rules.md's Candidate Observations table. Amended before freeze with C54 (No Silent Data Substitution) and D-019 through D-023, evidenced by a second, distinct incident within the same GLOF rework (Chunk 07): an acquisition script silently substituted simulated data for a network-blocked real API call, passing every original Reality Gate property check. Adds `acquisition_provenance.json` (API-call-level evidence, harder to fabricate than self-reported provenance), a mandatory connectivity pre-check, an External Service Dependencies contract field, a Human spot-check protocol, and a second new gatekeeper.py subcommand, `acquisition-audit` (D-022/D-023, exit code 11). See CHANGELOG.md v1.4.0."
+  - "v1.4.1: a third, distinct incident within the same GLOF project rework (Chunks 08-09, discovered after v1.4.0 was presented as complete) showed a contract report's stated verdict contradicting its own backing JSON artifact, and separately being internally inconsistent with its own reported numbers -- caught only by a later adversarial audit, not by anything running during the chunk. Filed as its own dated release rather than folded retroactively into v1.4.0's already-presented entry. Adds dynamic_rules.md D-024 (Report-Artifact Verdict Consistency), D-025 (Verdict-Data Logical Consistency, via a bounded closed-set criterion format -- never free-form natural-language evaluation), D-026 (Cross-Contract Metric Supersession Protocol, a Chunk Review check, deliberately not automated -- the detection heuristic wasn't safe enough to trust), and D-027 (Degenerate Metric Flagging / SVI-007). Adds a third new gatekeeper.py subcommand, `evidence-check` (exit code 12), reading a contract report's structured `## Verdict Cross-Check` block against its named JSON artifact. No new Constitution rules -- all four items are deterministic enforcement of existing C01/C08, or process/invariant additions, not new principles. Also fixes a real defect found during this release's own validation: the v1.3.4 BUG-7 repo-root check looked for `bootstrap_manifest.yaml` at cwd, which never exists there in a real bootstrapped project (it lives at `factory/bootstrap_manifest.yaml`) -- the check could never have passed in production. A prior, independent review's proposed 'CHECK 5: Acquisition Provenance Chain' was recognized as a restatement of v1.4.0's D-019/acquisition_provenance.json rather than built again; only its one genuine addition (downloaded-file-manifest checksums) was folded into the existing schema. See CHANGELOG.md v1.4.1."
+  - "v1.4.2: fixed a self-check coverage gap of the same class the v1.4.1 fix already named -- gatekeeper.py and this file's own `version` field carried live version references SELF_CHECK_FILES never monitored (self-check cannot monitor a file it doesn't list, including its own host file). Broadened acquisition-audit's structural check to also flag a distribution-sampled value feeding a metrics function in the same file (D-028, real incident: a bootstrap-CI/significance-testing contract, C08-06, fabricated its own per-window scores from an already-aggregated summary AUC rather than loading real predictions -- reproduced byte-for-byte against the real shipped artifact, and confirmed present in the project's own manuscript abstract and RQ3 result). Added four mechanical guards answering independent review that `evidence-check` validates a report against its own artifact but never independently re-executes or recomputes anything: `verify-contract` (re-runs a report's declared verification commands for real, exit 13), `lint-contract` (deterministic AST scan for swallowed exceptions plus the broadened acquisition-audit scan plus frozen-verification-machinery tampering, exit 14), `recompute` (runs a report-declared independent script and compares to an artifact's claimed value, mechanically rejecting a same-hash script as non-independent, exit 15), and `stamp-report`/`verify-stamps` (a tamper-evident, hash-chained stamp appended to a report; content above a stamp is hash-committed and later edits to it are detected, exit 16). `snapshot`/`snapshot-chunk`/`check` now auto-freeze a project's verification machinery (source/tests/, verify_*.py, factory/verifiers/) by default, reusing existing v1.3.2 snapshot infrastructure rather than new machinery. Built at explicit Human direction ahead of this Factory's usual completed-project evidence bar for a Minor-shaped change -- disclosed as a departure, not silently normalized; see CHANGELOG.md v1.4.2's Notes and dynamic_rules.md's Third-party review disposition note for the full basis and for what was deliberately built differently from either source review document's literal proposal. A defect in this release's own build (an edit orphaning the v1.3.4 BUG-7 repo-root check as unreachable code, caught only by CLI-level subprocess tests, not unit tests) was found and fixed during this release's own validation. See CHANGELOG.md v1.4.2."
+  - "v1.4.2, dated amendment (see CHANGELOG.md for the exact date): a second-round independent review of v1.4.2 confirmed the four mechanical guards it added (verify-contract, lint-contract, recompute, stamp-report) but found they were not yet mandatory in the normal Gemini workflow -- gemini_spec.md's Phase 3 still only calls `check`, and none of the four are referenced anywhere in gemini_spec.md, factory_spec.md, or ClaudeInitialization.md. `check` is now tier-aware: for a manifest contract whose scientific_claim_tier (reused from the existing v1.4.0 field, not a new taxonomy) is T-COMP or T-CAUSAL, `check` mechanically requires all four guards to pass before the contract can read PASS -- new exit code 17 (D-032). Also adds a Required Verification Commands contract field, frozen by Claude at contract-generation time like every other Frozen File, closing the separate gap that verify-contract alone only proves a declared command exited 0, never that it was the command the contract actually required (D-033). Kept at v1.4.2 at explicit Human direction rather than bumped per the C50 versioning policy's own default for a workflow-enforcement change of this shape -- logged here as a dated amendment rather than silently backdated into the original entry above, so that entry's original text is left untouched. See CHANGELOG.md and dynamic_rules.md D-032, D-033."
+  - "v2.3.0: ceremony-collapse and completion-integrity release from four completed-project field reports (Sentinel-GL, KLStream, AML/collusion-ring project, CoreMesh). New gatekeeper.py commands: contract-preflight, begin, finalize, delegate, log-decision, release-status (D-039 through D-053). Corrected DEFAULT_REQUIRED_SECTIONS to match implementor_spec.md's real template (D-046). clear-takethis now archives by default (D-043). See CHANGELOG.md v2.3.0."
+  - "v2.4.0: no bootstrap-file-set structural change beyond one new test file -- this release dispositions a repo-grounded third-party gap analysis (factory_gap_analysis.md, against an external elite-venue pre-submission audit manual), independently re-verified claim-by-claim rather than accepted on its own framing, and explicitly excludes a second, ungrounded document (deep-research-report.md) that had no real access to this Factory's files. Six new reference-only sections added to domain_checklists.md and venue_requirements_TEMPLATE.md (Hardware/Efficiency Claims, Ablation Design, Generalization & Stress-Testing, sample-size-planning, Baseline Parity Ledger, Efficiency Claim Requirements, Release Documentation -- all conditional, no gatekeeper.py change). Two new WARNING-only tier-check heuristics, D-054 (ablation-row covariance) and D-055 (efficiency-claim measurement language), bundled per C46 rather than new commands. Two new Reality-Gate-adjacent candidate schemas, hardware_profile_manifest.json (D-056) and the Baseline Parity Ledger's verification process (D-057), documented in factory_spec.md but not gatekeeper.py-implemented, same honest posture as Reality Gate's own MAR-1/2/3. All five new Dynamic Rules filed PROPOSED, zero project occurrences, disclosed as single-document evidence -- none promoted to ACTIVE, none added to constitution.md as a ratified principle. The source document's own draft 'C62' Constitution rule is deliberately not ratified -- logged as a Candidate Observation in dynamic_rules.md instead, per the Amendment Policy's cross-project evidence bar. See CHANGELOG.md v2.4.0."
+  - "v2.4.1: closes the five remaining Tier-A reference-content items factory_gap_analysis.md's own §7 disposition table named as not yet seen by v2.4.0 (sensitivity-analysis protocol specificity, variance-characterization completeness, theory-adjacent standards, and baseline-parity/ablation-design sub-items) in domain_checklists.md and venue_requirements_TEMPLATE.md. No new gatekeeper.py command or rule number, no bootstrap-file-set structural change. See CHANGELOG.md v2.4.1."
+  - "v2.5.0: Publication rigor mechanical enforcement release. Ratifies Constitution Principles C62 (Ablation Single-Factor Isolation), C63 (Pre-Registration & Experiment Freeze), and C64 (Empirical Measurement Over Point Proxies). Promotes D-054 through D-058 to ACTIVE; ratifies D-059 through D-061. Implements 5 new gatekeeper.py subcommands: verify-baseline-parity (exit 23), verify-hardware-profile (exit 24), freeze-experiment & verify-experiment-freeze (exit 25), contamination-check (exit 26). Eliminates same-session self-review on MAR Gates 4-7 for peer-reviewed venues via cross-model adversarial protocol. Adds test_gatekeeper_v2_5_0.py. See CHANGELOG.md v2.5.0."
+  - "v2.6.0: Full DEEP-RESEARCH.MD Coverage Release. Ratifies Constitution Section 11 (Principles C65–C69). Ratifies dynamic rules D-062 through D-073. Implements 4 new gatekeeper.py subcommands: verify-statistical-protocol (exit 27), verify-sensitivity-analysis (exit 28), pre-submission-audit (exit 29), and verify-failure-taxonomy (exit 30). Extends verify-hardware-profile (exit 24) with claim-gated energy/thermal/FLOPs verification. Adds 7 protocol sections to venue_requirements_TEMPLATE.md. Adds test_gatekeeper_v2_6_0.py. See CHANGELOG.md v2.6.0."
