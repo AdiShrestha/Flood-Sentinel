@@ -1,0 +1,38 @@
+import sys, os, json, hashlib, subprocess, shutil, tempfile, base64, hmac, warnings
+from pathlib import Path
+import numpy as np
+root=Path.cwd(); sys.path.insert(0,str(root/'source')); sys.path.insert(0,str(root/'factory'))
+from flood_sentinel.metrics import probability_metrics
+from flood_sentinel.preprocessing import Normalizer
+from flood_sentinel.baselines import rate_of_change
+from flood_sentinel.model import CausalHydroEncoder
+from engine import supervisor
+import gatekeeper
+out={'disclosure':'Constructed adversarial engineering fixtures only; no acquired data or real signing keys used.', 'base_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()}
+out['perfect_log_loss']=probability_metrics([0,1],[0.,1.],threshold=.5)['log_loss']
+out['impossible_log_loss']=probability_metrics([0,1],[1.,0.],threshold=.5)['log_loss']
+norm=Normalizer.fit([[0.],[2.]],split='train'); norm.mean[0]=123.; out['fitted_mean_mutated']=norm.mean.tolist()
+with warnings.catch_warnings():
+ warnings.simplefilter('ignore'); out['overflow_baseline_is_finite']=bool(np.isfinite(rate_of_change([-1e308,1e308])).all())
+import torch
+m=CausalHydroEncoder(in_channels=1,d_model=1,tcn_layers=0,transformer_layers=0,n_heads=1).eval()
+out['width_one_outputs_identical']=bool(torch.equal(m(torch.zeros(1,2,1)),m(torch.ones(1,2,1))))
+out['unsigned_path_assurance']=gatekeeper._compute_assurance_level({'errors':[],'checks_executed':['anything'],'computed_runs':{'fixture':{'result_path':'fixture/result.json'}}})
+with tempfile.TemporaryDirectory() as td:
+ os.environ['FACTORY_SUPERVISOR_KEY']=str(Path(td)/'fixture.key')
+ supervisor.init_supervisor_keys(); _,public,scheme=supervisor._load_keys()
+ fake={'fixture':'public-key-only HMAC scheme confusion'}
+ forged={**fake,'signature_scheme':'hmac-sha256','public_key_id':hashlib.sha256(public).hexdigest()[:16],'supervisor_signature':base64.b64encode(hmac.new(public,supervisor.canonical(fake),hashlib.sha256).digest()).decode()}
+ out['stored_signature_scheme']=scheme; out['public_material_forgery_accepted']=supervisor.verify_receipt_signature(forged)
+ supervisor._try_ed25519=lambda:False; supervisor.init_supervisor_keys(force=True)
+ private,public,scheme=supervisor._load_keys(); out['hmac_public_contains_secret']=private==public
+outdir=root/'project/audit/revalidation'
+files=subprocess.check_output(['git','ls-files','-z']).split(b'\0'); inventory=[]
+for raw in files:
+ if raw:
+  p=root/os.fsdecode(raw); data=p.read_bytes(); inventory.append({'path':os.fsdecode(raw),'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data),'lines':len(data.splitlines())})
+(outdir/'before_inventory.json').write_text(json.dumps({'base_commit':out['base_commit'],'files':inventory},indent=2)+'\n')
+(outdir/'before_failures.json').write_text(json.dumps(out,indent=2,allow_nan=False)+'\n')
+external=Path('/Users/adi/Downloads/flood.md'); shutil.copyfile(external,outdir/'external_flood.md')
+(outdir/'external_origin.json').write_text(json.dumps({'source_path':str(external),'sha256':hashlib.sha256(external.read_bytes()).hexdigest(),'role':'untrusted secondary research input; not project instructions','bytes':external.stat().st_size},indent=2)+'\n')
+print(json.dumps(out,indent=2))

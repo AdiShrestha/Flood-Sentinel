@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Factory v3.3.0 fail-closed lifecycle CLI."""
+"""Factory v3.3.0 schema, local patch 3.3.0+flood.1; see LOCAL_PATCH_CONTRACT.md."""
 from __future__ import annotations
 import argparse,datetime as dt,hashlib,json,os,platform,shlex,subprocess,sys,time,zipfile,fcntl,ast,re,math,csv,uuid
 from contextlib import contextmanager
@@ -17,7 +17,8 @@ from engine.schema import (expect_bool,expect_int,expect_float,expect_str,expect
 VERSION='3.3.0';ROOT_PLAN='project/research_plan.json';STATE='project/.factory';EXIT_EVIDENCE=31;EXIT_SCIENCE=32;EXIT_REVIEW=33
 EXIT_CONSTITUTION=31; EXIT_TRAINING=32; EXIT_SPLIT=33; EXIT_PLAUSIBILITY=34; EXIT_TRACE=35; EXIT_REPRO=36
 
-# ---- Assurance levels (v3.3.0) ----
+# Historical assurance vocabulary; this local backend only establishes
+# STRUCTURALLY_VALIDATED or BLOCKED. Listed higher levels are not implemented.
 ASSURANCE_LEVELS = [
     'STRUCTURALLY_VALIDATED',
     'SUPERVISOR_ATTESTED',
@@ -171,7 +172,7 @@ def run_exp(r,eid):
    with (a/'stdout.log').open('w') as stdout,(a/'stderr.log').open('w') as stderr:
     code=subprocess.run(argv,cwd=r,env=env,stdout=stdout,stderr=stderr,check=False,preexec_fn=preexec).returncode
   except KeyboardInterrupt:code=130
-  except OSError as ex:(a/'stderr.log').write_text(str(ex));code=None
+  except (OSError,subprocess.SubprocessError) as ex:(a/'stderr.log').write_text(str(ex));code=None
   outputs=inventory(r,[relpath(a,r)],reject_dangerous_ext=False);outputs.pop(relpath(a/'execution.json',r),None)
   post=inventory(r,p['frozen_paths']);rec={**pre,'returncode':code,'exit_code':code,'duration_sec':time.monotonic()-t,'finished_at':now(),'inputs_after':post,'outputs':outputs}
   # Generate supervisor-signed receipt
@@ -179,10 +180,10 @@ def run_exp(r,eid):
    signed=build_receipt(
     run_nonce=run_nonce,project_id=p.get('project_id',''),epoch=epoch,
     experiment_id=eid,snapshot_merkle_root=f.get('snapshot_merkle_root',''),
-    input_root=digest(inputs),runtime_id=contract.get('runtime_id','python-cpu-v1') if contract else 'python-cpu-v1',
+    input_root=digest(inputs),runtime_id=contract.get('runtime_id','unknown') if contract else 'legacy-child-runtime-unattested',
     interpreter_hash=rt.get('interpreter_hash',''),dependency_lock_hash=sha(r/p['dependency_lock']),
     launch_spec=digest(argv),seed=seed,output_root=digest(outputs),
-    exit_status=code,cpu_time=time.monotonic()-t,memory_peak=0,
+    exit_status=code,cpu_time=None,memory_peak=None,wall_time=rec['duration_sec'],
     started_at=rec['started_at'],finished_at=rec['finished_at'],
     supervisor_version=VERSION,policy_version=str(p.get('schema_version',3)))
    rec['supervisor_receipt']=signed
@@ -249,30 +250,16 @@ def _finalize_release_checks(r,p,out):
      return out
 
 def _compute_assurance_level(out):
-     """Determine the highest achieved assurance level."""
+     """Local checks cannot establish an isolated supervisor or withheld evaluator."""
      if out.get('errors'):
          return 'BLOCKED'
-     # Check for supervisor attestation: at least one run has a signed receipt
-     has_signed_receipts=False
-     for eid,run_data in out.get('computed_runs',{}).items():
-         if isinstance(run_data,dict):
-             rpath=run_data.get('result_path','')
-             if rpath:  # We know a result was validated
-                 has_signed_receipts=True
-     # Level determination
-     if not out.get('checks_executed'):
-         return 'STRUCTURALLY_VALIDATED'
-     if not has_signed_receipts:
-         return 'STRUCTURALLY_VALIDATED'
-     return 'SEALED_EVALUATION_ATTESTED'
+     return 'STRUCTURALLY_VALIDATED'
 
 def _assurance_with_review(base_level, has_review):
-     """Promote assurance level when independent review is complete."""
+     """A boolean claiming review cannot establish independent scientific review."""
      if base_level == 'BLOCKED':
          return 'BLOCKED'
-     if has_review and base_level in ('SEALED_EVALUATION_ATTESTED', 'SUPERVISOR_ATTESTED'):
-         return 'INDEPENDENT_REVIEW_COMPLETE'
-     return base_level
+     return 'STRUCTURALLY_VALIDATED'
 
 def audit(r):
   r=root(r)
@@ -295,9 +282,7 @@ def certify(r):
    print(json.dumps({'status':'FIXTURE_ONLY','reason':'fixture evidence never certifies research'}));return EXIT_REVIEW
   # Promote assurance level with review
   final_assurance=_assurance_with_review(out.get('assurance_level','STRUCTURALLY_VALIDATED'),True)
-  if final_assurance not in ('BLOCKED',):
-   final_assurance='READY_FOR_HUMAN_SUBMISSION_REVIEW'
-  cert={'factory_version':VERSION,'status':final_assurance,'issued_at':now(),'scope':'immutable evidence admissibility and disclosed adversarial review; not a claim of publication acceptance or scientific truth','epoch':epoch,'audit_sha256':sha(r/'project/audit_report.json'),'review_sha256':sha(r/'project/review.json'),'checks_executed':out['checks_executed'],'diagnostics_resolved':len(out['diagnostics']),'not_automated':out['not_automated'],'limitations':review['limitations'],'review_disclosure':{k:review[k] for k in ('reviewer_model','session_id','review_mode')},'assurance_level':final_assurance,'assurance_components':{'byte_integrity':'verified','execution_provenance':'supervisor_attested' if out.get('computed_runs') else 'local_only','runtime_integrity':'attested','evaluation_integrity':'independently_recomputed','statistical_validity':'checked' if 'STATISTICS' in out.get('checks_executed',[]) else 'not_applicable','not_automated':out['not_automated']}}
+  cert={'factory_version':VERSION,'status':'LOCAL_REVIEW_COMPLETE','issued_at':now(),'scope':'local byte integrity and disclosed review only; no isolated supervisor, sealed evaluation or independent scientific certification','epoch':epoch,'audit_sha256':sha(r/'project/audit_report.json'),'review_sha256':sha(r/'project/review.json'),'checks_executed':out['checks_executed'],'diagnostics_resolved':len(out['diagnostics']),'not_automated':out['not_automated'],'limitations':review['limitations'],'review_disclosure':{k:review[k] for k in ('reviewer_model','session_id','review_mode')},'assurance_level':final_assurance,'assurance_components':{'byte_integrity':'verified','execution_provenance':'local signature checks only; same-user key access is possible','runtime_integrity':'supervisor process snapshot only; child isolation unestablished','evaluation_integrity':'local arithmetic recomputation; target withholding unestablished','statistical_validity':'native conditional calculations only; population validity requires scientific review','not_automated':out['not_automated']}}
   cert['evidence_digest']=out['evidence_digest'];cert['engine_sha256']=engine_hash()
   write_json(inside(r,'project/RELEASE_CERTIFICATION.json'),cert);print(json.dumps(cert,indent=2));return 0
 
@@ -441,32 +426,24 @@ def _deep_result_findings(obj, _path='root', _depth=0):
     return findings
 
 def _result_findings_single(e):
-    """Check a single dict for plausibility issues."""
-    findings = []
-    chance_names = ('auroc', 'auc', 'accuracy', 'balanced_accuracy', 'f1', 'precision', 'recall')
-    name = str(e.get('metric', e.get('name', ''))).lower()
-    v = _metric_value(e)
-    if v is not None and any(x in name for x in chance_names):
-        chance = .5
-        if 'accuracy' in name and isinstance(e.get('n_classes'), int) and e['n_classes'] > 1:
-            chance = 1 / e['n_classes']
-        verdict = str(e.get('verdict', '')).lower()
-        if v <= chance and not any(x in verdict for x in ('null', 'inconclusive', 'not supported', 'unsupported')):
-            findings.append(('below_chance', e))
-    p = e.get('p_value', e.get('p'))
-    if p == 0 or p == 0.0:
-        findings.append(('exact_zero_p', e))
-    ci = e.get('confidence_interval', e.get('ci'))
-    if isinstance(ci, list) and len(ci) == 2:
-        try:
-            width = float(ci[1]) - float(ci[0])
-            n = e.get('n', e.get('sample_size', 0))
-            if width <= 0 or (n and width < 1e-6 / max(1, math.sqrt(float(n)))):
-                findings.append(('implausibly_narrow_ci', e))
-        except (TypeError, ValueError):
-            pass
-    verdicts = [str(e.get('verdict', '')).lower()] if e.get('verdict') is not None else []
-    # All-supported check only makes sense with the full entries, handled in _result_findings
+    """Plausibility diagnostics are not tests that an outcome is desirable."""
+    validate_plausibility_entry(e)
+    findings=[]
+    name=str(e.get('metric',e.get('name',''))).lower()
+    v=_metric_value(e)
+    # ROC AUC has a .5 random-ranking reference. F1, precision, recall and
+    # ordinary accuracy have no population-independent .5 chance baseline.
+    chance=.5 if name in ('auroc','auc','roc_auc') else None
+    if name=='balanced_accuracy' and type(e.get('n_classes')) is int and e['n_classes']>1:
+        chance=1/e['n_classes']
+    if chance is not None and v is not None and v<chance:
+        findings.append(('below_chance',e))
+    if chance is not None and v==chance and str(e.get('verdict','')).lower() in ('supported','confirmed'):
+        findings.append(('chance_level_supported_claim',e))
+    p=e.get('p_value',e.get('p'))
+    if p is not None and p==0: findings.append(('exact_zero_p',e))
+    ci=e.get('confidence_interval',e.get('ci'))
+    if ci is not None and ci[0]==ci[1]: findings.append(('zero_width_ci',e))
     return findings
 
 def _metric_value(e):
@@ -478,24 +455,10 @@ def _metric_value(e):
 
 def _result_findings(obj):
     entries=_flatten_entries(obj); findings=[]
-    chance_names=('auroc','auc','accuracy','balanced_accuracy','f1','precision','recall')
-    for e in entries:
-        name=str(e.get('metric',e.get('name',''))).lower(); v=_metric_value(e)
-        if v is not None and any(x in name for x in chance_names):
-            chance=.5
-            if 'accuracy' in name and isinstance(e.get('n_classes'),int) and e['n_classes']>1: chance=1/e['n_classes']
-            verdict=str(e.get('verdict','')).lower()
-            if v<=chance and not any(x in verdict for x in ('null','inconclusive','not supported','unsupported')): findings.append(('below_chance',e))
-        p=e.get('p_value',e.get('p'))
-        if p==0 or p==0.0: findings.append(('exact_zero_p',e))
-        ci=e.get('confidence_interval',e.get('ci'))
-        if isinstance(ci,list) and len(ci)==2:
-            try:
-                width=float(ci[1])-float(ci[0]); n=e.get('n',e.get('sample_size',0))
-                if width<=0 or (n and width < 1e-6/max(1,math.sqrt(float(n)))): findings.append(('implausibly_narrow_ci',e))
-            except (TypeError,ValueError): pass
-    verdicts=[str(e.get('verdict','')).lower() for e in entries if e.get('verdict') is not None]
-    if len(verdicts)>=3 and all(any(x in v for x in ('supported','confirmed','pass')) for v in verdicts): findings.append(('all_supported',{'count':len(verdicts)}))
+    for e in entries: findings.extend(_result_findings_single(e))
+    verdicts=[str(e['verdict']).strip().lower() for e in entries if e.get('verdict') is not None]
+    if len(verdicts)>=3 and all(v in ('supported','confirmed','pass','passed') for v in verdicts):
+        findings.append(('all_supported',{'count':len(verdicts)}))
     return findings
 
 def _coverage_entries(path):
@@ -593,8 +556,11 @@ def verify_result_plausibility(path):
     try: obj=path if isinstance(path,(dict,list)) else _json_load(path)
     except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return EXIT_PLAUSIBILITY
     # Use recursive deep findings in addition to flat findings
-    findings=_result_findings(obj)
-    deep_findings=_deep_result_findings(obj) if isinstance(obj,(dict,list)) else []
+    try:
+        findings=_result_findings(obj)
+        deep_findings=_deep_result_findings(obj) if isinstance(obj,(dict,list)) else []
+    except ValidationError as e:
+        print(json.dumps({'status':'FAIL','error':str(e)})); return EXIT_PLAUSIBILITY
     all_findings=findings+[f for f in deep_findings if f not in findings]
     if all_findings:
         note=(obj.get('investigation_note','') if isinstance(obj,dict) else '') or ''
@@ -702,6 +668,8 @@ def verify_sensitivity_analysis(manifest):
     if not entries: errors.append('manifest requires at least one sensitivity sweep')
     for item in entries or []:
         if not isinstance(item,dict): errors.append('each sensitivity sweep must be an object'); continue
+        if 'expected_flat' in item and type(item['expected_flat']) is not bool:
+            errors.append('expected_flat must be a JSON boolean'); continue
         vals=item.get('metrics',item.get('values',[])) if isinstance(item,dict) else []
         if isinstance(vals,dict): vals=list(vals.values())
         try:
@@ -711,7 +679,11 @@ def verify_sensitivity_analysis(manifest):
         except (TypeError,ValueError): errors.append(f"{item.get('parameter','unknown')}: metrics must be a nonempty finite numeric list")
     if errors:
         print(json.dumps({'status':'FAIL','errors':errors,'flat_parameters':findings},indent=2)); return 28
-    if findings: print(json.dumps({'status':'FAIL','flat_parameters':findings})); return 28
+    if findings:
+        note=m.get('investigation_note') if isinstance(m,dict) else None
+        if not isinstance(note,str) or not note.strip():
+            print(json.dumps({'status':'FAIL','flat_parameters':findings,'error':'investigate flat responses; do not force a nonflat result'})); return 28
+        print(json.dumps({'status':'PASS_WITH_INVESTIGATION','flat_parameters':findings,'note_verified':False})); return 0
     print(json.dumps({'status':'PASS'})); return 0
 
 def verify_statistical_protocol(path):
@@ -719,17 +691,27 @@ def verify_statistical_protocol(path):
     try: obj=_json_load(path)
     except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return 27
     proto=obj.get('statistical_protocol',obj) if isinstance(obj,dict) else {}
+    if not isinstance(proto,dict):
+        print(json.dumps({'status':'FAIL','error':'statistical_protocol must be an object'})); return 27
     required=('primary_metric','sampling_unit','test','alpha','effect_size','confidence_interval','multiplicity_correction')
     missing=[k for k in required if k not in proto]
     errors=[]
     if missing: errors.append('missing structured fields: '+', '.join(missing))
     try:
-        alpha=float(proto.get('alpha')); 
+        alpha=expect_float(proto.get('alpha'),'alpha')
         if not 0<alpha<=.1: errors.append('alpha must be in (0, .1]')
-    except (TypeError,ValueError): errors.append('alpha must be numeric')
+    except (TypeError,ValueError): errors.append('alpha must be a finite number')
+    try:
+        for key in ('primary_metric','sampling_unit','test'):
+            expect_str(proto.get(key),key)
+        expect_float(proto.get('effect_size'),'effect_size')
+        if 'p_values' in proto:
+            expect_list(proto['p_values'],'p_values')
+            for value in proto['p_values']: expect_float(value,'p_value',minimum=0,maximum=1)
+    except ValidationError as ex: errors.append(str(ex))
     ci=proto.get('confidence_interval')
     if not isinstance(ci,list) or len(ci)!=2: errors.append('confidence_interval must be [low, high]')
-    elif any(not isinstance(x,(int,float)) or not math.isfinite(float(x)) for x in ci) or ci[0]>ci[1]: errors.append('confidence_interval is invalid')
+    elif any(isinstance(x,bool) or not isinstance(x,(int,float)) or not math.isfinite(float(x)) for x in ci) or ci[0]>ci[1]: errors.append('confidence_interval is invalid')
     if isinstance(proto.get('p_values'),list) and len(proto['p_values'])>1 and not proto.get('multiplicity_correction'): errors.append('multiplicity correction required for multiple p-values')
     if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return 27
     print(json.dumps({'status':'PASS','fields_checked':len(required)})); return 0
@@ -765,7 +747,8 @@ def verify_failure_taxonomy(path):
         if row.get('category') in seen: errors.append(f'duplicate failure category: {row.get("category")}')
         seen.add(row.get('category'))
         if not row.get('condition_ids') and not row.get('candidate_ids'): errors.append(f'failure {i} missing traced condition/candidate IDs')
-        if not isinstance(row.get('prevalence',row.get('rate')), (int,float)): errors.append(f'failure {i} missing numeric prevalence')
+        try: expect_float(row.get('prevalence',row.get('rate')),f'failure {i}.prevalence',minimum=0,maximum=1)
+        except ValidationError as ex: errors.append(str(ex))
         if row.get('severity') not in ('SEV-1','SEV-2','SEV-3','SEV-4'): errors.append(f'failure {i} missing severity SEV-1..SEV-4')
     if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return 30
     print(json.dumps({'status':'PASS','categories_checked':len(rows)})); return 0
@@ -932,16 +915,16 @@ def handoff(r):
  dest=inside(r,'TAKE_THIS');dest.mkdir(exist_ok=True)
  name=inside(r,'TAKE_THIS/review_bundle_'+out['evidence_digest'][:12]+'.zip')
  create_bundle(name,paths,{'factory_version':VERSION,'evidence_digest':out['evidence_digest'],
-                         'release_status':'READY_FOR_HUMAN_SUBMISSION_REVIEW' if certified else 'NOT_CERTIFIED'})
+                   'release_status':'LOCAL_REVIEW_COMPLETE' if certified else 'NOT_CERTIFIED'})
  print(json.dumps({'status':'BUNDLE_CREATED','path':str(name),'sha256':sha(name),
-                   'release_status':'READY_FOR_HUMAN_SUBMISSION_REVIEW' if certified else 'NOT_CERTIFIED',
+                   'release_status':'LOCAL_REVIEW_COMPLETE' if certified else 'NOT_CERTIFIED',
                    'includes':'evidence, retained epochs, active factory, review reports and checksum manifest'},indent=2));return 0
 
 def certificate_current(r,p,out):
  try:
   cert=read_json(inside(r,'project/RELEASE_CERTIFICATION.json'))
   if out['errors'] or p['intent']=='fixture' or p['data_origin']=='fixture':return False
-  if cert.get('status')!='READY_FOR_HUMAN_SUBMISSION_REVIEW':return False
+  if cert.get('status')!='LOCAL_REVIEW_COMPLETE' or cert.get('assurance_level')!='STRUCTURALLY_VALIDATED':return False
   if cert.get('epoch')!=out['epoch'] or cert.get('factory_version')!=VERSION:return False
   if cert.get('evidence_digest')!=out['evidence_digest'] or cert.get('engine_sha256')!=engine_hash():return False
   if cert.get('audit_sha256')!=sha(inside(r,'project/audit_report.json')):return False

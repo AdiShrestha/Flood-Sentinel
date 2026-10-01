@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-01T06:00:45.522068+00:00",
+  "scope": "whole nonignored working-tree byte scan for selected credential formats; not a guarantee of no secrets or a data license approval",
+  "files_scanned": 170,
+  "findings": [],
+  "inherited_license_sha256": "0be3d23dedc6cfd9db453a00d6a1c4b5b1276ae5ded17327d7b704deb5c2ed70",
+  "root_license_sha256": "c97ec7c35c967d232a830fb9de01932c436d79d9ed52d9096314c51ca7c8520f",
+  "raw_study_data_created": false,
+  "personal_signing_key_accessed_in_earlier_suites": "unknown",
+  "key_scope_evidence": "validation.json; this byte scan does not observe signing-key access",
+  "external_response_role": "user-supplied secondary context; no provider raw data copied"
+}

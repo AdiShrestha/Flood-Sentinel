@@ -1,5 +1,7 @@
 # Factory specification — v3.3.0
 
+> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
+
 ## Active repository
 
 `factory/` contains active policy and code. `project/` contains one agent-authored frozen plan, methodology, epoch state, run attempts, audit, review, and release report. `source/` contains implementation and lockfile. `data/` contains only declared source records/cohorts. `DROP_HERE/` and `TAKE_THIS/` are optional handoff inbox/outbox. `factory/legacy/v2_6_0/` is historical and never active.

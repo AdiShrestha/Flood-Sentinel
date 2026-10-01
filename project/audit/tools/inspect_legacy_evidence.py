@@ -12,6 +12,15 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 import torch
 
 
+def require_same_dates(left, right):
+    """Forensic formula comparisons require exact one-to-one date alignment."""
+    a=pd.to_datetime(left['date'],utc=True); b=pd.to_datetime(right['date'],utc=True)
+    if a.isna().any() or b.isna().any() or a.duplicated().any() or b.duplicated().any():
+        raise ValueError('Invalid/duplicate forensic dates; positional matching would be misleading.')
+    if not a.is_monotonic_increasing or not b.is_monotonic_increasing or not np.array_equal(a.to_numpy(),b.to_numpy()):
+        raise ValueError('Forensic date vectors differ; formula equality is not established.')
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--legacy', type=Path, required=True)
@@ -23,6 +32,7 @@ def main():
         gid = g['site_no']
         obs = pd.read_parquet(c / f'chunk02/data/usgs/{gid}/daily_streamflow.parquet')
         nwm = pd.read_parquet(c / f'chunk02/data/nwm_retro/{gid}/nwm_retro_daily.parquet')
+        require_same_dates(obs,nwm)
         q = obs['discharge_cfs'].to_numpy(dtype=float) * 0.0283168
         expected = np.maximum(0, q) if g.get('in_pilot_panel') else np.maximum(.01, q * .95 + .05 * np.sin(np.linspace(0, 100, len(q))))
         x = nwm['nwm_discharge_cms'].to_numpy(dtype=float)
@@ -45,7 +55,9 @@ def main():
                 temp = (lo + hi) / 2
                 state = state + pr if temp <= 0 else max(0., state - 2.5 * temp)
                 generated.append(round(state, 2))
-            swe = pd.read_parquet(c / f'chunk02/data/snodas/{gid}/snodas_daily.parquet')['swe_mm'].to_numpy()
+            snow_table = pd.read_parquet(c / f'chunk02/data/snodas/{gid}/snodas_daily.parquet')
+            require_same_dates(met,snow_table)
+            swe = snow_table['swe_mm'].to_numpy()
             snow_checks.append({'site_no': gid, 'rows': len(swe), 'max_error_to_degree_day_formula': float(np.max(np.abs(swe - generated)))})
     ev = pd.read_parquet(c / 'chunk07/data/evaluation_event_matrix.parquet')
     test = ev[ev['split'] == 'test']

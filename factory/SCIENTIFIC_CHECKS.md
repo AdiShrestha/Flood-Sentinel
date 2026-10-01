@@ -1,5 +1,7 @@
 # What v3 actually checks
 
+> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
+
 The active gate reads the frozen plan and run receipts. It hashes every declared source and dataset byte, rejects symlinks and unsafe paths, disallows duplicate JSON keys and non-finite values, and refuses plan or source changes after freeze. Experiment commands use an argument vector without a shell. Each preregistered seed gets an immutable attempt directory; failed attempts remain visible.
 
 Before an experiment starts, the gate rejects common interpreter and loader

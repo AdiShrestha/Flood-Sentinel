@@ -1,5 +1,7 @@
 # Gatekeeper implementation contract — v3.3.0
 
+> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
+
 Implemented commands are `init`, `freeze`, `run`, `record`, `audit`, `certify`, `status`, and `handoff`. The implementation is in `gatekeeper.py`, using `engine/io.py`, `engine/plan.py`, `engine/metrics.py`, `engine/audit.py`, `engine/contract.py`, `engine/supervisor.py`, `engine/schema.py`, and `engine/attacks.py`. This list is the complete machine surface; no prose command in another document is implied to exist.
 
 `freeze` validates and snapshots the plan, all declared source/data/methodology bytes, and active policy code. `run` executes preregistered argv safely, captures every attempt, and calls `record`. `record` verifies one run's raw predictions and training receipt. `audit` reloads all current receipts, recomputes metrics, validates split/source joins, compares every preregistered unit, and writes `project/audit_report.json`. `certify` repeats the audit and requires a digest-bound, nine-topic Architect review; it writes `project/RELEASE_CERTIFICATION.json`. `status` is informational. `handoff` packages evidence and reports to `TAKE_THIS/`.

@@ -1,12 +1,10 @@
-"""Trusted supervisor: receipt signing, key management, runtime attestation.
+"""Local receipt integrity, not an independently isolated evaluation service.
 
-The supervisor owns the signing key and generates receipts. The worker process
-cannot access the private key. Receipts are cryptographically authentic and
-bind all 16 fields specified by the trust model.
-
-Uses Ed25519 via the standard library's hashlib + hmac as a baseline. When
-the ``cryptography`` package is available, real Ed25519 signatures are used.
-Otherwise, falls back to HMAC-SHA256 keyed receipts with a clear disclosure.
+Ed25519 requires cryptography; HMAC is symmetric authentication, not Ed25519.
+Workers running as the same OS user can read that user's private key. Moving
+the key outside the project does not establish a supervisor trust boundary.
+HMAC public metadata contains only a fingerprint; verification requires the
+private key. Historical HMAC metadata disclosed its secret and is rejected.
 """
 import base64
 import hashlib
@@ -17,6 +15,7 @@ import os
 import platform
 import sys
 import time
+import math
 from pathlib import Path
 
 from .io import canonical, sha, EvidenceError
@@ -101,7 +100,7 @@ def init_supervisor_keys(force=False):
         secret = os.urandom(32)
         priv.write_bytes(secret)
         os.chmod(priv, 0o600)
-        pub.write_text(f'# {SCHEME_HMAC_SHA256}\n{base64.b64encode(secret).decode()}\n')
+        pub.write_text(f'# {SCHEME_HMAC_SHA256}\nfingerprint-sha256:{hashlib.sha256(secret).hexdigest()}\n')
         return priv, pub, SCHEME_HMAC_SHA256
 
 
@@ -115,17 +114,23 @@ def _load_keys():
 
     priv_bytes = priv.read_bytes()
     pub_lines = pub.read_text().splitlines()
-    scheme = SCHEME_HMAC_SHA256
-    pub_data = b''
-    for line in pub_lines:
-        line = line.strip()
-        if line.startswith('#'):
-            s = line.lstrip('#').strip()
-            if s in (SCHEME_ED25519, SCHEME_HMAC_SHA256):
-                scheme = s
-        elif line:
-            pub_data = base64.b64decode(line)
-
+    if len(pub_lines) != 2 or pub_lines[0] not in ('# '+SCHEME_ED25519, '# '+SCHEME_HMAC_SHA256) or len(priv_bytes) != 32:
+        raise EvidenceError('invalid supervisor key metadata')
+    scheme = pub_lines[0][2:]
+    try:
+        if scheme == SCHEME_ED25519:
+            pub_data = base64.b64decode(pub_lines[1], validate=True)
+            if len(pub_data) != 32: raise ValueError('wrong public key length')
+        else:
+            prefix = 'fingerprint-sha256:'
+            if not pub_lines[1].startswith(prefix):
+                raise EvidenceError('legacy HMAC public metadata exposed its secret; retain failed evidence and rotate this key explicitly')
+            pub_data = bytes.fromhex(pub_lines[1][len(prefix):])
+            if pub_data != hashlib.sha256(priv_bytes).digest(): raise ValueError('fingerprint mismatch')
+    except EvidenceError:
+        raise
+    except ValueError as ex:
+        raise EvidenceError('invalid supervisor public metadata') from ex
     return priv_bytes, pub_data, scheme
 
 
@@ -142,12 +147,13 @@ def sign_receipt(receipt_dict):
                if k not in ('supervisor_signature', 'signature_scheme', 'public_key_id')}
     payload = canonical(to_sign)
 
-    if scheme == SCHEME_ED25519 and _try_ed25519():
+    if scheme == SCHEME_ED25519:
+        if not _try_ed25519(): raise EvidenceError('Ed25519 dependency unavailable; cannot downgrade the stored scheme')
         from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
         private_key = Ed25519PrivateKey.from_private_bytes(priv_bytes)
         sig = private_key.sign(payload)
         sig_b64 = base64.b64encode(sig).decode()
-    else:
+    elif scheme == SCHEME_HMAC_SHA256:
         sig = hmac.new(priv_bytes, payload, hashlib.sha256).digest()
         sig_b64 = base64.b64encode(sig).decode()
         scheme = SCHEME_HMAC_SHA256
@@ -178,7 +184,8 @@ def verify_receipt_signature(receipt_dict):
                  if k not in ('supervisor_signature', 'signature_scheme', 'public_key_id')}
     payload = canonical(to_verify)
 
-    _, pub_data, stored_scheme = _load_keys()
+    priv_data, pub_data, stored_scheme = _load_keys()
+    if scheme != stored_scheme: raise EvidenceError('receipt signature scheme differs from the stored key scheme')
 
     # Verify key identity
     expected_id = hashlib.sha256(pub_data).hexdigest()[:16]
@@ -186,7 +193,7 @@ def verify_receipt_signature(receipt_dict):
         raise EvidenceError('receipt signed by unknown supervisor key')
 
     try:
-        sig = base64.b64decode(sig_b64)
+        sig = base64.b64decode(sig_b64, validate=True)
     except Exception:
         raise EvidenceError('receipt signature is malformed or truncated')
 
@@ -198,7 +205,7 @@ def verify_receipt_signature(receipt_dict):
         except Exception:
             raise EvidenceError('receipt signature verification failed')
     elif scheme == SCHEME_HMAC_SHA256:
-        expected = hmac.new(pub_data, payload, hashlib.sha256).digest()
+        expected = hmac.new(priv_data, payload, hashlib.sha256).digest()
         if not hmac.compare_digest(sig, expected):
             raise EvidenceError('receipt signature verification failed')
     else:
@@ -211,8 +218,12 @@ def build_receipt(*, run_nonce, project_id, epoch, experiment_id,
                   snapshot_merkle_root, input_root, runtime_id,
                   interpreter_hash, dependency_lock_hash, launch_spec,
                   seed, output_root, exit_status, cpu_time, memory_peak,
-                  started_at, finished_at, supervisor_version, policy_version):
+                  started_at, finished_at, supervisor_version, policy_version,
+                  wall_time=None):
     """Build a complete supervisor receipt binding all 16 required fields."""
+    for value in (cpu_time, memory_peak, wall_time):
+        if value is not None and (isinstance(value,bool) or not isinstance(value,(int,float)) or not math.isfinite(value) or value < 0):
+            raise EvidenceError('resource observations must be measured finite nonnegative numbers or unavailable (None)')
     receipt = {
         'receipt_version': 1,
         'run_nonce': run_nonce,
@@ -231,6 +242,7 @@ def build_receipt(*, run_nonce, project_id, epoch, experiment_id,
         'resource_observations': {
             'cpu_time_seconds': cpu_time,
             'memory_peak_bytes': memory_peak,
+            'wall_time_seconds': wall_time,
         },
         'started_at': started_at,
         'finished_at': finished_at,

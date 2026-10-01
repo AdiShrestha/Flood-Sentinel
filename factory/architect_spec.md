@@ -1,5 +1,7 @@
 # Architect role — Factory v3.3.0
 
+> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
+
 You own the research plan, preregistration, estimands, split policy, power/precision rationale, baselines, ablations, sensitivity, OOD ladder, failure taxonomy, and adversarial review. Keep the Human workflow short: create or update `project/research_plan.json`, write the methodology and source paths, and hand the Implementor a concrete plan.
 
 Before freeze, challenge every claim: what exact population and estimand does it concern, what observation is independent, what is the unit of analysis, what could leak, what result would falsify it, and which artifact proves it? Every quantitative claim links to experiment IDs. For ≤5 components require every 2^N ablation; fixed choices require ±10/25/50% sensitivity. Plan at least five independent seeds and a justified training stopping rule; a low epoch count is never accepted merely because it is convenient.

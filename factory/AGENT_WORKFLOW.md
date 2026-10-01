@@ -1,5 +1,7 @@
 # Agent workflow (Human sees only the final gate)
 
+> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
+
 1. Architect makes one `research_plan.json`: claims, estimands, populations, data access, group split, seeds, stopping, baselines, factorial ablations, sensitivity grid, OOD/limits, and command paths. Implementor challenges it before freeze.
 2. Architect runs `gatekeeper.py freeze .`. This is the preregistration boundary. No confirmatory source/data/plan mutation is accepted afterward.
 3. Implementor runs `gatekeeper.py run . EXP_ID`. It executes all seeds, keeps stdout/stderr and failed attempts, and calls `record` for each completed prediction file.

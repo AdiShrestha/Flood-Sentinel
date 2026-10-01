@@ -1,0 +1,104 @@
+{
+  "scope": "engineering fixtures only; no observational performance, research freeze or independent scientific certification",
+  "checked_at": "2026-10-01T05:58:29.741777+00:00",
+  "engine": {
+    "version": "0.2.0",
+    "tests_passed": 47,
+    "record": "engine_run04.json",
+    "log": "engine_run04.log",
+    "record_sha256": "67c11fc8aead2a466c8965c7f7d7f85c6f42965be7e79f4421fcfa18f892b690"
+  },
+  "factory": {
+    "schema_version": "3.3.0",
+    "local_patch": "3.3.0+flood.1",
+    "tests_passed": 291,
+    "socket_fixture": "executed outside sandbox",
+    "final_key_open_guard": {
+      "scope": "regression parent-process file-open guard; children inherit restored temporary key environment",
+      "fixture_key_file_opens": 319,
+      "personal_factory_directory_opens": 0
+    },
+    "record": "factory_run05.json",
+    "log": "factory_run05.log",
+    "record_sha256": "b9c8cf1fda7ebcd88e72419a40d09b73480a7e5bf395b32501331e2642dff2ac"
+  },
+  "retained_attempts": [
+    {
+      "command": "python /private/tmp/flood_before.py",
+      "exit_status": 127,
+      "reason": "python alias absent; successful reproduction used python3"
+    },
+    {
+      "log": "engine_attempt1.log",
+      "tests": "45 passed",
+      "wrapper_exit_status": 1,
+      "reason": "zsh read-only status variable; interpreter passed"
+    },
+    {
+      "log": "factory_attempt1.log",
+      "tests": "286 run; 4 failures, 1 socket permission error",
+      "wrapper_exit_status": 1
+    },
+    {
+      "record": "factory_run01.json",
+      "exit_status": 1,
+      "tests": "285 passed; socket fixture denied"
+    },
+    {
+      "record": "engine_run01.json",
+      "exit_status": 0,
+      "tests_passed": 45
+    },
+    {
+      "record": "factory_run02.json",
+      "exit_status": 0,
+      "tests_passed": 286
+    },
+    {
+      "record": "engine_run02.json",
+      "exit_status": 0,
+      "tests_passed": 47,
+      "reason": "earlier factory code snapshot; superseded for current complete-input binding"
+    },
+    {
+      "record": "factory_run03.json",
+      "exit_status": 0,
+      "tests_passed": 288
+    },
+    {
+      "command": "python3 /private/tmp/flood_finalize_evidence.py",
+      "script_exit_status": 1,
+      "reason": "current code did not match earlier engine_run02 complete snapshot: factory/engine/contract.py; fresh bound record obtained",
+      "log": "finalization_attempt1.log"
+    },
+    {
+      "record": "engine_run03.json",
+      "exit_status": 0,
+      "tests_passed": 47,
+      "reason": "superseded complete-input snapshot before test key-isolation correction"
+    },
+    {
+      "record": "factory_run04.json",
+      "exit_status": 0,
+      "tests_passed": 291,
+      "reason": "superseded key-isolation harness; personal default-key access unknown"
+    }
+  ],
+  "superseded_metadata": {
+    "validation_superseded_before_key_scope_correction.json": {
+      "sha256": "220f9025860269dbe6b3629d906aa7726c152652213a0fcdf600925eea30017f",
+      "invalid_claim": "personal_signing_keys_accessed=false; earlier suite fallback access is unknown"
+    },
+    "publication_check_superseded_before_key_scope_correction.json": {
+      "sha256": "24a57fbe82253a94b5d3166547ab938aa0a7afca597021c06c4edfb17f353f54",
+      "invalid_claim": "personal_signing_key_accessed=false; byte-pattern scan cannot establish prior key access"
+    }
+  },
+  "personal_signing_keys_accessed_in_earlier_suites": "unknown",
+  "final_key_scope_limit": "parent-process open guard; child processes inherit restored fixture-key environment, without a separate OS-level child access trace",
+  "personal_key_intentionally_rotated": false,
+  "private_key_material_published": false,
+  "no_study_cohort_created": true,
+  "no_research_epoch_or_certificate_created": true,
+  "current_test_inputs_and_log_hashes_verified": true
+}

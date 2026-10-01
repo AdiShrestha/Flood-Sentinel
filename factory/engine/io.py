@@ -146,7 +146,7 @@ def inventory(root, paths, *, reject_dangerous_ext=True):
             if f.is_symlink():
                 raise EvidenceError('symlink in frozen inputs')
             _reject_special_file(f)
-            if f.is_file() and '__pycache__' not in f.parts:
+            if f.is_file():
                 ext = f.suffix.lower()
                 if ext in _DANGEROUS_EXTENSIONS:
                     if reject_dangerous_ext:
@@ -155,17 +155,16 @@ def inventory(root, paths, *, reject_dangerous_ext=True):
                             f'({ext} files can be imported without source and must be '
                             f'explicitly whitelisted)'
                         )
-                    continue
                 out[str(f.relative_to(root))]=sha(f)
     if not out:
         raise EvidenceError('empty input inventory')
     return out
 
 def merkle_root(file_hashes):
-    """Compute a Merkle root over a dict of {path: sha256_hex}.
+    """Historical API name: flat SHA-256 content root, not a binary Merkle tree.
 
-    Files are sorted by path to produce a deterministic root.
-    Returns the hex digest of the Merkle root.
+    The unchanged construction sorts paths and hashes path bytes plus digests.
+    No tree-membership proof is implemented or implied by this function.
     """
     if not file_hashes:
         raise EvidenceError('cannot compute merkle root of empty inventory')

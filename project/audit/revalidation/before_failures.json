@@ -1,0 +1,15 @@
+{
+  "disclosure": "Constructed adversarial engineering fixtures only; no acquired data or real signing keys used.",
+  "base_commit": "4e9e4be5fc56d5a905f9c53de42aaeeccd675e88",
+  "perfect_log_loss": 9.992007221626415e-16,
+  "impossible_log_loss": 34.538776394910684,
+  "fitted_mean_mutated": [
+    123.0
+  ],
+  "overflow_baseline_is_finite": false,
+  "width_one_outputs_identical": true,
+  "unsigned_path_assurance": "SEALED_EVALUATION_ATTESTED",
+  "stored_signature_scheme": "ed25519",
+  "public_material_forgery_accepted": true,
+  "hmac_public_contains_secret": true
+}

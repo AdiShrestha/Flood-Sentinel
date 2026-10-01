@@ -1,0 +1,12 @@
+.............................................                            [100%]
+=============================== warnings summary ===============================
+source/tests/test_revalidation.py::test_baseline_hand_oracle_and_overflow_are_explicit
+  /Users/adi/Desktop/Projects/Using v3.3 New projects/new flood sentinel/source/flood_sentinel/baselines.py:43: RuntimeWarning: overflow encountered in scalar subtract
+    increment = (ewma-calibration_mean)/calibration_scale-slack
+
+source/tests/test_revalidation.py::test_baseline_hand_oracle_and_overflow_are_explicit
+  /Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/site-packages/numpy/_core/_methods.py:132: RuntimeWarning: overflow encountered in reduce
+    ret = umr_sum(arr, axis, dtype, out, keepdims, where=where)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+45 passed, 2 warnings in 2.24s

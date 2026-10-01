@@ -1,0 +1,10 @@
+WARNING: The directory '/Users/adi/Library/Caches/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+Processing ./.
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: flood-sentinel-engine
+  Building wheel for flood-sentinel-engine (pyproject.toml): started
+  Building wheel for flood-sentinel-engine (pyproject.toml): finished with status 'done'
+  Created wheel for flood-sentinel-engine: filename=flood_sentinel_engine-0.2.0-py3-none-any.whl size=19572 sha256=10ab1fcddf3fd3f4cf80020d523bd931e0507c523d3638684c675a4484006f06
+  Stored in directory: /private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/pip-ephem-wheel-cache-90brbbp3/wheels/a7/36/3b/cd7b5531d1807434abd4eb59101028cc262bd390c32bdcb819
+Successfully built flood-sentinel-engine

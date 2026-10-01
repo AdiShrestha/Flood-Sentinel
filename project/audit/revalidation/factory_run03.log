@@ -1,0 +1,425 @@
+test_fractional_counts_and_epochs_are_rejected (test_flood_revalidation.NumericalAndScopeTests.test_fractional_counts_and_epochs_are_rejected) ... ok
+test_low_event_f1_is_not_a_universal_below_chance_result (test_flood_revalidation.NumericalAndScopeTests.test_low_event_f1_is_not_a_universal_below_chance_result) ... ok
+test_observed_flat_sensitivity_can_be_reported_after_investigation (test_flood_revalidation.NumericalAndScopeTests.test_observed_flat_sensitivity_can_be_reported_after_investigation) ... ok
+test_output_inventory_includes_binary_and_bytecode_outputs (test_flood_revalidation.NumericalAndScopeTests.test_output_inventory_includes_binary_and_bytecode_outputs) ... ok
+test_p_values_and_intervals_reject_nonfinite_out_of_range_and_coercion (test_flood_revalidation.NumericalAndScopeTests.test_p_values_and_intervals_reject_nonfinite_out_of_range_and_coercion) ... ok
+test_statistical_values_are_not_boolean_or_nonfinite (test_flood_revalidation.NumericalAndScopeTests.test_statistical_values_are_not_boolean_or_nonfinite) ... ok
+test_unsupported_verdicts_are_not_all_supported (test_flood_revalidation.NumericalAndScopeTests.test_unsupported_verdicts_are_not_all_supported) ... ok
+test_audit_binds_valid_signature_to_the_actual_run (test_flood_revalidation.ReceiptBoundaryTests.test_audit_binds_valid_signature_to_the_actual_run) ... ok
+test_audit_rejects_bad_signature_even_when_outer_hashes_are_current (test_flood_revalidation.ReceiptBoundaryTests.test_audit_rejects_bad_signature_even_when_outer_hashes_are_current) ... ok
+test_hmac_public_metadata_cannot_sign_and_old_exposed_format_is_rejected (test_flood_revalidation.ReceiptBoundaryTests.test_hmac_public_metadata_cannot_sign_and_old_exposed_format_is_rejected) ... ok
+test_public_ed25519_material_cannot_forge_an_hmac_receipt (test_flood_revalidation.ReceiptBoundaryTests.test_public_ed25519_material_cannot_forge_an_hmac_receipt) ... ok
+test_unmeasured_resources_are_unknown_and_wall_time_is_named_correctly (test_flood_revalidation.ReceiptBoundaryTests.test_unmeasured_resources_are_unknown_and_wall_time_is_named_correctly) ... ok
+test_coverage (test_gatekeeper_v3_0_0.V3ScientificTests.test_coverage) ... ok
+test_fallback_hard_fail (test_gatekeeper_v3_0_0.V3ScientificTests.test_fallback_hard_fail) ... ok
+test_phantom_input_hard_fail (test_gatekeeper_v3_0_0.V3ScientificTests.test_phantom_input_hard_fail) ... ok
+test_reproducibility (test_gatekeeper_v3_0_0.V3ScientificTests.test_reproducibility) ... ok
+test_result_note_allows_investigation (test_gatekeeper_v3_0_0.V3ScientificTests.test_result_note_allows_investigation) ... ok
+test_result_note_required (test_gatekeeper_v3_0_0.V3ScientificTests.test_result_note_required) ... ok
+test_split_floor (test_gatekeeper_v3_0_0.V3ScientificTests.test_split_floor) ... ok
+test_tier_paraphrase (test_gatekeeper_v3_0_0.V3ScientificTests.test_tier_paraphrase) ... ok
+test_traceability (test_gatekeeper_v3_0_0.V3ScientificTests.test_traceability) ... ok
+test_training_floor (test_gatekeeper_v3_0_0.V3ScientificTests.test_training_floor) ... ok
+test_training_justification (test_gatekeeper_v3_0_0.V3ScientificTests.test_training_justification) ... ok
+test_added_source_invalidates_freeze (test_v3.LifecycleTests.test_added_source_invalidates_freeze) ... ok
+test_amendment_preserves_epoch (test_v3.LifecycleTests.test_amendment_preserves_epoch) ... ok
+test_duplicate_json (test_v3.LifecycleTests.test_duplicate_json) ... ok
+test_empty_plan_rejected (test_v3.LifecycleTests.test_empty_plan_rejected) ... ok
+test_failed_run_returns_failure_and_retains_attempt (test_v3.LifecycleTests.test_failed_run_returns_failure_and_retains_attempt) ... ok
+test_forged_metrics_even_after_rehash (test_v3.LifecycleTests.test_forged_metrics_even_after_rehash) ... ok
+test_freeze_not_overwritten (test_v3.LifecycleTests.test_freeze_not_overwritten) ... ok
+test_group_leakage (test_v3.LifecycleTests.test_group_leakage) ... ok
+test_handoff_contains_evidence (test_v3.LifecycleTests.test_handoff_contains_evidence) ... ok
+test_label_mismatch_even_after_rehash (test_v3.LifecycleTests.test_label_mismatch_even_after_rehash) ... ok
+test_missing_freeze (test_v3.LifecycleTests.test_missing_freeze) ... ok
+test_missing_review_withholds_release (test_v3.LifecycleTests.test_missing_review_withholds_release) ... ok
+test_missing_source_ids (test_v3.LifecycleTests.test_missing_source_ids) ... ok
+test_mutated_plan_invalidates_freeze (test_v3.LifecycleTests.test_mutated_plan_invalidates_freeze) ... ok
+test_mutated_prediction_hash (test_v3.LifecycleTests.test_mutated_prediction_hash) ... ok
+test_path_traversal (test_v3.LifecycleTests.test_path_traversal) ... ok
+test_phantom_prediction_even_after_rehash (test_v3.LifecycleTests.test_phantom_prediction_even_after_rehash) ... ok
+test_record_rejects_attempt_outside_active_epoch (test_v3.LifecycleTests.test_record_rejects_attempt_outside_active_epoch) ... ok
+test_single_class_cohort (test_v3.LifecycleTests.test_single_class_cohort) ... ok
+test_source_leakage (test_v3.LifecycleTests.test_source_leakage) ... ok
+test_stale_review_withholds_release (test_v3.LifecycleTests.test_stale_review_withholds_release) ... ok
+test_successful_run_is_rechecked_not_reexecuted (test_v3.LifecycleTests.test_successful_run_is_rechecked_not_reexecuted) ... ok
+test_symlink (test_v3.LifecycleTests.test_symlink) ... ok
+test_unknown_profile_rejected (test_v3.LifecycleTests.test_unknown_profile_rejected) ... ok
+test_valid_evidence_path (test_v3.LifecycleTests.test_valid_evidence_path) ... ok
+test_ap_not_precision (test_v3.MetricTests.test_ap_not_precision) ... ok
+test_boolean (test_v3.MetricTests.test_boolean) ... ok
+test_exact_signflip_resolution (test_v3.MetricTests.test_exact_signflip_resolution) ... ok
+test_holm (test_v3.MetricTests.test_holm) ... ok
+test_infinity (test_v3.MetricTests.test_infinity) ... ok
+test_nan (test_v3.MetricTests.test_nan) ... ok
+test_out_of_range (test_v3.MetricTests.test_out_of_range) ... ok
+test_pair_count (test_v3.MetricTests.test_pair_count) ... ok
+test_perfect_direction (test_v3.MetricTests.test_perfect_direction) ... ok
+test_reverse_direction (test_v3.MetricTests.test_reverse_direction) ... ok
+test_single_class (test_v3.MetricTests.test_single_class) ... ok
+test_tie_permutation_invariant (test_v3.MetricTests.test_tie_permutation_invariant) ... ok
+test_ties (test_v3.MetricTests.test_ties) ... ok
+test_zero_variance_is_disclosed (test_v3.MetricTests.test_zero_variance_is_disclosed) ... ok
+test_certify_blocks_on_fabricated_result_sink (test_v3_1_hardening.AcquisitionAuditBlocksCertifyTests.test_certify_blocks_on_fabricated_result_sink) ... ok
+test_scanner_finds_nothing_in_the_unmodified_fixture (test_v3_1_hardening.AcquisitionAuditBlocksCertifyTests.test_scanner_finds_nothing_in_the_unmodified_fixture)
+Negative control: the same lifecycle on the real fixture script, ... ok
+test_check_contract_rejects_keyword_theater (test_v3_1_hardening.V31HardeningTests.test_check_contract_rejects_keyword_theater) ... ok
+test_check_contract_requires_bound_executable_checks (test_v3_1_hardening.V31HardeningTests.test_check_contract_requires_bound_executable_checks) ... ok
+test_coverage_liveness_is_clean (test_v3_1_hardening.V31HardeningTests.test_coverage_liveness_is_clean) ... ok
+test_failure_taxonomy_requires_traced_categories (test_v3_1_hardening.V31HardeningTests.test_failure_taxonomy_requires_traced_categories) ... ok
+test_statistical_protocol_is_value_level (test_v3_1_hardening.V31HardeningTests.test_statistical_protocol_is_value_level) ... ok
+test_bundle_manifest_detects_byte_tampering (test_v3_2_hardening.V32HardeningTests.test_bundle_manifest_detects_byte_tampering) ... ok
+test_code_loading_environment_is_rejected (test_v3_2_hardening.V32HardeningTests.test_code_loading_environment_is_rejected) ... ok
+test_command_must_reference_declared_code_path (test_v3_2_hardening.V32HardeningTests.test_command_must_reference_declared_code_path) ... ok
+test_generated_reports_cannot_be_frozen (test_v3_2_hardening.V32HardeningTests.test_generated_reports_cannot_be_frozen) ... ok
+test_inline_interpreter_code_is_rejected (test_v3_2_hardening.V32HardeningTests.test_inline_interpreter_code_is_rejected) ... ok
+test_json_rejects_overflow_number (test_v3_2_hardening.V32HardeningTests.test_json_rejects_overflow_number) ... ok
+test_new_execution_revokes_old_certificate (test_v3_2_hardening.V32HardeningTests.test_new_execution_revokes_old_certificate) ... ok
+test_project_directory_cannot_be_frozen_as_a_wildcard (test_v3_2_hardening.V32HardeningTests.test_project_directory_cannot_be_frozen_as_a_wildcard) ... ok
+test_blocked_on_errors (test_v3_3_hardening.AssuranceLevelTests.test_blocked_on_errors) ... ok
+test_blocked_stays_blocked_with_review (test_v3_3_hardening.AssuranceLevelTests.test_blocked_stays_blocked_with_review) ... ok
+test_boolean_review_cannot_establish_independence (test_v3_3_hardening.AssuranceLevelTests.test_boolean_review_cannot_establish_independence) ... ok
+test_result_path_cannot_attest_sealed_evaluation (test_v3_3_hardening.AssuranceLevelTests.test_result_path_cannot_attest_sealed_evaluation) ... ok
+test_structurally_validated_without_receipts (test_v3_3_hardening.AssuranceLevelTests.test_structurally_validated_without_receipts) ... ok
+test_all_attack_ids_unique (test_v3_3_hardening.AttackRegistryTests.test_all_attack_ids_unique) ... ok
+test_registry_has_18_attacks (test_v3_3_hardening.AttackRegistryTests.test_registry_has_18_attacks) ... ok
+test_registry_well_formed (test_v3_3_hardening.AttackRegistryTests.test_registry_well_formed) ... ok
+test_bundle_tampering_detected (test_v3_3_hardening.AttackTests.test_bundle_tampering_detected) ... ok
+test_bundle_verifies_after_relocation (test_v3_3_hardening.AttackTests.test_bundle_verifies_after_relocation) ... ok
+test_dot_segment_path_rejected (test_v3_3_hardening.AttackTests.test_dot_segment_path_rejected) ... ok
+test_env_startup_hooks_rejected (test_v3_3_hardening.AttackTests.test_env_startup_hooks_rejected) ... ok
+test_failed_attempt_deletion_detected (test_v3_3_hardening.AttackTests.test_failed_attempt_deletion_detected) ... ok
+test_inline_c_flag_rejected (test_v3_3_hardening.AttackTests.test_inline_c_flag_rejected) ... ok
+test_module_execution_rejected (test_v3_3_hardening.AttackTests.test_module_execution_rejected) ... ok
+test_nested_plausibility_detected (test_v3_3_hardening.AttackTests.test_nested_plausibility_detected) ... ok
+test_phantom_prediction_blocked (test_v3_3_hardening.AttackTests.test_phantom_prediction_blocked) ... ok
+test_pyc_in_frozen_paths_rejected (test_v3_3_hardening.AttackTests.test_pyc_in_frozen_paths_rejected) ... ok
+test_receipt_forgery_rejected (test_v3_3_hardening.AttackTests.test_receipt_forgery_rejected) ... ok
+test_receipt_replay_rejected (test_v3_3_hardening.AttackTests.test_receipt_replay_rejected) ... ok
+test_reproduction_relabeling_rejected (test_v3_3_hardening.AttackTests.test_reproduction_relabeling_rejected)
+A reproduction must match the original's model identity. ... ok
+test_runtime_substitution_detected (test_v3_3_hardening.AttackTests.test_runtime_substitution_detected)
+Runtime attestation captures interpreter hash. ... ok
+test_schema_type_coercion_rejected (test_v3_3_hardening.AttackTests.test_schema_type_coercion_rejected) ... ok
+test_shell_wrapper_rejected (test_v3_3_hardening.AttackTests.test_shell_wrapper_rejected) ... ok
+test_source_mutation_during_run_detected (test_v3_3_hardening.AttackTests.test_source_mutation_during_run_detected) ... ok
+test_stale_certificate_rejected (test_v3_3_hardening.AttackTests.test_stale_certificate_rejected) ... ok
+test_added_member_detected (test_v3_3_hardening.BundlePortabilityTests.test_added_member_detected) ... ok
+test_bundle_includes_assurance_level (test_v3_3_hardening.BundlePortabilityTests.test_bundle_includes_assurance_level) ... ok
+test_bundle_verifies_after_relocation (test_v3_3_hardening.BundlePortabilityTests.test_bundle_verifies_after_relocation) ... ok
+test_tampered_byte_detected (test_v3_3_hardening.BundlePortabilityTests.test_tampered_byte_detected) ... ok
+test_attached_c_flag_rejected (test_v3_3_hardening.ContractTests.test_attached_c_flag_rejected) ... ok
+test_env_wrapper_rejected (test_v3_3_hardening.ContractTests.test_env_wrapper_rejected) ... ok
+test_eval_flag_rejected (test_v3_3_hardening.ContractTests.test_eval_flag_rejected) ... ok
+test_inline_c_flag_rejected (test_v3_3_hardening.ContractTests.test_inline_c_flag_rejected) ... ok
+test_module_execution_rejected (test_v3_3_hardening.ContractTests.test_module_execution_rejected) ... ok
+test_shell_wrapper_rejected (test_v3_3_hardening.ContractTests.test_shell_wrapper_rejected) ... ok
+test_unknown_runtime_rejected (test_v3_3_hardening.ContractTests.test_unknown_runtime_rejected) ... ok
+test_valid_command_accepted (test_v3_3_hardening.ContractTests.test_valid_command_accepted) ... ok
+test_execution_record_has_run_nonce (test_v3_3_hardening.LifecycleV33Tests.test_execution_record_has_run_nonce) ... ok
+test_execution_record_has_runtime_attestation (test_v3_3_hardening.LifecycleV33Tests.test_execution_record_has_runtime_attestation) ... ok
+test_freeze_produces_merkle_root (test_v3_3_hardening.LifecycleV33Tests.test_freeze_produces_merkle_root) ... ok
+test_version_is_3_3_0 (test_v3_3_hardening.LifecycleV33Tests.test_version_is_3_3_0) ... ok
+test_full_receipt_build_and_verify (test_v3_3_hardening.ReceiptSigningTests.test_full_receipt_build_and_verify) ... ok
+test_receipt_replayed_from_different_experiment (test_v3_3_hardening.ReceiptSigningTests.test_receipt_replayed_from_different_experiment)
+A receipt signed for experiment A cannot be replayed as experiment B. ... ok
+test_sign_and_verify (test_v3_3_hardening.ReceiptSigningTests.test_sign_and_verify) ... ok
+test_tampered_receipt_rejected (test_v3_3_hardening.ReceiptSigningTests.test_tampered_receipt_rejected) ... ok
+test_unsigned_receipt_rejected (test_v3_3_hardening.ReceiptSigningTests.test_unsigned_receipt_rejected) ... ok
+test_wrong_key_rejected (test_v3_3_hardening.ReceiptSigningTests.test_wrong_key_rejected) ... ok
+test_deeply_nested_issue_detected (test_v3_3_hardening.RecursivePlausibilityTests.test_deeply_nested_issue_detected) ... ok
+test_flat_clean_results_no_findings (test_v3_3_hardening.RecursivePlausibilityTests.test_flat_clean_results_no_findings) ... ok
+test_nested_below_chance_detected (test_v3_3_hardening.RecursivePlausibilityTests.test_nested_below_chance_detected) ... ok
+test_nested_zero_p_value_detected (test_v3_3_hardening.RecursivePlausibilityTests.test_nested_zero_p_value_detected) ... ok
+test_execution_env_binds_hashseed (test_v3_3_hardening.RuntimeAttestationTests.test_execution_env_binds_hashseed) ... ok
+test_execution_env_sets_bytecode_flag (test_v3_3_hardening.RuntimeAttestationTests.test_execution_env_sets_bytecode_flag) ... ok
+test_runtime_binary_hash_is_hex (test_v3_3_hardening.RuntimeAttestationTests.test_runtime_binary_hash_is_hex) ... ok
+test_bool_accepts_false (test_v3_3_hardening.SchemaValidationTests.test_bool_accepts_false) ... ok
+test_bool_accepts_true (test_v3_3_hardening.SchemaValidationTests.test_bool_accepts_true) ... ok
+test_bool_rejects_one (test_v3_3_hardening.SchemaValidationTests.test_bool_rejects_one) ... ok
+test_bool_rejects_string_false (test_v3_3_hardening.SchemaValidationTests.test_bool_rejects_string_false) ... ok
+test_bool_rejects_string_true (test_v3_3_hardening.SchemaValidationTests.test_bool_rejects_string_true) ... ok
+test_bool_rejects_zero (test_v3_3_hardening.SchemaValidationTests.test_bool_rejects_zero) ... ok
+test_dict_rejects_list (test_v3_3_hardening.SchemaValidationTests.test_dict_rejects_list) ... ok
+test_dict_required_keys (test_v3_3_hardening.SchemaValidationTests.test_dict_required_keys) ... ok
+test_empty_split_distribution_rejected (test_v3_3_hardening.SchemaValidationTests.test_empty_split_distribution_rejected) ... ok
+test_enum_no_case_folding (test_v3_3_hardening.SchemaValidationTests.test_enum_no_case_folding) ... ok
+test_float_rejects_bool (test_v3_3_hardening.SchemaValidationTests.test_float_rejects_bool) ... ok
+test_float_rejects_inf (test_v3_3_hardening.SchemaValidationTests.test_float_rejects_inf) ... ok
+test_float_rejects_nan (test_v3_3_hardening.SchemaValidationTests.test_float_rejects_nan) ... ok
+test_float_rejects_string (test_v3_3_hardening.SchemaValidationTests.test_float_rejects_string) ... ok
+test_id_duplicate_detection (test_v3_3_hardening.SchemaValidationTests.test_id_duplicate_detection) ... ok
+test_id_rejects_special_chars (test_v3_3_hardening.SchemaValidationTests.test_id_rejects_special_chars) ... ok
+test_int_range (test_v3_3_hardening.SchemaValidationTests.test_int_range) ... ok
+test_int_rejects_bool (test_v3_3_hardening.SchemaValidationTests.test_int_rejects_bool) ... ok
+test_int_rejects_float (test_v3_3_hardening.SchemaValidationTests.test_int_rejects_float) ... ok
+test_int_rejects_string (test_v3_3_hardening.SchemaValidationTests.test_int_rejects_string) ... ok
+test_list_min_cardinality (test_v3_3_hardening.SchemaValidationTests.test_list_min_cardinality) ... ok
+test_list_rejects_dict (test_v3_3_hardening.SchemaValidationTests.test_list_rejects_dict) ... ok
+test_list_rejects_string (test_v3_3_hardening.SchemaValidationTests.test_list_rejects_string) ... ok
+test_str_bounded_length (test_v3_3_hardening.SchemaValidationTests.test_str_bounded_length) ... ok
+test_str_empty_rejected (test_v3_3_hardening.SchemaValidationTests.test_str_empty_rejected) ... ok
+test_str_rejects_none (test_v3_3_hardening.SchemaValidationTests.test_str_rejects_none) ... ok
+test_training_manifest_bool_epochs_rejected (test_v3_3_hardening.SchemaValidationTests.test_training_manifest_bool_epochs_rejected) ... ok
+test_dot_segment_path_rejected (test_v3_3_hardening.SnapshotTests.test_dot_segment_path_rejected) ... ok
+test_freeze_includes_merkle_root (test_v3_3_hardening.SnapshotTests.test_freeze_includes_merkle_root) ... ok
+test_merkle_root_changes_on_mutation (test_v3_3_hardening.SnapshotTests.test_merkle_root_changes_on_mutation) ... ok
+test_merkle_root_changes_on_path_change (test_v3_3_hardening.SnapshotTests.test_merkle_root_changes_on_path_change) ... ok
+test_merkle_root_deterministic (test_v3_3_hardening.SnapshotTests.test_merkle_root_deterministic) ... ok
+test_pyc_in_frozen_paths_rejected (test_v3_3_hardening.SnapshotTests.test_pyc_in_frozen_paths_rejected) ... ok
+test_source_mutation_during_run_detected (test_v3_3_hardening.SnapshotTests.test_source_mutation_during_run_detected)
+After a run, mutated source files are detected by the audit. ... ok
+test_standalone_verifier_imports (test_v3_3_hardening.StandaloneVerifierTests.test_standalone_verifier_imports)
+The standalone verifier must not import gatekeeper. ... ok
+test_standalone_verifier_receipt_signature (test_v3_3_hardening.StandaloneVerifierTests.test_standalone_verifier_receipt_signature) ... ok
+test_standalone_verifier_works (test_v3_3_hardening.StandaloneVerifierTests.test_standalone_verifier_works) ... ok
+test_blocked_never_promotes (test_v3_3_stress.AssuranceLevelStressTests.test_blocked_never_promotes) ... ok
+test_cannot_reach_review_level_without_review (test_v3_3_stress.AssuranceLevelStressTests.test_cannot_reach_review_level_without_review) ... ok
+test_structural_does_not_promote_with_review (test_v3_3_stress.AssuranceLevelStressTests.test_structural_does_not_promote_with_review) ... ok
+test_absolute_path_in_bundle_member (test_v3_3_stress.BundleTamperingStressTests.test_absolute_path_in_bundle_member) ... ok
+test_backslash_in_bundle_member (test_v3_3_stress.BundleTamperingStressTests.test_backslash_in_bundle_member) ... ok
+test_colon_in_bundle_member (test_v3_3_stress.BundleTamperingStressTests.test_colon_in_bundle_member)
+Windows drive letters like C: should be rejected. ... ok
+test_directory_entry_rejected (test_v3_3_stress.BundleTamperingStressTests.test_directory_entry_rejected) ... ok
+test_manifest_name_collision (test_v3_3_stress.BundleTamperingStressTests.test_manifest_name_collision)
+Cannot use BUNDLE_MANIFEST.json as a member name. ... ok
+test_oversized_manifest_rejected (test_v3_3_stress.BundleTamperingStressTests.test_oversized_manifest_rejected)
+Manifest exceeding 16 MiB should be rejected. ... ok
+test_path_traversal_in_bundle_member (test_v3_3_stress.BundleTamperingStressTests.test_path_traversal_in_bundle_member) ... ok
+test_symlink_member_rejected (test_v3_3_stress.BundleTamperingStressTests.test_symlink_member_rejected)
+Bundle containing a symlink entry should fail verification. ... ok
+test_backtick_injection (test_v3_3_stress.CommandInjectionStressTests.test_backtick_injection) ... ok
+test_contract_entrypoint_with_parent_traversal (test_v3_3_stress.CommandInjectionStressTests.test_contract_entrypoint_with_parent_traversal) ... ok
+test_contract_entrypoint_with_shell_chars (test_v3_3_stress.CommandInjectionStressTests.test_contract_entrypoint_with_shell_chars) ... ok
+test_dollar_paren_injection (test_v3_3_stress.CommandInjectionStressTests.test_dollar_paren_injection) ... ok
+test_env_dash_c_bypass (test_v3_3_stress.CommandInjectionStressTests.test_env_dash_c_bypass)
+env python3 -c should be caught. ... ok
+test_full_path_python_c_flag (test_v3_3_stress.CommandInjectionStressTests.test_full_path_python_c_flag)
+/usr/bin/python3 -c should be caught. ... ok
+test_node_eval_flag (test_v3_3_stress.CommandInjectionStressTests.test_node_eval_flag) ... ok
+test_perl_e_flag (test_v3_3_stress.CommandInjectionStressTests.test_perl_e_flag) ... ok
+test_pipe_injection (test_v3_3_stress.CommandInjectionStressTests.test_pipe_injection) ... ok
+test_pypy_inline_code (test_v3_3_stress.CommandInjectionStressTests.test_pypy_inline_code) ... ok
+test_python_dash_c_attached_code (test_v3_3_stress.CommandInjectionStressTests.test_python_dash_c_attached_code) ... ok
+test_python_dash_m_pip (test_v3_3_stress.CommandInjectionStressTests.test_python_dash_m_pip) ... ok
+test_redirect_injection (test_v3_3_stress.CommandInjectionStressTests.test_redirect_injection) ... ok
+test_ruby_e_flag (test_v3_3_stress.CommandInjectionStressTests.test_ruby_e_flag) ... ok
+test_semicolon_injection (test_v3_3_stress.CommandInjectionStressTests.test_semicolon_injection) ... ok
+test_versioned_python_c_flag (test_v3_3_stress.CommandInjectionStressTests.test_versioned_python_c_flag)
+python3.12 -c should be caught. ... ok
+test_dll_blocked (test_v3_3_stress.DangerousExtensionStressTests.test_dll_blocked) ... ok
+test_dylib_blocked (test_v3_3_stress.DangerousExtensionStressTests.test_dylib_blocked) ... ok
+test_pyc_blocked (test_v3_3_stress.DangerousExtensionStressTests.test_pyc_blocked) ... ok
+test_pyc_uppercase_blocked (test_v3_3_stress.DangerousExtensionStressTests.test_pyc_uppercase_blocked) ... ok
+test_pyd_blocked (test_v3_3_stress.DangerousExtensionStressTests.test_pyd_blocked) ... ok
+test_pyo_blocked (test_v3_3_stress.DangerousExtensionStressTests.test_pyo_blocked) ... ok
+test_so_blocked (test_v3_3_stress.DangerousExtensionStressTests.test_so_blocked) ... ok
+test_so_uppercase_blocked (test_v3_3_stress.DangerousExtensionStressTests.test_so_uppercase_blocked) ... ok
+test_bash_env (test_v3_3_stress.EnvInjectionStressTests.test_bash_env) ... ok
+test_cdpath (test_v3_3_stress.EnvInjectionStressTests.test_cdpath) ... ok
+test_dyld_framework_path (test_v3_3_stress.EnvInjectionStressTests.test_dyld_framework_path) ... ok
+test_dyld_insert_libraries (test_v3_3_stress.EnvInjectionStressTests.test_dyld_insert_libraries) ... ok
+test_dyld_library_path (test_v3_3_stress.EnvInjectionStressTests.test_dyld_library_path) ... ok
+test_git_config_global (test_v3_3_stress.EnvInjectionStressTests.test_git_config_global) ... ok
+test_ld_audit (test_v3_3_stress.EnvInjectionStressTests.test_ld_audit) ... ok
+test_ld_library_path (test_v3_3_stress.EnvInjectionStressTests.test_ld_library_path) ... ok
+test_ld_preload (test_v3_3_stress.EnvInjectionStressTests.test_ld_preload) ... ok
+test_node_options (test_v3_3_stress.EnvInjectionStressTests.test_node_options) ... ok
+test_node_path (test_v3_3_stress.EnvInjectionStressTests.test_node_path) ... ok
+test_perl5opt (test_v3_3_stress.EnvInjectionStressTests.test_perl5opt) ... ok
+test_pythonbreakpoint (test_v3_3_stress.EnvInjectionStressTests.test_pythonbreakpoint) ... ok
+test_pythonhome (test_v3_3_stress.EnvInjectionStressTests.test_pythonhome) ... ok
+test_pythoninspect (test_v3_3_stress.EnvInjectionStressTests.test_pythoninspect) ... ok
+test_pythonpath (test_v3_3_stress.EnvInjectionStressTests.test_pythonpath) ... ok
+test_pythonstartup (test_v3_3_stress.EnvInjectionStressTests.test_pythonstartup) ... ok
+test_rubyopt (test_v3_3_stress.EnvInjectionStressTests.test_rubyopt) ... ok
+test_duplicate_json_keys_rejected (test_v3_3_stress.JsonParsingStressTests.test_duplicate_json_keys_rejected) ... ok
+test_infinity_in_json_rejected (test_v3_3_stress.JsonParsingStressTests.test_infinity_in_json_rejected) ... ok
+test_nan_in_json_rejected (test_v3_3_stress.JsonParsingStressTests.test_nan_in_json_rejected) ... ok
+test_negative_infinity_in_json_rejected (test_v3_3_stress.JsonParsingStressTests.test_negative_infinity_in_json_rejected) ... ok
+test_certificate_removed_on_rerun (test_v3_3_stress.LifecycleBypassStressTests.test_certificate_removed_on_rerun)
+Any run invalidates the existing certificate. ... ok
+test_data_mutation_between_freeze_and_run (test_v3_3_stress.LifecycleBypassStressTests.test_data_mutation_between_freeze_and_run)
+Mutating data between freeze and run must be detected. ... ok
+test_double_freeze_rejected (test_v3_3_stress.LifecycleBypassStressTests.test_double_freeze_rejected)
+Freezing twice without amendment is an error. ... ok
+test_empty_amendment_rejected (test_v3_3_stress.LifecycleBypassStressTests.test_empty_amendment_rejected) ... ok
+test_mutated_engine_after_freeze_caught (test_v3_3_stress.LifecycleBypassStressTests.test_mutated_engine_after_freeze_caught)
+If the factory code changes after freeze, audit must catch it. ... ok
+test_plan_mutation_between_freeze_and_run (test_v3_3_stress.LifecycleBypassStressTests.test_plan_mutation_between_freeze_and_run)
+Mutating the plan between freeze and run must be detected. ... ok
+test_run_before_freeze_fails (test_v3_3_stress.LifecycleBypassStressTests.test_run_before_freeze_fails) ... ok
+test_run_nonexistent_experiment_fails (test_v3_3_stress.LifecycleBypassStressTests.test_run_nonexistent_experiment_fails) ... ok
+test_source_mutation_between_freeze_and_run (test_v3_3_stress.LifecycleBypassStressTests.test_source_mutation_between_freeze_and_run)
+Mutating source between freeze and run must be detected. ... ok
+test_whitespace_amendment_rejected (test_v3_3_stress.LifecycleBypassStressTests.test_whitespace_amendment_rejected) ... ok
+test_different_file_order_same_root (test_v3_3_stress.MerkleRootStressTests.test_different_file_order_same_root)
+Merkle root must be deterministic regardless of insertion order. ... ok
+test_empty_inventory_rejected (test_v3_3_stress.MerkleRootStressTests.test_empty_inventory_rejected) ... ok
+test_path_content_confusion_prevented (test_v3_3_stress.MerkleRootStressTests.test_path_content_confusion_prevented)
+Ensure path 'a' + content hash != path 'ab' + different content hash. ... ok
+test_absolute_path_rejected (test_v3_3_stress.PathEscapeStressTests.test_absolute_path_rejected) ... ok
+test_backslash_traversal (test_v3_3_stress.PathEscapeStressTests.test_backslash_traversal) ... ok
+test_directory_symlink_rejected (test_v3_3_stress.PathEscapeStressTests.test_directory_symlink_rejected) ... ok
+test_dot_only_path_rejected (test_v3_3_stress.PathEscapeStressTests.test_dot_only_path_rejected) ... ok
+test_double_dot_in_path (test_v3_3_stress.PathEscapeStressTests.test_double_dot_in_path) ... ok
+test_empty_path_rejected (test_v3_3_stress.PathEscapeStressTests.test_empty_path_rejected) ... ok
+test_null_byte_in_path (test_v3_3_stress.PathEscapeStressTests.test_null_byte_in_path) ... ok
+test_symlink_in_frozen_path_rejected (test_v3_3_stress.PathEscapeStressTests.test_symlink_in_frozen_path_rejected) ... ok
+test_symlink_to_outside_rejected (test_v3_3_stress.PathEscapeStressTests.test_symlink_to_outside_rejected) ... ok
+test_triple_dot_segment (test_v3_3_stress.PathEscapeStressTests.test_triple_dot_segment)
+.../ is not the same as ../ but could confuse naive parsers. ... ok
+test_url_encoded_traversal_in_normalize (test_v3_3_stress.PathEscapeStressTests.test_url_encoded_traversal_in_normalize)
+Ensure %2e%2e doesn't bypass normalization. ... ok
+test_added_field_breaks_signature (test_v3_3_stress.ReceiptAttackStressTests.test_added_field_breaks_signature)
+Adding a field to the receipt invalidates the signature. ... ok
+test_different_key_id_rejected (test_v3_3_stress.ReceiptAttackStressTests.test_different_key_id_rejected) ... ok
+test_empty_signature_rejected (test_v3_3_stress.ReceiptAttackStressTests.test_empty_signature_rejected) ... ok
+test_null_signature_rejected (test_v3_3_stress.ReceiptAttackStressTests.test_null_signature_rejected) ... ok
+test_removed_field_breaks_signature (test_v3_3_stress.ReceiptAttackStressTests.test_removed_field_breaks_signature)
+Removing a field from the receipt invalidates the signature. ... ok
+test_reorder_does_not_break (test_v3_3_stress.ReceiptAttackStressTests.test_reorder_does_not_break)
+Key ordering is irrelevant since we use canonical serialization. ... ok
+test_truncated_signature_rejected (test_v3_3_stress.ReceiptAttackStressTests.test_truncated_signature_rejected) ... ok
+test_type_change_breaks_signature (test_v3_3_stress.ReceiptAttackStressTests.test_type_change_breaks_signature)
+Changing a field type (int → str) invalidates the signature. ... ok
+test_unknown_scheme_rejected (test_v3_3_stress.ReceiptAttackStressTests.test_unknown_scheme_rejected) ... ok
+test_dict_as_list (test_v3_3_stress.SchemaBypassStressTests.test_dict_as_list) ... ok
+test_empty_string_as_bool (test_v3_3_stress.SchemaBypassStressTests.test_empty_string_as_bool) ... ok
+test_enum_with_int (test_v3_3_stress.SchemaBypassStressTests.test_enum_with_int) ... ok
+test_enum_with_none (test_v3_3_stress.SchemaBypassStressTests.test_enum_with_none) ... ok
+test_id_too_long (test_v3_3_stress.SchemaBypassStressTests.test_id_too_long) ... ok
+test_id_with_slash (test_v3_3_stress.SchemaBypassStressTests.test_id_with_slash) ... ok
+test_id_with_unicode (test_v3_3_stress.SchemaBypassStressTests.test_id_with_unicode) ... ok
+test_inf_as_int (test_v3_3_stress.SchemaBypassStressTests.test_inf_as_int) ... ok
+test_list_as_bool (test_v3_3_stress.SchemaBypassStressTests.test_list_as_bool) ... ok
+test_list_as_dict (test_v3_3_stress.SchemaBypassStressTests.test_list_as_dict) ... ok
+test_nan_as_int (test_v3_3_stress.SchemaBypassStressTests.test_nan_as_int) ... ok
+test_negative_inf_float (test_v3_3_stress.SchemaBypassStressTests.test_negative_inf_float) ... ok
+test_negative_nan_float (test_v3_3_stress.SchemaBypassStressTests.test_negative_nan_float) ... ok
+test_nested_dict_in_list_validation (test_v3_3_stress.SchemaBypassStressTests.test_nested_dict_in_list_validation)
+Element validator must be applied recursively. ... ok
+test_none_as_bool (test_v3_3_stress.SchemaBypassStressTests.test_none_as_bool) ... ok
+test_split_manifest_bool_count (test_v3_3_stress.SchemaBypassStressTests.test_split_manifest_bool_count) ... ok
+test_split_manifest_nan_count (test_v3_3_stress.SchemaBypassStressTests.test_split_manifest_nan_count) ... ok
+test_split_manifest_negative_count (test_v3_3_stress.SchemaBypassStressTests.test_split_manifest_negative_count) ... ok
+test_split_manifest_string_count (test_v3_3_stress.SchemaBypassStressTests.test_split_manifest_string_count) ... ok
+test_training_manifest_nan_epochs (test_v3_3_stress.SchemaBypassStressTests.test_training_manifest_nan_epochs) ... ok
+test_training_manifest_negative_epochs (test_v3_3_stress.SchemaBypassStressTests.test_training_manifest_negative_epochs) ... ok
+test_training_manifest_string_epochs (test_v3_3_stress.SchemaBypassStressTests.test_training_manifest_string_epochs) ... ok
+test_training_manifest_zero_epochs (test_v3_3_stress.SchemaBypassStressTests.test_training_manifest_zero_epochs) ... ok
+test_very_long_string_rejected (test_v3_3_stress.SchemaBypassStressTests.test_very_long_string_rejected) ... ok
+test_fifo_in_frozen_path_rejected (test_v3_3_stress.SpecialFileStressTests.test_fifo_in_frozen_path_rejected) ... ok
+test_unix_socket_in_frozen_path_rejected (test_v3_3_stress.SpecialFileStressTests.test_unix_socket_in_frozen_path_rejected)
+Unix socket in frozen paths must be rejected. ... ok
+test_meaningful_test_count (test_v3_3_stress.StressTestSummary.test_meaningful_test_count)
+This module should have at least 80 stress tests. ... ok
+test_epoch_directory_cannot_be_overwritten (test_v3_3_stress.TimingStressTests.test_epoch_directory_cannot_be_overwritten)
+If an epoch directory already exists, freeze must reject. ... ok
+test_write_json_atomic (test_v3_3_stress.TimingStressTests.test_write_json_atomic)
+write_json uses atomic replace; partial writes shouldn't corrupt. ... ok
+
+----------------------------------------------------------------------
+Ran 288 tests in 2.724s
+
+OK
+23/23 Level-A principles mechanized, 0 with documented rationale, 0 gaps
+{
+  "status": "FAIL",
+  "differences": {
+    "result.score": [
+      1,
+      0
+    ]
+  }
+}
+{"status": "PASS_WITH_INVESTIGATION", "findings": ["chance_level_supported_claim"], "note_verified": false, "disposition": null}
+{"status": "FAIL", "findings": ["chance_level_supported_claim"], "error": "investigation_note required"}
+{
+  "status": "FAIL",
+  "errors": [
+    "test sample size 10.0 is below floor 30 without sample_size_justification"
+  ],
+  "warnings": []
+}
+{"status": "FAIL", "tier_mismatch": {"declared": "T-DESC", "inferred": "T-COMP"}}
+{
+  "status": "FAIL",
+  "missing_identifiers": [
+    "S9999"
+  ]
+}
+{
+  "status": "FAIL",
+  "errors": [
+    "fewer than 10 epochs requires early stopping or a specific justification"
+  ]
+}
+{"status": "PASS", "epochs_trained": 3}
+{"status": "FAIL", "error": "contract must be strict JSON with executable checks: /Users/adi/Desktop/Projects/Using v3.3 New projects/new flood sentinel/factory/tests/.tmp_contract.md: Expecting value: line 1 column 1 (char 0)"}
+{"status": "PASS", "checks": 1}
+{
+  "status": "FAIL",
+  "errors": [
+    "at least three failure categories are required"
+  ]
+}
+{"status": "PASS", "fields_checked": 7}
+{
+  "status": "FROZEN",
+  "epoch": 1,
+  "freeze_sha256": "f142113df3ddf5b29c90ea30d4969e54050d4d783d2d58d2a9cef6a18a8820f2",
+  "frozen_files": 5,
+  "snapshot_merkle_root": "166167bf1789bdae1660b19a434db228fab10c73d6e9f45e61869a6a2b7fb247"
+}
+{
+  "status": "RECORDED",
+  "run": "project/.factory/epoch_0001/runs/known/attempt0001",
+  "metrics": {
+    "validation": {
+      "auroc": 1.0,
+      "average_precision": 1.0,
+      "accuracy": 1.0,
+      "f1": 1.0,
+      "brier": 0.039999999999999994,
+      "log_loss": 0.2231435513142097
+    },
+    "test": {
+      "auroc": 1.0,
+      "average_precision": 1.0,
+      "accuracy": 1.0,
+      "f1": 1.0,
+      "brier": 0.039999999999999994,
+      "log_loss": 0.2231435513142097
+    }
+  }
+}
+{
+  "status": "RECORDED",
+  "run": "project/.factory/epoch_0001/runs/known/attempt0001",
+  "metrics": {
+    "validation": {
+      "auroc": 1.0,
+      "average_precision": 1.0,
+      "accuracy": 1.0,
+      "f1": 1.0,
+      "brier": 0.039999999999999994,
+      "log_loss": 0.2231435513142097
+    },
+    "test": {
+      "auroc": 1.0,
+      "average_precision": 1.0,
+      "accuracy": 1.0,
+      "f1": 1.0,
+      "brier": 0.039999999999999994,
+      "log_loss": 0.2231435513142097
+    }
+  }
+}
+{
+  "status": "FROZEN",
+  "epoch": 1,
+  "freeze_sha256": "7099ab778f8bf17c4232fb10e8c32f3ef8d44622a4a206aeab77b430628d48e6",
+  "frozen_files": 5,
+  "snapshot_merkle_root": "166167bf1789bdae1660b19a434db228fab10c73d6e9f45e61869a6a2b7fb247"
+}

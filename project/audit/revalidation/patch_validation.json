@@ -1,0 +1,55 @@
+{
+  "checked_at": "2026-10-01T06:00:07.673029+00:00",
+  "full_patch_check": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exit_status": 2,
+    "log": "patch_whitespace_check.log",
+    "reason": "only trailing whitespace in the verbatim user-supplied secondary response"
+  },
+  "verbatim_external_response_sha256": "6238450c923514ce32062dbf5049b7c5c0ff41e404febf228208331027d6436d",
+  "decision": "preserve original response bytes and origin hash; do not normalize forensic context to conceal a whitespace warning",
+  "active_patch_check_before_log_staged": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      ".",
+      ":!project/audit/revalidation/external_flood.md"
+    ],
+    "exit_status": 0
+  },
+  "check_after_staging_original_log": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      ".",
+      ":!project/audit/revalidation/external_flood.md"
+    ],
+    "exit_status": 2,
+    "reason": "the retained raw warning log copies the original trailing whitespace"
+  },
+  "active_patch_check": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check",
+      "--",
+      ".",
+      ":!project/audit/revalidation/external_flood.md",
+      ":!project/audit/revalidation/patch_whitespace_check.log"
+    ],
+    "exit_status": 0,
+    "scope": "active code/specifications and metadata; only original secondary input and exact warning output excluded"
+  }
+}

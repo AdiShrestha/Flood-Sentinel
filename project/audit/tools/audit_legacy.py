@@ -64,7 +64,9 @@ def inspect_bytes(data, suffix):
                     names = [k for k, v in items]
                     pairs.extend(k for k, c in collections.Counter(names).items() if c > 1)
                     return dict(items)
-                value = json.loads(text, object_pairs_hook=hook)
+                constants=[]
+                value = json.loads(text, object_pairs_hook=hook,parse_constant=lambda v:constants.append(v))
+                result['nonstandard_json_constants']=constants
                 result['duplicate_json_keys'] = sorted(set(pairs))
                 result['json_top_keys'] = list(value) if isinstance(value, dict) else None
                 result['json_type'] = type(value).__name__
@@ -87,10 +89,10 @@ def main():
     for path in sorted(root.rglob('*')):
         rel = path.relative_to(root)
         if '.git' in rel.parts: continue
-        if not path.is_file(): continue
         if path.is_symlink():
             omitted.append({'path': str(rel), 'reason': 'symlink; not followed'})
             continue
+        if not path.is_file(): continue
         data = path.read_bytes()
         digest = hashlib.sha256(data).hexdigest()
         if digest not in cache:

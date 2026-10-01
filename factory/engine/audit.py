@@ -10,6 +10,7 @@ from statistics import mean
 from .io import read_json,read_csv,inside,sha,digest,inventory
 from .metrics import binary_metrics,paired_inference,holm,number,quantile,EvidenceError
 from .plan import validate,need,REVIEW_TOPICS
+from .supervisor import verify_receipt_signature
 
 class Audit:
     def __init__(self,root,plan,epoch,freeze,engine_hash):
@@ -97,8 +98,33 @@ class Audit:
             need(r.get('engine_sha256')==self.engine_hash,eid+': code binding mismatch')
             expected=[arg.replace('{run_dir}',str(a.resolve())).replace('{seed}',str(e['seed'])).replace('{experiment_id}',eid) for arg in e['command']]
             need(r.get('argv')==expected,eid+': executed command differs from plan')
-            outputs=inventory(self.root,[str(a.relative_to(self.root))]);outputs.pop(rel,None)
+            outputs=inventory(self.root,[str(a.relative_to(self.root))],reject_dangerous_ext=False);outputs.pop(rel,None)
             need(outputs==r.get('outputs'),eid+': output hash/membership changed since execution')
+            receipt = r.get('supervisor_receipt')
+            if receipt is not None:
+                need(isinstance(receipt,dict),eid+': malformed receipt')
+                verify_receipt_signature(receipt)
+                bindings = {'receipt_version':1, 'supervisor_version':self.freeze['factory_version'],
+                            'policy_version':str(self.p['schema_version']),
+                            'runtime_id':e.get('execution_contract',{}).get('runtime_id','unknown') if e.get('execution_contract') else 'legacy-child-runtime-unattested',
+                            'project_id':self.p['project_id'], 'epoch':self.freeze['epoch'],
+                            'experiment_id':eid, 'seed':e['seed'], 'run_nonce':r.get('run_nonce'),
+                            'snapshot_merkle_root':self.freeze.get('snapshot_merkle_root',''),
+                            'input_root':digest(self.freeze['files']), 'output_root':digest(outputs),
+                            'launch_spec':digest(r.get('argv')), 'exit_status':r.get('exit_code'),
+                            'interpreter_hash':r.get('interpreter_hash'),
+                            'dependency_lock_hash':sha(inside(self.root,self.p['dependency_lock'])),
+                            'started_at':r.get('started_at'), 'finished_at':r.get('finished_at')}
+                for key,value in bindings.items():
+                    need(type(receipt.get(key)) is type(value) and receipt.get(key)==value,eid+': signed receipt binding mismatch: '+key)
+                resources=receipt.get('resource_observations')
+                need(isinstance(resources,dict),eid+': missing resource observations')
+                need(resources.get('cpu_time_seconds') is None and resources.get('memory_peak_bytes') is None,
+                     eid+': this local backend does not measure CPU time or memory')
+                need(type(resources.get('wall_time_seconds')) is float and resources['wall_time_seconds']==r.get('duration_sec'),
+                     eid+': signed wall-time observation differs from outer run')
+            else:
+                self.diagnostic('UNATTESTED_EXECUTION',eid+': '+a.name+'; legacy structural evidence only, no receipt authentication')
             self.bindings.update(outputs)
             if r.get('exit_code')==0 and not r.get('record_error'):good.append(a)
             else:self.diagnostic('FAILED_ATTEMPT',f'{eid}: {a.name}, exit {r.get("exit_code")}; retained; no silent deletion')
@@ -131,7 +157,9 @@ class Audit:
             if metrics['auroc']<.5:self.diagnostic('BELOW_CHANCE',eid+': '+split)
             if metrics['auroc']==1.:self.diagnostic('PERFECT_RANKING',eid+': '+split)
         self.training(e,r,a)
-        self.computed[eid]={'metrics':out,'seed':e['seed'],'model':e['model'],'predictions_sha256':sha(predpath),'result_path':str((a/'result.json').relative_to(self.root))}
+        self.computed[eid]={'metrics':out,'seed':e['seed'],'model':e['model'],'predictions_sha256':sha(predpath),'result_path':str((a/'result.json').relative_to(self.root)),
+                            'local_receipt_signature_checked':read_json(a/'execution.json').get('supervisor_receipt') is not None,
+                            'sealed_evaluation':False}
         self.observed[eid]=data;self.reports[eid]=r
     def training(self,e,result,a):
         t=e['training'];eid=e['id']

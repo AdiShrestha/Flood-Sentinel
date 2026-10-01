@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import math
 import re
 from typing import Iterable
+from .validation import real_scalar
 
 
 def utc(value: datetime) -> datetime:
@@ -29,10 +30,9 @@ class Observation:
     def __post_init__(self):
         if not all(isinstance(v, str) and v.strip() for v in (self.record_id, self.provider, self.variable, self.unit)):
             raise ValueError('Record identity, provider, variable and unit are required.')
-        if not re.fullmatch(r'[a-f0-9]{64}', self.raw_sha256):
+        if not isinstance(self.raw_sha256,str) or not re.fullmatch(r'[a-f0-9]{64}', self.raw_sha256):
             raise ValueError('Record must identify an actual raw-byte SHA-256; a hash is not authentication.')
-        if self.value is not None and (isinstance(self.value, bool) or not math.isfinite(self.value)):
-            raise ValueError('Missing is None; observed values must be finite numbers.')
+        if self.value is not None: real_scalar(self.value)
         if utc(self.observation_start) > utc(self.observation_end):
             raise ValueError('Observation interval is inverted.')
         if self.availability_basis not in {'observed', 'assumed', 'unknown'}:
@@ -54,7 +54,9 @@ def as_of(records: Iterable[Observation], issue_time: datetime, *, allow_assumed
     assumed availability is allowed only for a separately disclosed retrospective study.
     """
     issue = utc(issue_time)
+    if type(allow_assumed) is not bool: raise ValueError('allow_assumed requires an explicit boolean.')
     rows = list(records)
+    if any(not isinstance(r,Observation) for r in rows): raise ValueError('Observation records required.')
     if len({r.record_id for r in rows}) != len(rows):
         raise ValueError('Duplicate source record IDs.')
     selected = []
@@ -77,7 +79,7 @@ class OnsetInterval:
     upper: datetime
 
     def __post_init__(self):
-        if not self.event_id.strip(): raise ValueError('An event ID is required.')
+        if not isinstance(self.event_id,str) or not self.event_id.strip(): raise ValueError('An event ID is required.')
         utc(self.upper)
         if self.lower is not None and utc(self.lower) > utc(self.upper):
             raise ValueError('Onset interval is inverted.')
@@ -91,12 +93,13 @@ def future_event_label(issue_time: datetime, horizon: timedelta, onsets: Iterabl
     Unknown/gapped observation coverage cannot produce a negative label.
     """
     issue = utc(issue_time)
-    if horizon <= timedelta(0): raise ValueError('Horizon must be positive.')
+    if not isinstance(horizon,timedelta) or horizon <= timedelta(0): raise ValueError('Horizon must be a positive timedelta.')
     if type(coverage_complete) is not bool or type(currently_below_threshold) is not bool:
         raise ValueError('Coverage and current state require explicit boolean decisions.')
     if not currently_below_threshold: return None
     end = issue + horizon
     rows = list(onsets)
+    if any(not isinstance(r,OnsetInterval) for r in rows): raise ValueError('OnsetInterval records required.')
     if len({r.event_id for r in rows}) != len(rows): raise ValueError('Duplicate event IDs.')
     ambiguous = False
     for event in rows:
@@ -116,8 +119,10 @@ def first_persistent_alert(times: Iterable[datetime], scores: Iterable[float], *
                            consecutive: int, cadence: timedelta) -> datetime | None:
     """Return the confirmation time of the first alert, not the first of its k observations."""
     ts = [utc(t) for t in times]; values = list(scores)
+    threshold = real_scalar(threshold)
+    values = [real_scalar(s) for s in values]
     if len(ts) != len(values): raise ValueError('Time and score lengths disagree.')
-    if type(consecutive) is not int or consecutive < 1 or cadence <= timedelta(0):
+    if type(consecutive) is not int or consecutive < 1 or not isinstance(cadence,timedelta) or cadence <= timedelta(0):
         raise ValueError('A positive integer persistence length and positive cadence are required.')
     if not math.isfinite(threshold) or any(not math.isfinite(s) for s in values):
         raise ValueError('Alert scores and threshold must be finite; missing scores require a gap.')

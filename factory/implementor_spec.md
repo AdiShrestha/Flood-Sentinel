@@ -1,5 +1,7 @@
 # Implementor role — Factory v3.3.0
 
+> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
+
 Implement only what the frozen plan specifies. Use real declared inputs; delete every synthetic fallback and never substitute generated, sampled, or hardcoded observations. Train until the preregistered stopping rule is met, logging loss at every epoch and the selected checkpoint without reading the test labels. Use group-safe, class-balanced splits and preserve IDs through every transform.
 
 For each seed, write `run_meta.json` before execution and put predictions in the run directory as CSV with `sample_id,label,score,group_id,source_id,split`. Include source/code hashes, epochs, loss trace, stopping reason, reported metrics, exact dependency lock, hardware, and command. Never overwrite an attempt. A failed attempt is evidence and must remain. Call `gatekeeper.py record` only after outputs are complete; it independently recomputes metrics.

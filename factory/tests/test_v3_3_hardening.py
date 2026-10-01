@@ -297,11 +297,10 @@ class ReceiptSigningTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.key_dir = Path(self.tmp.name)
-        os.environ['FACTORY_SUPERVISOR_KEY'] = str(self.key_dir / 'test.key')
+        self.enterContext(patch.dict(os.environ,{'FACTORY_SUPERVISOR_KEY':str(self.key_dir / 'test.key')}))
         init_supervisor_keys(force=True)
 
     def tearDown(self):
-        del os.environ['FACTORY_SUPERVISOR_KEY']
         self.tmp.cleanup()
 
     def test_sign_and_verify(self):
@@ -382,7 +381,7 @@ class RecursivePlausibilityTests(unittest.TestCase):
         obj = {
             'derived_analyses': {
                 'sensitivity': {
-                    'results': [{'metric': 'accuracy', 'value': 0.3, 'verdict': 'SUPPORTED'}]
+                    'results': [{'metric': 'auroc', 'value': 0.3, 'verdict': 'SUPPORTED'}]
                 }
             }
         }
@@ -406,15 +405,15 @@ class AssuranceLevelTests(unittest.TestCase):
         out = {'errors': [], 'checks_executed': ['X'], 'computed_runs': {}}
         self.assertEqual(g._compute_assurance_level(out), 'STRUCTURALLY_VALIDATED')
 
-    def test_sealed_evaluation_with_receipts(self):
+    def test_result_path_cannot_attest_sealed_evaluation(self):
         out = {'errors': [], 'checks_executed': ['X'],
                'computed_runs': {'exp1': {'result_path': 'some/path'}}}
-        self.assertEqual(g._compute_assurance_level(out), 'SEALED_EVALUATION_ATTESTED')
+        self.assertEqual(g._compute_assurance_level(out), 'STRUCTURALLY_VALIDATED')
 
-    def test_review_promotes_assurance(self):
+    def test_boolean_review_cannot_establish_independence(self):
         self.assertEqual(
             g._assurance_with_review('SEALED_EVALUATION_ATTESTED', True),
-            'INDEPENDENT_REVIEW_COMPLETE'
+            'STRUCTURALLY_VALIDATED'
         )
 
     def test_blocked_stays_blocked_with_review(self):
@@ -573,25 +572,23 @@ class AttackTests(unittest.TestCase):
     # ATK-007
     def test_receipt_forgery_rejected(self):
         with tempfile.TemporaryDirectory() as td:
-            os.environ['FACTORY_SUPERVISOR_KEY'] = str(Path(td) / 'test.key')
-            init_supervisor_keys(force=True)
-            receipt = sign_receipt({'experiment_id': 'test', 'epoch': 1})
-            receipt['experiment_id'] = 'forged'
-            with self.assertRaises(EvidenceError):
-                verify_receipt_signature(receipt)
-            del os.environ['FACTORY_SUPERVISOR_KEY']
+            with patch.dict(os.environ,{'FACTORY_SUPERVISOR_KEY':str(Path(td)/'test.key')}):
+                init_supervisor_keys(force=True)
+                receipt = sign_receipt({'experiment_id': 'test', 'epoch': 1})
+                receipt['experiment_id'] = 'forged'
+                with self.assertRaises(EvidenceError):
+                    verify_receipt_signature(receipt)
 
     # ATK-008
     def test_receipt_replay_rejected(self):
         with tempfile.TemporaryDirectory() as td:
-            os.environ['FACTORY_SUPERVISOR_KEY'] = str(Path(td) / 'test.key')
-            init_supervisor_keys(force=True)
-            signed = sign_receipt({'experiment_id': 'exp_a', 'epoch': 1})
-            replayed = dict(signed)
-            replayed['experiment_id'] = 'exp_b'
-            with self.assertRaises(EvidenceError):
-                verify_receipt_signature(replayed)
-            del os.environ['FACTORY_SUPERVISOR_KEY']
+            with patch.dict(os.environ,{'FACTORY_SUPERVISOR_KEY':str(Path(td)/'test.key')}):
+                init_supervisor_keys(force=True)
+                signed = sign_receipt({'experiment_id': 'exp_a', 'epoch': 1})
+                replayed = dict(signed)
+                replayed['experiment_id'] = 'exp_b'
+                with self.assertRaises(EvidenceError):
+                    verify_receipt_signature(replayed)
 
     # ATK-009
     def test_failed_attempt_deletion_detected(self):
@@ -857,4 +854,3 @@ class StandaloneVerifierTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

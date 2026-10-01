@@ -7,6 +7,24 @@ from typing import Optional, Tuple
 import torch
 from torch import nn
 from torch.nn import functional as F
+from .validation import positive_int, real_scalar
+
+
+def _dropout(value):
+    if not 0 <= real_scalar(value) < 1: raise ValueError('Dropout must lie in [0,1).')
+
+
+def _tensor(x, channels, *, channel_first=False):
+    axis = 1 if channel_first else 2
+    if not isinstance(x, torch.Tensor) or x.ndim != 3 or min(x.shape) < 1 or x.shape[axis] != channels:
+        raise ValueError('Nonempty aligned three-dimensional neural input required.')
+    if not x.is_floating_point() or not torch.isfinite(x).all():
+        raise ValueError('Finite floating point neural inputs required.')
+
+
+def _finite_output(x):
+    if not torch.isfinite(x).all(): raise ValueError('Nonfinite neural output; investigate inputs, weights and arithmetic.')
+    return x
 
 class CausalConv1d(nn.Module):
     """1D Convolution with explicit left-only padding to prevent forward temporal leakage (INV-020)."""
@@ -21,6 +39,9 @@ class CausalConv1d(nn.Module):
         bias: bool = True
     ) -> None:
         super().__init__()
+        for v in (in_channels, out_channels, kernel_size, dilation, groups): positive_int(v)
+        if type(bias) is not bool or in_channels % groups or out_channels % groups:
+            raise ValueError('Invalid convolution groups or bias flag.')
         self.kernel_size = kernel_size
         self.dilation = dilation
         self.padding = (kernel_size - 1) * dilation
@@ -37,9 +58,10 @@ class CausalConv1d(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x shape: (B, C, T)
         # Pad left side only with (self.padding, 0)
+        _tensor(x, self.conv.in_channels, channel_first=True)
         if self.padding > 0:
             x = F.pad(x, (self.padding, 0))
-        return self.conv(x)
+        return _finite_output(self.conv(x))
 
 class DilatedCausalTCNBlock(nn.Module):
     """Residual Dilated Causal TCN block with LayerNorm and GELU."""
@@ -52,6 +74,8 @@ class DilatedCausalTCNBlock(nn.Module):
         dropout: float = 0.1
     ) -> None:
         super().__init__()
+        positive_int(channels, minimum=2)
+        _dropout(dropout)
         self.conv1 = CausalConv1d(channels, channels, kernel_size, dilation=dilation)
         self.norm1 = nn.LayerNorm(channels)
         self.conv2 = CausalConv1d(channels, channels, kernel_size, dilation=dilation)
@@ -61,6 +85,7 @@ class DilatedCausalTCNBlock(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x shape: (B, T, C)
+        _tensor(x, self.conv1.conv.in_channels)
         residual = x
         
         # Conv 1
@@ -77,13 +102,15 @@ class DilatedCausalTCNBlock(nn.Module):
         h = self.act(h)
         h = self.dropout(h)
 
-        return residual + h
+        return _finite_output(residual + h)
 
 class CausalMultiHeadAttention(nn.Module):
-    """Multi-head self-attention with strict lower-triangular causal masking (INV-020)."""
+    """Self-attention with an inclusive causal mask: each step can attend to itself and its past."""
 
     def __init__(self, d_model: int, n_heads: int = 4, dropout: float = 0.1) -> None:
         super().__init__()
+        positive_int(d_model)
+        _dropout(dropout)
         if type(n_heads) is not int or n_heads < 1 or d_model < 1 or d_model % n_heads:
             raise ValueError("d_model must be positive and divisible by a positive n_heads")
         self.d_model = d_model
@@ -99,6 +126,7 @@ class CausalMultiHeadAttention(nn.Module):
 
     def forward(self, x: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
         # x shape: (B, T, D)
+        _tensor(x, self.d_model)
         B, T, D = x.shape
 
         q = self.q_proj(x).view(B, T, self.n_heads, self.d_head).transpose(1, 2)  # (B, H, T, d_head)
@@ -113,7 +141,7 @@ class CausalMultiHeadAttention(nn.Module):
         scores = scores.masked_fill(~causal_mask.unsqueeze(0).unsqueeze(0), float("-inf"))
 
         if mask is not None:
-            if mask.dtype != torch.bool or mask.shape != (B, T):
+            if mask.dtype != torch.bool or mask.shape != (B, T) or mask.device != x.device:
                 raise ValueError("Key validity mask must be boolean with shape (batch, time)")
             # Additional external key padding mask if provided
             scores = scores.masked_fill(~mask.unsqueeze(1).unsqueeze(2), float("-inf"))
@@ -125,13 +153,16 @@ class CausalMultiHeadAttention(nn.Module):
 
         out = torch.matmul(attn, v)  # (B, H, T, d_head)
         out = out.transpose(1, 2).contiguous().view(B, T, D)
-        return self.out_proj(out)
+        return _finite_output(self.out_proj(out))
 
 class CausalTransformerBlock(nn.Module):
     """Pre-LayerNorm Causal Transformer block with MLP."""
 
     def __init__(self, d_model: int, n_heads: int = 4, d_ff: int = 256, dropout: float = 0.1) -> None:
         super().__init__()
+        positive_int(d_model, minimum=2)
+        positive_int(d_ff)
+        _dropout(dropout)
         self.norm1 = nn.LayerNorm(d_model)
         self.attn = CausalMultiHeadAttention(d_model, n_heads=n_heads, dropout=dropout)
         self.norm2 = nn.LayerNorm(d_model)
@@ -150,7 +181,7 @@ class CausalTransformerBlock(nn.Module):
         # Pre-LN MLP
         h = self.mlp(self.norm2(x))
         x = x + h
-        return x
+        return _finite_output(x)
 
 class CausalHydroEncoder(nn.Module):
     """C-ENCODER: Hybrid Dilated Causal TCN + Transformer Encoder."""
@@ -168,8 +199,12 @@ class CausalHydroEncoder(nn.Module):
         super().__init__()
         if any(type(v) is not int or v < 0 for v in (tcn_layers, transformer_layers)):
             raise ValueError("Layer counts must be nonnegative integers")
-        if type(in_channels) is not int or in_channels < 1 or type(d_model) is not int or d_model < 1:
-            raise ValueError("Channel dimensions must be positive integers")
+        positive_int(in_channels)
+        positive_int(d_model, minimum=2)
+        positive_int(n_heads)
+        positive_int(d_ff)
+        _dropout(dropout)
+        if d_model % n_heads: raise ValueError('d_model must be divisible by n_heads.')
         self.in_channels = in_channels
         self.d_model = d_model
 
@@ -192,10 +227,7 @@ class CausalHydroEncoder(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x shape: (B, T, C_in)
-        if x.ndim != 3 or x.shape[-1] != self.in_channels or x.shape[1] < 1:
-            raise ValueError("Expected nonempty (batch, time, in_channels) input")
-        if not x.is_floating_point() or not torch.isfinite(x).all():
-            raise ValueError("Neural inputs must be finite floating point values with explicit missingness")
+        _tensor(x, self.in_channels)
         h = self.input_proj(x)  # (B, T, D)
 
         # Apply TCN blocks
@@ -206,13 +238,15 @@ class CausalHydroEncoder(nn.Module):
         for block in self.transformer_blocks:
             h = block(h)
 
-        return self.final_norm(h)  # (B, T, D)
+        return _finite_output(self.final_norm(h))  # (B, T, D)
 
 class MaskedReconstructionHead(nn.Module):
     """Self-supervised masked reconstruction projection head."""
 
     def __init__(self, d_model: int = 64, out_channels: int = 6) -> None:
         super().__init__()
+        positive_int(d_model)
+        positive_int(out_channels)
         self.proj = nn.Sequential(
             nn.Linear(d_model, d_model),
             nn.GELU(),
@@ -221,4 +255,5 @@ class MaskedReconstructionHead(nn.Module):
 
     def forward(self, z: torch.Tensor) -> torch.Tensor:
         # z shape: (B, T, D) -> x_hat shape: (B, T, C_out)
-        return self.proj(z)
+        _tensor(z, self.proj[0].in_features)
+        return _finite_output(self.proj(z))

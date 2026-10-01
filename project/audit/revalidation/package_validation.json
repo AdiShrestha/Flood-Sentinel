@@ -1,0 +1,24 @@
+{
+  "wheel": "flood_sentinel_engine-0.2.0-py3-none-any.whl",
+  "sha256": "10ab1fcddf3fd3f4cf80020d523bd931e0507c523d3638684c675a4484006f06",
+  "source_modules": 10,
+  "inherited_notice_matches": true,
+  "command": [
+    "/Library/Frameworks/Python.framework/Versions/3.12/bin/python3",
+    "-m",
+    "pip",
+    "wheel",
+    ".",
+    "--no-deps",
+    "--no-build-isolation",
+    "--wheel-dir",
+    "/private/tmp/flood-engine-revalidation-wheel"
+  ],
+  "exit_status": 0,
+  "log": "package_build.log",
+  "environment": {
+    "python": "3.12.8 (v3.12.8:2dc476bcb91, Dec  3 2024, 14:43:19) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "platform": "macOS-27.0-arm64-arm-64bit"
+  },
+  "verification": "all engine source and notice bytes match; no dependency downloads"
+}

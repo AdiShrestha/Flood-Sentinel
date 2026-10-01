@@ -1,0 +1,5 @@
+Historical evidence-finalization failure retained from tool output.
+Command: python3 /private/tmp/flood_finalize_evidence.py
+Script exit status: 1
+AssertionError: factory/engine/contract.py
+The earlier engine_run02 snapshot included factory code changed subsequently; the check stopped before writing validation.json. A fresh engine_run03 record now binds the current complete code input set.

@@ -1,0 +1,38 @@
+project/audit/revalidation/external_flood.md:38: trailing whitespace.
++**Key points:** 
+project/audit/revalidation/external_flood.md:102: trailing whitespace.
++- **Numerical correctness:** Run a simple TCN or LSTM on dummy data (e.g. sine waves) to verify the model runs under MPS, produces consistent results across runs (spot-check determinism), and to measure throughput. Compare single-thread CPU vs MPS GPU speeds for a moderate batch (e.g. batch=16, sequence=30, hidden=64).  
+project/audit/revalidation/external_flood.md:103: trailing whitespace.
++- **Memory tolerance:** Gradually increase model size (stack depth, hidden dims) and batch size until memory (16 GB) is near full. Record the maximum batch/hidden we can handle without running out. Also test the data pipeline (can the dataset loader stream preprocessed data without copying too much?).  
+project/audit/revalidation/external_flood.md:104: trailing whitespace.
++- **Streaming vs batch:** If the factory code or data pipeline does sliding windows, ensure it doesn’t materialize all windows at once. Plan for using lazy or chunked loading.  
+project/audit/revalidation/external_flood.md:105: trailing whitespace.
++- **Attention memory:** Attention layers scale O(seq²) memory. If seq length=30 is OK, what about 100? Likely we must keep windows short (≤50) or avoid full attention.  
+project/audit/revalidation/external_flood.md:106: trailing whitespace.
++- **Optimizer state:** Check that MPS supports chosen optimizers (e.g. Adam). Some PyTorch ops may be CPU-only on MPS; fallbacks are slower.  
+project/audit/revalidation/external_flood.md:107: trailing whitespace.
++- **Batch vs update:** Smaller MPS batches may reduce GPU utilization, so test how batch size affects training speed.  
+project/audit/revalidation/external_flood.md:127: trailing whitespace.
++- **Dependency loading:** Does the factory isolate the Python environment (e.g. using `venv` or container)? If not, variations in library versions can affect results. We should record exact library versions (PyTorch, numpy, etc). 
+project/audit/revalidation/external_flood.md:130: trailing whitespace.
++- **Freeze/amendment:** The factory might allow “freezing” a successful experiment (frozen results), but we should avoid any practice that alters code to pass tests. 
+project/audit/revalidation/external_flood.md:131: trailing whitespace.
++- **Provenance:** Ensure the actual code used (especially if local edits are made) matches the commit SHA. The code loaded for model training must be from 4e9e4be5, as requested. If any code is local-modified, record those diffs. 
+project/audit/revalidation/external_flood.md:144: trailing whitespace.
++**Potential reviewer concerns:** They will likely flag any lack of real data validation, unclear methodology (especially the reconstruction approach for forecasting), and any "machine learning hype". We must be careful not to claim “novelty” beyond combining known modules. The novelty is in rigorous evaluation and insight (including negative results). They will also look for reproducibility: commit hashes (4e9e4be… as given), data citations (gridMET, SNODAS, CAMELS), and complete author disclosure (the repository indicates authorship by Adi Shrestha; any changes must be credited). 
+project/audit/revalidation/external_flood.md:186: trailing whitespace.
++- Abatzoglou J. (2013). *Gridded Surface Meteorological Data for Ecological Applications* (gridMET). Climatology Lab. [Dataset description and documentation].  
+project/audit/revalidation/external_flood.md:187: trailing whitespace.
++- Addor N., Newman A. J., Mizukami N., Clark M. P. (2017). *The CAMELS dataset: catchment attributes and meteorology for large-sample studies.* Hydrology and Earth System Sciences 21, 5293–5313. DOI:10.5194/hess-21-5293-2017.  
+project/audit/revalidation/external_flood.md:188: trailing whitespace.
++- Blodgett D. L. (2019). *National Water Model V1.2 Retrospective and Operational Model Run Archive for Selected NWIS Gage Locations.* USGS Data Release. DOI:10.5066/P9ZRX948.  
+project/audit/revalidation/external_flood.md:189: trailing whitespace.
++- Kratzert F., Klotz D., Shalev G., Klambauer G., Hochreiter S., Nearing G. (2019). *Towards learning universal, regional, and local hydrological behaviors via machine learning applied to large-sample datasets.* HESS 23, 5089–5110. DOI:10.5194/hess-23-5089-2019.  
+project/audit/revalidation/external_flood.md:190: trailing whitespace.
++- National Operational Hydrologic Remote Sensing Center (2004). *Snow Data Assimilation System (SNODAS) Data Products.* NOAA/NSIDC G02158 (Version 1). DOI:10.7265/N5TB14TC. (Accessed 30 Sep 2026)  
+project/audit/revalidation/external_flood.md:191: trailing whitespace.
++- NOAA/NWS National Water Prediction Service (2024). *River gauge observations/forecasts and flood outlooks.* Drought.gov profile.  
+project/audit/revalidation/external_flood.md:192: trailing whitespace.
++- Xu W., et al. (2025). *Probabilistic Diffusion Models Advance Extreme Flood Forecasting.* Geophys. Res. Lett. (in press). DOI (online ahead of print).  
+project/audit/revalidation/external_flood.md:193: trailing whitespace.
++- Others as needed (e.g. unit references for flood thresholds).  

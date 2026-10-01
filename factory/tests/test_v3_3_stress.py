@@ -2,8 +2,8 @@
 
 These tests go BEYOND the attack registry. They attempt to find gaps,
 race conditions, edge cases, and novel bypasses that the v3.3.0
-hardening might have missed. Every test that passes means the factory
-is secure; every failure is a real loophole.
+hardening might have missed. Passing establishes each tested property only;
+failures can arise from defects, test assumptions or environment restrictions.
 """
 import contextlib
 import hashlib
@@ -292,11 +292,10 @@ class ReceiptAttackStressTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.key_dir = Path(self.tmp.name)
-        os.environ['FACTORY_SUPERVISOR_KEY'] = str(self.key_dir / 'test.key')
+        self.enterContext(patch.dict(os.environ,{'FACTORY_SUPERVISOR_KEY':str(self.key_dir / 'test.key')}))
         init_supervisor_keys(force=True)
 
     def tearDown(self):
-        del os.environ['FACTORY_SUPERVISOR_KEY']
         self.tmp.cleanup()
 
     def test_empty_signature_rejected(self):

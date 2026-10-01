@@ -1,0 +1,74 @@
+{
+  "scope": "engineering fixtures only; no observational performance, research freeze or independent scientific certification",
+  "checked_at": "2026-10-01T01:27:06.564143+00:00",
+  "engine": {
+    "version": "0.2.0",
+    "tests_passed": 47,
+    "record": "engine_run03.json",
+    "log": "engine_run03.log",
+    "record_sha256": "4bad02e4854aacb5e4e80a953acf85f76101b67cb5953561265a45689092f674"
+  },
+  "factory": {
+    "schema_version": "3.3.0",
+    "local_patch": "3.3.0+flood.1",
+    "tests_passed": 291,
+    "record": "factory_run04.json",
+    "log": "factory_run04.log",
+    "socket_fixture": "executed outside sandbox",
+    "record_sha256": "6301dfbeae41c05e036d5cd44a4b24589a15a8880682540dbb4c0c08d02fd0ab"
+  },
+  "retained_attempts": [
+    {
+      "command": "python /private/tmp/flood_before.py",
+      "exit_status": 127,
+      "reason": "python alias absent; successful reproduction used python3"
+    },
+    {
+      "log": "engine_attempt1.log",
+      "tests": "45 passed",
+      "wrapper_exit_status": 1,
+      "reason": "zsh read-only status variable; interpreter passed"
+    },
+    {
+      "log": "factory_attempt1.log",
+      "tests": "286 run; 4 failures, 1 socket permission error",
+      "wrapper_exit_status": 1
+    },
+    {
+      "record": "factory_run01.json",
+      "exit_status": 1,
+      "tests": "285 passed; socket fixture denied"
+    },
+    {
+      "record": "engine_run01.json",
+      "exit_status": 0,
+      "tests_passed": 45
+    },
+    {
+      "record": "factory_run02.json",
+      "exit_status": 0,
+      "tests_passed": 286
+    },
+    {
+      "record": "engine_run02.json",
+      "exit_status": 0,
+      "tests_passed": 47,
+      "reason": "earlier factory code snapshot; superseded for current complete-input binding"
+    },
+    {
+      "record": "factory_run03.json",
+      "exit_status": 0,
+      "tests_passed": 288
+    },
+    {
+      "command": "python3 /private/tmp/flood_finalize_evidence.py",
+      "script_exit_status": 1,
+      "reason": "current code did not match earlier engine_run02 complete snapshot: factory/engine/contract.py; fresh bound record obtained",
+      "log": "finalization_attempt1.log"
+    }
+  ],
+  "no_study_cohort_created": true,
+  "no_research_epoch_or_certificate_created": true,
+  "personal_signing_keys_accessed": false,
+  "current_test_inputs_and_log_hashes_verified": true
+}

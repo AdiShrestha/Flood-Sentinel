@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 from .metrics import EvidenceError
+from .io import inside
 from .schema import (ValidationError, expect_dict, expect_enum, expect_float,
                      expect_int, expect_str)
 
@@ -67,13 +68,14 @@ def validate_contract(contract, root, frozen_code_paths):
         raise EvidenceError(
             f'entrypoint {entrypoint} must be inside a declared frozen code_path'
         )
-    ep_path = root / entrypoint
+    ep_path = inside(root,entrypoint)
     if not ep_path.is_file():
         raise EvidenceError(f'entrypoint not found: {entrypoint}')
     if ep_path.is_symlink():
         raise EvidenceError(f'entrypoint is a symlink: {entrypoint}')
 
-    # arguments — only well-known placeholders
+    # Arguments are literal strings or the registered placeholders, resolved
+    # positionally after the frozen script; no interpreter flags are supplied.
     args = contract.get('arguments', {})
     expect_dict(args, 'execution_contract.arguments')
     allowed_arg_values = {'supervisor_bound', 'plan_seed', 'plan_id'}
@@ -151,13 +153,13 @@ def _build_preexec(contract):
         if mem:
             try:
                 resource.setrlimit(resource.RLIMIT_AS, (mem, mem))
-            except (ValueError, OSError):
-                pass  # RLIMIT_AS not available on all platforms
+            except (ValueError, OSError) as ex:
+                raise EvidenceError('requested memory limit could not be applied') from ex
         if nproc:
             try:
                 resource.setrlimit(resource.RLIMIT_NPROC, (nproc, nproc))
-            except (ValueError, OSError):
-                pass  # RLIMIT_NPROC not available on all platforms
+            except (ValueError, OSError) as ex:
+                raise EvidenceError('requested process limit could not be applied') from ex
 
     return _set_limits
 
