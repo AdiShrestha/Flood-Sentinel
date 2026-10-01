@@ -104,7 +104,7 @@ def test_all_probability_metrics_match_factory_independent_oracle(p):
     spec = importlib.util.spec_from_file_location('factory_reference_metrics',path)
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     expected = module.binary_metrics([0,0,1,1],p,.5)
-    assert probability_metrics([0,0,1,1],p,threshold=.5) == pytest.approx(expected,abs=1e-12)
+    assert probability_metrics([0,0,1,1],p,threshold=.5,log_epsilon=1e-15) == pytest.approx(expected,abs=1e-12)
 
 
 def test_holm_and_explicit_cluster_interval():

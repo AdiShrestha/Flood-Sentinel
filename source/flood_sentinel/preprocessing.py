@@ -1,10 +1,11 @@
 """Raw-observation scaling; missing values are distinct from observed zero."""
 from dataclasses import dataclass
 import numpy as np
+from .validation import real_array, frozen_array
 
 
 def observations(values):
-    array = np.asarray(values, dtype=np.float64)
+    array = real_array(values, allow_nan=True)
     if array.ndim != 2 or not array.size or np.isinf(array).any():
         raise ValueError('Expected a nonempty (observations, channels) matrix; NaN is missing, infinity invalid.')
     return array
@@ -16,6 +17,14 @@ class Normalizer:
     scale: np.ndarray
     median: np.ndarray
     count: np.ndarray
+
+    def __post_init__(self):
+        for name in ('mean', 'scale', 'median', 'count'):
+            object.__setattr__(self, name, frozen_array(getattr(self, name), integer=name == 'count'))
+        if self.mean.ndim != 1 or not self.mean.size or any(getattr(self, n).shape != self.mean.shape for n in ('scale','median','count')):
+            raise ValueError('Aligned nonempty fitted channel vectors required.')
+        if (self.scale <= 0).any() or (self.count < 2).any():
+            raise ValueError('Positive scales and >=2 observations per channel required.')
 
     @classmethod
     def fit(cls, values, *, split: str):
