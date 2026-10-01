@@ -1,10 +1,11 @@
 """Defined anomaly operators. They are raw scores, not calibrated probabilities."""
 from dataclasses import dataclass
 import numpy as np
+from .validation import real_array, real_scalar, positive_int, frozen_array
 
 
 def finite_matrix(values):
-    x = np.asarray(values, dtype=np.float64)
+    x = real_array(values)
     if x.ndim != 2 or not x.size or not np.isfinite(x).all():
         raise ValueError('A nonempty finite (observations, dimensions) matrix is required.')
     return x
@@ -16,10 +17,15 @@ class RobustCalibration:
     iqr: float
     count: int
 
+    def __post_init__(self):
+        real_scalar(self.median)
+        if real_scalar(self.iqr) <= 0: raise ValueError('Positive calibration IQR required.')
+        positive_int(self.count, minimum=2)
+
     @classmethod
     def fit(cls, scores, *, split: str, min_observations: int):
         if split not in {'train', 'calibration'}: raise ValueError('Test/evaluation scores cannot fit calibration.')
-        x = np.asarray(scores, dtype=float)
+        x = real_array(scores)
         if type(min_observations) is not int or min_observations < 2:
             raise ValueError('Preregister a minimum calibration count >=2; this floor is not a precision guarantee.')
         if x.ndim != 1 or len(x) < min_observations or not np.isfinite(x).all():
@@ -32,7 +38,7 @@ class RobustCalibration:
         return cls(median, float(width), len(x))
 
     def transform(self, scores):
-        x = np.asarray(scores, dtype=float)
+        x = real_array(scores)
         if not np.isfinite(x).all() or not np.isfinite(self.iqr) or not np.isfinite(self.median) or self.iqr <= 0:
             raise ValueError('Invalid score or calibration scale.')
         with np.errstate(over='ignore', invalid='ignore'):
@@ -48,10 +54,22 @@ class LatentReference:
     shrinkage: float
     count: int
 
+    def __post_init__(self):
+        object.__setattr__(self, 'mean', frozen_array(self.mean))
+        object.__setattr__(self, 'cholesky', frozen_array(self.cholesky))
+        positive_int(self.count, minimum=2)
+        if not 0 < real_scalar(self.shrinkage) <= 1: raise ValueError('Invalid shrinkage.')
+        d = self.mean.size
+        if self.mean.ndim != 1 or not d or self.cholesky.shape != (d,d):
+            raise ValueError('Aligned nonempty mean and Cholesky factor required.')
+        if not np.array_equal(self.cholesky, np.tril(self.cholesky)) or (np.diag(self.cholesky) <= 0).any():
+            raise ValueError('Lower-triangular Cholesky factor with positive diagonal required.')
+
     @classmethod
     def fit(cls, embeddings, *, split: str, shrinkage: float):
         if split not in {'train', 'calibration'}: raise ValueError('Latent reference cannot fit evaluation embeddings.')
         x = finite_matrix(embeddings)
+        shrinkage = real_scalar(shrinkage)
         if len(x) < 2 or not 0 < shrinkage <= 1: raise ValueError('Need >=2 baseline rows and preregistered shrinkage in (0,1].')
         d = x.shape[1]
         with np.errstate(over='ignore', invalid='ignore'):

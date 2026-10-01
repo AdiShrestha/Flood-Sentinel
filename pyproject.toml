@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "flood-sentinel-engine"
-version = "0.1.0"
+version = "0.2.0"
 description = "Audited primitives for prospective flood-warning research; no validated performance claims"
 requires-python = ">=3.12"
 dependencies = ["numpy", "torch"]

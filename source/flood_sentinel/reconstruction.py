@@ -20,7 +20,7 @@ class MaskedHydroModel(nn.Module):
     def forward(self, values, visible):
         if values.ndim != 3 or values.shape[-1] != self.physical_channels:
             raise ValueError('Expected (batch, time, physical_channels).')
-        if visible.shape != values.shape or visible.dtype != torch.bool:
+        if visible.shape != values.shape or visible.dtype != torch.bool or visible.device != values.device:
             raise ValueError('Visible-observation mask must be boolean and aligned.')
         if not values.is_floating_point() or not torch.isfinite(values).all():
             raise ValueError('Provide finite normalized values and an explicit observed mask.')
@@ -29,13 +29,31 @@ class MaskedHydroModel(nn.Module):
         z = self.encoder(inputs)
         return z, self.head(z)
 
+    def masked_loss(self, values, observed, hidden):
+        """Bind training masks to the actual encoder input and the observed-only loss.
+
+        Standalone loss arithmetic cannot establish that its targets were withheld.
+        Use this method for reconstruction training; save the real mask policy and
+        training trace separately. This objective does not train a future flood target.
+        """
+        if observed.shape != values.shape or hidden.shape != values.shape or observed.dtype != torch.bool or hidden.dtype != torch.bool:
+            raise ValueError('Boolean aligned training masks required.')
+        if observed.device != values.device or hidden.device != values.device:
+            raise ValueError('Training masks and values must share a device.')
+        if (hidden & ~observed).any(): raise ValueError('Training must not select missing values as targets.')
+        if not hidden.any(): raise ValueError('No withheld training targets.')
+        _, prediction = self(values, observed & ~hidden)
+        return masked_observed_mse(prediction, values.detach(), hidden, observed)
+
 
 def masked_observed_mse(prediction, target, hidden, observed):
-    """Mean squared error over genuinely observed withheld targets only."""
+    """Observed-only MSE arithmetic; use model.masked_loss to bind input withholding."""
     if not (prediction.shape == target.shape == hidden.shape == observed.shape):
         raise ValueError('Loss tensors must be aligned.')
     if hidden.dtype != torch.bool or observed.dtype != torch.bool:
         raise ValueError('Loss masks must be boolean.')
+    if not prediction.is_floating_point() or not target.is_floating_point() or any(t.device != prediction.device for t in (target,hidden,observed)):
+        raise ValueError('Floating targets/predictions and a common device required.')
     valid = hidden & observed
     if not valid.any(): raise ValueError('No observed withheld targets; do not produce a zero loss.')
     if not torch.isfinite(prediction[valid]).all() or not torch.isfinite(target[valid]).all():
