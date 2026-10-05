@@ -1,150 +1,1278 @@
 {
-  "analyses": {},
-  "claims": [
+  "schema_version": 3,
+  "factory_version": "3.3.0",
+  "project_id": "flood-sentinel-research-rebuild",
+  "profile": "binary_classification",
+  "intent": "fixture",
+  "data_origin": "observational",
+  "population": "Candidate USGS Potomac and Delaware River gauges for prototype feasibility.",
+  "license": "Path-specific factory software license and public-domain USGS/NOAA candidate records.",
+  "independence_rationale": "Basin-separated holdouts with 5-seed fixed test corpus comparison.",
+  "sampling_rationale": "24h causal issues with 24h lookback and purge windows avoiding episode overlap.",
+  "cohort": "data/cohort.csv",
+  "source_records": "data/source_records.csv",
+  "methodology": "project/methodology.md",
+  "dependency_lock": "source/requirements.lock",
+  "frozen_paths": [
+    "source",
+    "data",
+    "project/methodology.md"
+  ],
+  "release_files": [
+    "project/methodology.md"
+  ],
+  "policy": {
+    "min_test_groups": 2,
+    "min_class_count": 2,
+    "min_seeds": 5,
+    "metric_tolerance": 1e-06
+  },
+  "experiments": [
     {
-      "comparison_id": "cmp_causal_vs_persistence",
-      "estimand": "Difference in test average precision",
-      "experiment_ids": [
-        "exp_causal_forecasting_head_s42",
-        "exp_causal_forecasting_head_s100",
-        "exp_causal_forecasting_head_s2026",
-        "exp_causal_forecasting_head_s31415",
-        "exp_causal_forecasting_head_s99999",
-        "exp_persistence_s42",
-        "exp_persistence_s100",
-        "exp_persistence_s2026",
-        "exp_persistence_s31415",
-        "exp_persistence_s99999"
+      "id": "exp_persistence_s42",
+      "model": "persistence",
+      "seed": 42,
+      "role": "baseline",
+      "code_paths": [
+        "source"
       ],
-      "id": "claim_cmp_causal_vs_persistence",
-      "inference_scope": "fixed_test_corpus",
-      "kind": "comparative",
-      "population": "fixed_test_corpus",
-      "scope": "Candidate USGS Potomac and Delaware River gauges",
-      "text": "Point estimate and paired seed difference between causal_forecasting_head and persistence on fixed test corpus."
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "persistence",
+        "seed": 42
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "trivial",
+      "reference": "Latest stage velocity persistence forward projection"
     },
     {
-      "comparison_id": "cmp_causal_vs_ea_lstm",
-      "estimand": "Difference in test average precision",
-      "experiment_ids": [
-        "exp_causal_forecasting_head_s42",
-        "exp_causal_forecasting_head_s100",
-        "exp_causal_forecasting_head_s2026",
-        "exp_causal_forecasting_head_s31415",
-        "exp_causal_forecasting_head_s99999",
-        "exp_ea_lstm_s42",
-        "exp_ea_lstm_s100",
-        "exp_ea_lstm_s2026",
-        "exp_ea_lstm_s31415",
-        "exp_ea_lstm_s99999"
+      "id": "exp_persistence_s100",
+      "model": "persistence",
+      "seed": 100,
+      "role": "baseline",
+      "code_paths": [
+        "source"
       ],
-      "id": "claim_cmp_causal_vs_ea_lstm",
-      "inference_scope": "fixed_test_corpus",
-      "kind": "comparative",
-      "population": "fixed_test_corpus",
-      "scope": "Candidate USGS Potomac and Delaware River gauges",
-      "text": "Point estimate and paired seed difference between causal_forecasting_head and ea_lstm on fixed test corpus."
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "persistence",
+        "seed": 100
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "trivial",
+      "reference": "Latest stage velocity persistence forward projection"
     },
     {
-      "comparison_id": "cmp_causal_vs_tabular_ridge",
-      "estimand": "Difference in test average precision",
-      "experiment_ids": [
-        "exp_causal_forecasting_head_s42",
-        "exp_causal_forecasting_head_s100",
-        "exp_causal_forecasting_head_s2026",
-        "exp_causal_forecasting_head_s31415",
-        "exp_causal_forecasting_head_s99999",
-        "exp_tabular_ridge_s42",
-        "exp_tabular_ridge_s100",
-        "exp_tabular_ridge_s2026",
-        "exp_tabular_ridge_s31415",
-        "exp_tabular_ridge_s99999"
+      "id": "exp_persistence_s2026",
+      "model": "persistence",
+      "seed": 2026,
+      "role": "baseline",
+      "code_paths": [
+        "source"
       ],
-      "id": "claim_cmp_causal_vs_tabular_ridge",
-      "inference_scope": "fixed_test_corpus",
-      "kind": "comparative",
-      "population": "fixed_test_corpus",
-      "scope": "Candidate USGS Potomac and Delaware River gauges",
-      "text": "Point estimate and paired seed difference between causal_forecasting_head and tabular_ridge on fixed test corpus."
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "persistence",
+        "seed": 2026
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "trivial",
+      "reference": "Latest stage velocity persistence forward projection"
     },
     {
-      "comparison_id": "cmp_causal_vs_ewma_cusum",
-      "estimand": "Difference in test average precision",
-      "experiment_ids": [
-        "exp_causal_forecasting_head_s42",
-        "exp_causal_forecasting_head_s100",
-        "exp_causal_forecasting_head_s2026",
-        "exp_causal_forecasting_head_s31415",
-        "exp_causal_forecasting_head_s99999",
-        "exp_ewma_cusum_s42",
-        "exp_ewma_cusum_s100",
-        "exp_ewma_cusum_s2026",
-        "exp_ewma_cusum_s31415",
-        "exp_ewma_cusum_s99999"
+      "id": "exp_persistence_s31415",
+      "model": "persistence",
+      "seed": 31415,
+      "role": "baseline",
+      "code_paths": [
+        "source"
       ],
-      "id": "claim_cmp_causal_vs_ewma_cusum",
-      "inference_scope": "fixed_test_corpus",
-      "kind": "comparative",
-      "population": "fixed_test_corpus",
-      "scope": "Candidate USGS Potomac and Delaware River gauges",
-      "text": "Point estimate and paired seed difference between causal_forecasting_head and ewma_cusum on fixed test corpus."
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "persistence",
+        "seed": 31415
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "trivial",
+      "reference": "Latest stage velocity persistence forward projection"
     },
     {
-      "comparison_id": "cmp_masked_a_vs_masked_b",
-      "estimand": "Difference in test average precision",
-      "experiment_ids": [
-        "exp_masked_hydro_score_a_s42",
-        "exp_masked_hydro_score_a_s100",
-        "exp_masked_hydro_score_a_s2026",
-        "exp_masked_hydro_score_a_s31415",
-        "exp_masked_hydro_score_a_s99999",
-        "exp_masked_hydro_score_b_s42",
-        "exp_masked_hydro_score_b_s100",
-        "exp_masked_hydro_score_b_s2026",
-        "exp_masked_hydro_score_b_s31415",
-        "exp_masked_hydro_score_b_s99999"
+      "id": "exp_persistence_s99999",
+      "model": "persistence",
+      "seed": 99999,
+      "role": "baseline",
+      "code_paths": [
+        "source"
       ],
-      "id": "claim_cmp_masked_a_vs_masked_b",
-      "inference_scope": "fixed_test_corpus",
-      "kind": "comparative",
-      "population": "fixed_test_corpus",
-      "scope": "Candidate USGS Potomac and Delaware River gauges",
-      "text": "Point estimate and paired seed difference between masked_hydro_score_a and masked_hydro_score_b on fixed test corpus."
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "persistence",
+        "seed": 99999
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "trivial",
+      "reference": "Latest stage velocity persistence forward projection"
     },
     {
-      "estimand": "Test average precision",
-      "experiment_ids": [
-        "exp_causal_forecasting_head_s42"
+      "id": "exp_ewma_cusum_s42",
+      "model": "ewma_cusum",
+      "seed": 42,
+      "role": "baseline",
+      "code_paths": [
+        "source"
       ],
-      "id": "claim_causal_benchmark",
-      "kind": "descriptive",
-      "population": "Candidate USGS Potomac and Delaware River gauges",
-      "scope": "Evaluation on candidate test split",
-      "text": "Descriptive test average precision of causal forecasting head on candidate test split."
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ewma_cusum",
+        "seed": 42
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "historical",
+      "reference": "EWMA-CUSUM statistical process control"
     },
     {
-      "estimand": "Throughput samples/sec and peak RSS MB",
-      "experiment_ids": [
-        "exp_masked_hydro_score_a_s42"
+      "id": "exp_ewma_cusum_s100",
+      "model": "ewma_cusum",
+      "seed": 100,
+      "role": "baseline",
+      "code_paths": [
+        "source"
       ],
-      "id": "claim_hardware_efficiency",
-      "kind": "efficiency",
-      "population": "Local CPU execution environment",
-      "scope": "Apple M3 CPU single-thread execution",
-      "text": "Empirical measurement of training throughput and peak memory on CPU runtime."
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ewma_cusum",
+        "seed": 100
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "historical",
+      "reference": "EWMA-CUSUM statistical process control"
+    },
+    {
+      "id": "exp_ewma_cusum_s2026",
+      "model": "ewma_cusum",
+      "seed": 2026,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ewma_cusum",
+        "seed": 2026
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "historical",
+      "reference": "EWMA-CUSUM statistical process control"
+    },
+    {
+      "id": "exp_ewma_cusum_s31415",
+      "model": "ewma_cusum",
+      "seed": 31415,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ewma_cusum",
+        "seed": 31415
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "historical",
+      "reference": "EWMA-CUSUM statistical process control"
+    },
+    {
+      "id": "exp_ewma_cusum_s99999",
+      "model": "ewma_cusum",
+      "seed": 99999,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ewma_cusum",
+        "seed": 99999
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "historical",
+      "reference": "EWMA-CUSUM statistical process control"
+    },
+    {
+      "id": "exp_tabular_ridge_s42",
+      "model": "tabular_ridge",
+      "seed": 42,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "tabular_ridge",
+        "seed": 42
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "current",
+      "reference": "L2-regularized logistic regression on 24h summary features"
+    },
+    {
+      "id": "exp_tabular_ridge_s100",
+      "model": "tabular_ridge",
+      "seed": 100,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "tabular_ridge",
+        "seed": 100
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "current",
+      "reference": "L2-regularized logistic regression on 24h summary features"
+    },
+    {
+      "id": "exp_tabular_ridge_s2026",
+      "model": "tabular_ridge",
+      "seed": 2026,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "tabular_ridge",
+        "seed": 2026
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "current",
+      "reference": "L2-regularized logistic regression on 24h summary features"
+    },
+    {
+      "id": "exp_tabular_ridge_s31415",
+      "model": "tabular_ridge",
+      "seed": 31415,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "tabular_ridge",
+        "seed": 31415
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "current",
+      "reference": "L2-regularized logistic regression on 24h summary features"
+    },
+    {
+      "id": "exp_tabular_ridge_s99999",
+      "model": "tabular_ridge",
+      "seed": 99999,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "tabular_ridge",
+        "seed": 99999
+      },
+      "training": {
+        "mode": "deterministic",
+        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
+      },
+      "baseline_class": "current",
+      "reference": "L2-regularized logistic regression on 24h summary features"
+    },
+    {
+      "id": "exp_ea_lstm_s42",
+      "model": "ea_lstm",
+      "seed": 42,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ea_lstm",
+        "seed": 42
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      },
+      "baseline_class": "mechanism_matched",
+      "reference": "Entity-Aware LSTM neural baseline with static catchment embeddings"
+    },
+    {
+      "id": "exp_ea_lstm_s100",
+      "model": "ea_lstm",
+      "seed": 100,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ea_lstm",
+        "seed": 100
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      },
+      "baseline_class": "mechanism_matched",
+      "reference": "Entity-Aware LSTM neural baseline with static catchment embeddings"
+    },
+    {
+      "id": "exp_ea_lstm_s2026",
+      "model": "ea_lstm",
+      "seed": 2026,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ea_lstm",
+        "seed": 2026
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      },
+      "baseline_class": "mechanism_matched",
+      "reference": "Entity-Aware LSTM neural baseline with static catchment embeddings"
+    },
+    {
+      "id": "exp_ea_lstm_s31415",
+      "model": "ea_lstm",
+      "seed": 31415,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ea_lstm",
+        "seed": 31415
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      },
+      "baseline_class": "mechanism_matched",
+      "reference": "Entity-Aware LSTM neural baseline with static catchment embeddings"
+    },
+    {
+      "id": "exp_ea_lstm_s99999",
+      "model": "ea_lstm",
+      "seed": 99999,
+      "role": "baseline",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "ea_lstm",
+        "seed": 99999
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      },
+      "baseline_class": "mechanism_matched",
+      "reference": "Entity-Aware LSTM neural baseline with static catchment embeddings"
+    },
+    {
+      "id": "exp_masked_hydro_score_a_s42",
+      "model": "masked_hydro_score_a",
+      "seed": 42,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_a",
+        "seed": 42
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_a_s100",
+      "model": "masked_hydro_score_a",
+      "seed": 100,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_a",
+        "seed": 100
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_a_s2026",
+      "model": "masked_hydro_score_a",
+      "seed": 2026,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_a",
+        "seed": 2026
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_a_s31415",
+      "model": "masked_hydro_score_a",
+      "seed": 31415,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_a",
+        "seed": 31415
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_a_s99999",
+      "model": "masked_hydro_score_a",
+      "seed": 99999,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_a",
+        "seed": 99999
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_b_s42",
+      "model": "masked_hydro_score_b",
+      "seed": 42,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_b",
+        "seed": 42
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_b_s100",
+      "model": "masked_hydro_score_b",
+      "seed": 100,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_b",
+        "seed": 100
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_b_s2026",
+      "model": "masked_hydro_score_b",
+      "seed": 2026,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_b",
+        "seed": 2026
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_b_s31415",
+      "model": "masked_hydro_score_b",
+      "seed": 31415,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_b",
+        "seed": 31415
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_masked_hydro_score_b_s99999",
+      "model": "masked_hydro_score_b",
+      "seed": 99999,
+      "role": "control",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "masked_hydro_score_b",
+        "seed": 99999
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.2
+      }
+    },
+    {
+      "id": "exp_causal_forecasting_head_s42",
+      "model": "causal_forecasting_head",
+      "seed": 42,
+      "role": "benchmark",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "causal_forecasting_head",
+        "seed": 42
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      }
+    },
+    {
+      "id": "exp_causal_forecasting_head_s100",
+      "model": "causal_forecasting_head",
+      "seed": 100,
+      "role": "benchmark",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "causal_forecasting_head",
+        "seed": 100
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      }
+    },
+    {
+      "id": "exp_causal_forecasting_head_s2026",
+      "model": "causal_forecasting_head",
+      "seed": 2026,
+      "role": "benchmark",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "causal_forecasting_head",
+        "seed": 2026
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      }
+    },
+    {
+      "id": "exp_causal_forecasting_head_s31415",
+      "model": "causal_forecasting_head",
+      "seed": 31415,
+      "role": "benchmark",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "causal_forecasting_head",
+        "seed": 31415
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      }
+    },
+    {
+      "id": "exp_causal_forecasting_head_s99999",
+      "model": "causal_forecasting_head",
+      "seed": 99999,
+      "role": "benchmark",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "causal_forecasting_head",
+        "seed": 99999
+      },
+      "training": {
+        "mode": "early_stopping",
+        "rationale": "Early stopping monitored on validation loss with patience 3.",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01
+      }
+    },
+    {
+      "id": "exp_causal_forecasting_head_replay_s42",
+      "model": "causal_forecasting_head",
+      "seed": 42,
+      "role": "reproduction",
+      "reproduces": "exp_causal_forecasting_head_s42",
+      "code_paths": [
+        "source"
+      ],
+      "execution_contract": {
+        "runtime_id": "python-cpu-v1",
+        "entrypoint": "source/runners/run_experiment.py",
+        "arguments": [
+          "{run_dir}",
+          "{seed}",
+          "{experiment_id}"
+        ]
+      },
+      "threshold": 0.5,
+      "evaluation_splits": [
+        "validation",
+        "test"
+      ],
+      "config": {
+        "family": "causal_forecasting_head",
+        "seed": 42
+      },
+      "training": {
+        "mode": "early_stopping",
+        "min_epochs": 2,
+        "max_epochs": 60,
+        "patience": 3,
+        "min_delta": 0.01,
+        "rationale": "Early stopping monitored on validation loss with patience 3."
+      }
     }
   ],
-  "cohort": "data/cohort.csv",
   "comparisons": [
     {
-      "alpha": 0.05,
-      "assertion": "estimate",
       "id": "cmp_causal_vs_persistence",
-      "inference_draws": 10000,
-      "inference_scope": "fixed_test_corpus",
-      "max_ci_width": 0.5,
-      "metric": "average_precision",
-      "minimum_effect": 0.0,
       "pairs": [
         [
           "exp_causal_forecasting_head_s42",
@@ -167,83 +1295,17 @@
           "exp_persistence_s99999"
         ]
       ],
-      "sampling_unit": "seed_fixed_test"
-    },
-    {
-      "alpha": 0.05,
-      "assertion": "estimate",
-      "id": "cmp_causal_vs_ea_lstm",
-      "inference_draws": 10000,
-      "inference_scope": "fixed_test_corpus",
-      "max_ci_width": 0.5,
       "metric": "average_precision",
-      "minimum_effect": 0.0,
-      "pairs": [
-        [
-          "exp_causal_forecasting_head_s42",
-          "exp_ea_lstm_s42"
-        ],
-        [
-          "exp_causal_forecasting_head_s100",
-          "exp_ea_lstm_s100"
-        ],
-        [
-          "exp_causal_forecasting_head_s2026",
-          "exp_ea_lstm_s2026"
-        ],
-        [
-          "exp_causal_forecasting_head_s31415",
-          "exp_ea_lstm_s31415"
-        ],
-        [
-          "exp_causal_forecasting_head_s99999",
-          "exp_ea_lstm_s99999"
-        ]
-      ],
-      "sampling_unit": "seed_fixed_test"
-    },
-    {
-      "alpha": 0.05,
-      "assertion": "estimate",
-      "id": "cmp_causal_vs_tabular_ridge",
-      "inference_draws": 10000,
+      "sampling_unit": "seed_fixed_test",
       "inference_scope": "fixed_test_corpus",
-      "max_ci_width": 0.5,
-      "metric": "average_precision",
+      "assertion": "estimate",
+      "alpha": 0.05,
       "minimum_effect": 0.0,
-      "pairs": [
-        [
-          "exp_causal_forecasting_head_s42",
-          "exp_tabular_ridge_s42"
-        ],
-        [
-          "exp_causal_forecasting_head_s100",
-          "exp_tabular_ridge_s100"
-        ],
-        [
-          "exp_causal_forecasting_head_s2026",
-          "exp_tabular_ridge_s2026"
-        ],
-        [
-          "exp_causal_forecasting_head_s31415",
-          "exp_tabular_ridge_s31415"
-        ],
-        [
-          "exp_causal_forecasting_head_s99999",
-          "exp_tabular_ridge_s99999"
-        ]
-      ],
-      "sampling_unit": "seed_fixed_test"
+      "max_ci_width": 0.5,
+      "inference_draws": 10000
     },
     {
-      "alpha": 0.05,
-      "assertion": "estimate",
       "id": "cmp_causal_vs_ewma_cusum",
-      "inference_draws": 10000,
-      "inference_scope": "fixed_test_corpus",
-      "max_ci_width": 0.5,
-      "metric": "average_precision",
-      "minimum_effect": 0.0,
       "pairs": [
         [
           "exp_causal_forecasting_head_s42",
@@ -266,1279 +1328,214 @@
           "exp_ewma_cusum_s99999"
         ]
       ],
-      "sampling_unit": "seed_fixed_test"
+      "metric": "average_precision",
+      "sampling_unit": "seed_fixed_test",
+      "inference_scope": "fixed_test_corpus",
+      "assertion": "estimate",
+      "alpha": 0.05,
+      "minimum_effect": 0.0,
+      "max_ci_width": 0.5,
+      "inference_draws": 10000
     },
     {
-      "alpha": 0.05,
-      "assertion": "estimate",
-      "id": "cmp_masked_a_vs_masked_b",
-      "inference_draws": 10000,
-      "inference_scope": "fixed_test_corpus",
-      "max_ci_width": 0.5,
-      "metric": "average_precision",
-      "minimum_effect": 0.0,
+      "id": "cmp_causal_vs_tabular_ridge",
       "pairs": [
         [
-          "exp_masked_hydro_score_a_s42",
-          "exp_masked_hydro_score_b_s42"
+          "exp_causal_forecasting_head_s42",
+          "exp_tabular_ridge_s42"
         ],
         [
-          "exp_masked_hydro_score_a_s100",
-          "exp_masked_hydro_score_b_s100"
+          "exp_causal_forecasting_head_s100",
+          "exp_tabular_ridge_s100"
         ],
         [
-          "exp_masked_hydro_score_a_s2026",
-          "exp_masked_hydro_score_b_s2026"
+          "exp_causal_forecasting_head_s2026",
+          "exp_tabular_ridge_s2026"
         ],
         [
-          "exp_masked_hydro_score_a_s31415",
-          "exp_masked_hydro_score_b_s31415"
+          "exp_causal_forecasting_head_s31415",
+          "exp_tabular_ridge_s31415"
         ],
         [
-          "exp_masked_hydro_score_a_s99999",
-          "exp_masked_hydro_score_b_s99999"
+          "exp_causal_forecasting_head_s99999",
+          "exp_tabular_ridge_s99999"
         ]
       ],
-      "sampling_unit": "seed_fixed_test"
+      "metric": "average_precision",
+      "sampling_unit": "seed_fixed_test",
+      "inference_scope": "fixed_test_corpus",
+      "assertion": "estimate",
+      "alpha": 0.05,
+      "minimum_effect": 0.0,
+      "max_ci_width": 0.5,
+      "inference_draws": 10000
+    },
+    {
+      "id": "cmp_causal_vs_ea_lstm",
+      "pairs": [
+        [
+          "exp_causal_forecasting_head_s42",
+          "exp_ea_lstm_s42"
+        ],
+        [
+          "exp_causal_forecasting_head_s100",
+          "exp_ea_lstm_s100"
+        ],
+        [
+          "exp_causal_forecasting_head_s2026",
+          "exp_ea_lstm_s2026"
+        ],
+        [
+          "exp_causal_forecasting_head_s31415",
+          "exp_ea_lstm_s31415"
+        ],
+        [
+          "exp_causal_forecasting_head_s99999",
+          "exp_ea_lstm_s99999"
+        ]
+      ],
+      "metric": "average_precision",
+      "sampling_unit": "seed_fixed_test",
+      "inference_scope": "fixed_test_corpus",
+      "assertion": "estimate",
+      "alpha": 0.05,
+      "minimum_effect": 0.0,
+      "max_ci_width": 0.5,
+      "inference_draws": 10000
     }
   ],
-  "data_origin": "observational",
-  "dependency_lock": "source/requirements.lock",
-  "experiments": [
+  "claims": [
     {
-      "baseline_class": "trivial",
-      "code_paths": [
-        "source"
+      "id": "claim_cmp_causal_vs_persistence",
+      "text": "Point estimate and paired seed difference between causal_forecasting_head and persistence on fixed test corpus.",
+      "estimand": "Difference in test average precision",
+      "kind": "descriptive",
+      "experiment_ids": [
+        "exp_causal_forecasting_head_s42",
+        "exp_causal_forecasting_head_s100",
+        "exp_causal_forecasting_head_s2026",
+        "exp_causal_forecasting_head_s31415",
+        "exp_causal_forecasting_head_s99999",
+        "exp_persistence_s42",
+        "exp_persistence_s100",
+        "exp_persistence_s2026",
+        "exp_persistence_s31415",
+        "exp_persistence_s99999"
       ],
-      "config": {
-        "family": "persistence",
-        "seed": 42
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_persistence_s42",
-      "model": "persistence",
-      "reference": "Latest stage velocity persistence forward projection",
-      "role": "baseline",
-      "seed": 42,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
+      "population": "fixed_test_corpus",
+      "inference_scope": "fixed_test_corpus",
+      "scope": "Candidate USGS Potomac and Delaware River gauges"
     },
     {
-      "baseline_class": "trivial",
-      "code_paths": [
-        "source"
+      "id": "claim_cmp_causal_vs_ewma_cusum",
+      "text": "Point estimate and paired seed difference between causal_forecasting_head and ewma_cusum on fixed test corpus.",
+      "estimand": "Difference in test average precision",
+      "kind": "descriptive",
+      "experiment_ids": [
+        "exp_causal_forecasting_head_s42",
+        "exp_causal_forecasting_head_s100",
+        "exp_causal_forecasting_head_s2026",
+        "exp_causal_forecasting_head_s31415",
+        "exp_causal_forecasting_head_s99999",
+        "exp_ewma_cusum_s42",
+        "exp_ewma_cusum_s100",
+        "exp_ewma_cusum_s2026",
+        "exp_ewma_cusum_s31415",
+        "exp_ewma_cusum_s99999"
       ],
-      "config": {
-        "family": "persistence",
-        "seed": 100
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_persistence_s100",
-      "model": "persistence",
-      "reference": "Latest stage velocity persistence forward projection",
-      "role": "baseline",
-      "seed": 100,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
+      "population": "fixed_test_corpus",
+      "inference_scope": "fixed_test_corpus",
+      "scope": "Candidate USGS Potomac and Delaware River gauges"
     },
     {
-      "baseline_class": "trivial",
-      "code_paths": [
-        "source"
+      "id": "claim_cmp_causal_vs_tabular_ridge",
+      "text": "Point estimate and paired seed difference between causal_forecasting_head and tabular_ridge on fixed test corpus.",
+      "estimand": "Difference in test average precision",
+      "kind": "descriptive",
+      "experiment_ids": [
+        "exp_causal_forecasting_head_s42",
+        "exp_causal_forecasting_head_s100",
+        "exp_causal_forecasting_head_s2026",
+        "exp_causal_forecasting_head_s31415",
+        "exp_causal_forecasting_head_s99999",
+        "exp_tabular_ridge_s42",
+        "exp_tabular_ridge_s100",
+        "exp_tabular_ridge_s2026",
+        "exp_tabular_ridge_s31415",
+        "exp_tabular_ridge_s99999"
       ],
-      "config": {
-        "family": "persistence",
-        "seed": 2026
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_persistence_s2026",
-      "model": "persistence",
-      "reference": "Latest stage velocity persistence forward projection",
-      "role": "baseline",
-      "seed": 2026,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
+      "population": "fixed_test_corpus",
+      "inference_scope": "fixed_test_corpus",
+      "scope": "Candidate USGS Potomac and Delaware River gauges"
     },
     {
-      "baseline_class": "trivial",
-      "code_paths": [
-        "source"
+      "id": "claim_cmp_causal_vs_ea_lstm",
+      "text": "Point estimate and paired seed difference between causal_forecasting_head and ea_lstm on fixed test corpus.",
+      "estimand": "Difference in test average precision",
+      "kind": "descriptive",
+      "experiment_ids": [
+        "exp_causal_forecasting_head_s42",
+        "exp_causal_forecasting_head_s100",
+        "exp_causal_forecasting_head_s2026",
+        "exp_causal_forecasting_head_s31415",
+        "exp_causal_forecasting_head_s99999",
+        "exp_ea_lstm_s42",
+        "exp_ea_lstm_s100",
+        "exp_ea_lstm_s2026",
+        "exp_ea_lstm_s31415",
+        "exp_ea_lstm_s99999"
       ],
-      "config": {
-        "family": "persistence",
-        "seed": 31415
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_persistence_s31415",
-      "model": "persistence",
-      "reference": "Latest stage velocity persistence forward projection",
-      "role": "baseline",
-      "seed": 31415,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
+      "population": "fixed_test_corpus",
+      "inference_scope": "fixed_test_corpus",
+      "scope": "Candidate USGS Potomac and Delaware River gauges"
     },
     {
-      "baseline_class": "trivial",
-      "code_paths": [
-        "source"
+      "id": "claim_causal_benchmark",
+      "text": "Descriptive test average precision of causal forecasting head on candidate test split.",
+      "estimand": "Test average precision",
+      "kind": "descriptive",
+      "experiment_ids": [
+        "exp_causal_forecasting_head_s42"
       ],
-      "config": {
-        "family": "persistence",
-        "seed": 99999
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_persistence_s99999",
-      "model": "persistence",
-      "reference": "Latest stage velocity persistence forward projection",
-      "role": "baseline",
-      "seed": 99999,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
+      "population": "Candidate USGS Potomac and Delaware River gauges",
+      "scope": "Evaluation on candidate test split"
     },
     {
-      "baseline_class": "historical",
-      "code_paths": [
-        "source"
+      "id": "claim_masked_score_a_null",
+      "text": "Descriptive evaluation of masked hydro score A reconstruction error.",
+      "estimand": "Test average precision and AUROC",
+      "kind": "descriptive",
+      "experiment_ids": [
+        "exp_masked_hydro_score_a_s42"
       ],
-      "config": {
-        "family": "ewma_cusum",
-        "seed": 42
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ewma_cusum_s42",
-      "model": "ewma_cusum",
-      "reference": "EWMA-CUSUM statistical process control",
-      "role": "baseline",
-      "seed": 42,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
+      "population": "Candidate USGS Potomac and Delaware River gauges",
+      "scope": "Evaluation on candidate test split",
+      "result_interpretation": "null_result"
     },
     {
-      "baseline_class": "historical",
-      "code_paths": [
-        "source"
+      "id": "claim_masked_score_b_null",
+      "text": "Descriptive evaluation of masked hydro score B latent Mahalanobis distance.",
+      "estimand": "Test average precision and AUROC",
+      "kind": "descriptive",
+      "experiment_ids": [
+        "exp_masked_hydro_score_b_s42"
       ],
-      "config": {
-        "family": "ewma_cusum",
-        "seed": 100
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ewma_cusum_s100",
-      "model": "ewma_cusum",
-      "reference": "EWMA-CUSUM statistical process control",
-      "role": "baseline",
-      "seed": 100,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
+      "population": "Candidate USGS Potomac and Delaware River gauges",
+      "scope": "Evaluation on candidate test split",
+      "result_interpretation": "null_result"
     },
     {
-      "baseline_class": "historical",
-      "code_paths": [
-        "source"
+      "id": "claim_ea_lstm_transfer_null",
+      "text": "Descriptive evaluation of entity-aware LSTM neural baseline across unseen test gauge basins.",
+      "estimand": "Test average precision and AUROC",
+      "kind": "descriptive",
+      "experiment_ids": [
+        "exp_ea_lstm_s42"
       ],
-      "config": {
-        "family": "ewma_cusum",
-        "seed": 2026
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ewma_cusum_s2026",
-      "model": "ewma_cusum",
-      "reference": "EWMA-CUSUM statistical process control",
-      "role": "baseline",
-      "seed": 2026,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
-    },
-    {
-      "baseline_class": "historical",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "ewma_cusum",
-        "seed": 31415
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ewma_cusum_s31415",
-      "model": "ewma_cusum",
-      "reference": "EWMA-CUSUM statistical process control",
-      "role": "baseline",
-      "seed": 31415,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
-    },
-    {
-      "baseline_class": "historical",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "ewma_cusum",
-        "seed": 99999
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ewma_cusum_s99999",
-      "model": "ewma_cusum",
-      "reference": "EWMA-CUSUM statistical process control",
-      "role": "baseline",
-      "seed": 99999,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "tabular_ridge",
-        "seed": 42
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_tabular_ridge_s42",
-      "model": "tabular_ridge",
-      "reference": "L2-regularized logistic regression on 24h summary features",
-      "role": "baseline",
-      "seed": 42,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "tabular_ridge",
-        "seed": 100
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_tabular_ridge_s100",
-      "model": "tabular_ridge",
-      "reference": "L2-regularized logistic regression on 24h summary features",
-      "role": "baseline",
-      "seed": 100,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "tabular_ridge",
-        "seed": 2026
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_tabular_ridge_s2026",
-      "model": "tabular_ridge",
-      "reference": "L2-regularized logistic regression on 24h summary features",
-      "role": "baseline",
-      "seed": 2026,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "tabular_ridge",
-        "seed": 31415
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_tabular_ridge_s31415",
-      "model": "tabular_ridge",
-      "reference": "L2-regularized logistic regression on 24h summary features",
-      "role": "baseline",
-      "seed": 31415,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "tabular_ridge",
-        "seed": 99999
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_tabular_ridge_s99999",
-      "model": "tabular_ridge",
-      "reference": "L2-regularized logistic regression on 24h summary features",
-      "role": "baseline",
-      "seed": 99999,
-      "threshold": 0.5,
-      "training": {
-        "mode": "deterministic",
-        "rationale": "Closed-form deterministic calculation without iterative neural optimization."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "ea_lstm",
-        "seed": 42
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ea_lstm_s42",
-      "model": "ea_lstm",
-      "reference": "Entity-Aware LSTM neural baseline",
-      "role": "baseline",
-      "seed": 42,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "ea_lstm",
-        "seed": 100
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ea_lstm_s100",
-      "model": "ea_lstm",
-      "reference": "Entity-Aware LSTM neural baseline",
-      "role": "baseline",
-      "seed": 100,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "ea_lstm",
-        "seed": 2026
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ea_lstm_s2026",
-      "model": "ea_lstm",
-      "reference": "Entity-Aware LSTM neural baseline",
-      "role": "baseline",
-      "seed": 2026,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "ea_lstm",
-        "seed": 31415
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ea_lstm_s31415",
-      "model": "ea_lstm",
-      "reference": "Entity-Aware LSTM neural baseline",
-      "role": "baseline",
-      "seed": 31415,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "baseline_class": "current",
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "ea_lstm",
-        "seed": 99999
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_ea_lstm_s99999",
-      "model": "ea_lstm",
-      "reference": "Entity-Aware LSTM neural baseline",
-      "role": "baseline",
-      "seed": 99999,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_a",
-        "seed": 42
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_a_s42",
-      "model": "masked_hydro_score_a",
-      "role": "benchmark",
-      "seed": 42,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_a",
-        "seed": 100
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_a_s100",
-      "model": "masked_hydro_score_a",
-      "role": "benchmark",
-      "seed": 100,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_a",
-        "seed": 2026
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_a_s2026",
-      "model": "masked_hydro_score_a",
-      "role": "benchmark",
-      "seed": 2026,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_a",
-        "seed": 31415
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_a_s31415",
-      "model": "masked_hydro_score_a",
-      "role": "benchmark",
-      "seed": 31415,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_a",
-        "seed": 99999
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_a_s99999",
-      "model": "masked_hydro_score_a",
-      "role": "benchmark",
-      "seed": 99999,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_b",
-        "seed": 42
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_b_s42",
-      "model": "masked_hydro_score_b",
-      "role": "benchmark",
-      "seed": 42,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_b",
-        "seed": 100
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_b_s100",
-      "model": "masked_hydro_score_b",
-      "role": "benchmark",
-      "seed": 100,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_b",
-        "seed": 2026
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_b_s2026",
-      "model": "masked_hydro_score_b",
-      "role": "benchmark",
-      "seed": 2026,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_b",
-        "seed": 31415
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_b_s31415",
-      "model": "masked_hydro_score_b",
-      "role": "benchmark",
-      "seed": 31415,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "masked_hydro_score_b",
-        "seed": 99999
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_masked_hydro_score_b_s99999",
-      "model": "masked_hydro_score_b",
-      "role": "benchmark",
-      "seed": 99999,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "causal_forecasting_head",
-        "seed": 42
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_causal_forecasting_head_s42",
-      "model": "causal_forecasting_head",
-      "role": "benchmark",
-      "seed": 42,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "causal_forecasting_head",
-        "seed": 100
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_causal_forecasting_head_s100",
-      "model": "causal_forecasting_head",
-      "role": "benchmark",
-      "seed": 100,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "causal_forecasting_head",
-        "seed": 2026
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_causal_forecasting_head_s2026",
-      "model": "causal_forecasting_head",
-      "role": "benchmark",
-      "seed": 2026,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "causal_forecasting_head",
-        "seed": 31415
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_causal_forecasting_head_s31415",
-      "model": "causal_forecasting_head",
-      "role": "benchmark",
-      "seed": 31415,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
-    },
-    {
-      "code_paths": [
-        "source"
-      ],
-      "config": {
-        "family": "causal_forecasting_head",
-        "seed": 99999
-      },
-      "evaluation_splits": [
-        "validation",
-        "test"
-      ],
-      "execution_contract": {
-        "arguments": [
-          "{run_dir}",
-          "{seed}",
-          "{experiment_id}"
-        ],
-        "entrypoint": "source/runners/run_experiment.py",
-        "runtime_id": "python-cpu-v1"
-      },
-      "id": "exp_causal_forecasting_head_s99999",
-      "model": "causal_forecasting_head",
-      "role": "benchmark",
-      "seed": 99999,
-      "threshold": 0.5,
-      "training": {
-        "max_epochs": 10,
-        "min_delta": 0.0001,
-        "min_epochs": 2,
-        "mode": "early_stopping",
-        "patience": 3,
-        "rationale": "Early stopping monitored on validation loss with patience 3."
-      }
+      "population": "Candidate USGS Potomac and Delaware River gauges",
+      "scope": "Evaluation on candidate test split",
+      "result_interpretation": "null_result"
     }
   ],
-  "factory_version": "3.3.0",
-  "frozen_paths": [
-    "source",
-    "data",
-    "project/methodology.md"
-  ],
-  "hardware": {
-    "experiment_id": "exp_masked_hydro_score_a_s42",
-    "min_trials": 5,
-    "minimum_sustained_seconds": 30.0
-  },
-  "independence_rationale": "Basin-separated holdouts with 5-seed fixed test corpus comparison.",
-  "intent": "fixture",
-  "license": "Path-specific factory software license and public-domain USGS/NOAA candidate records.",
-  "methodology": "project/methodology.md",
-  "policy": {
-    "metric_tolerance": 1e-06,
-    "min_class_count": 2,
-    "min_seeds": 5,
-    "min_test_groups": 2
-  },
-  "population": "Candidate USGS Potomac and Delaware River gauges for prototype feasibility.",
-  "profile": "binary_classification",
-  "project_id": "flood-sentinel-research-rebuild",
-  "release_files": [
-    "project/methodology.md"
-  ],
-  "sampling_rationale": "24h causal issues with 24h lookback and purge windows avoiding episode overlap.",
-  "schema_version": 3,
-  "source_records": "data/source_records.csv"
+  "analyses": {}
 }

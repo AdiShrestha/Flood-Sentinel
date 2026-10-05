@@ -104,9 +104,9 @@ def train_forecasting_pilot(
     val_loader: DataLoader,
     seed: int,
     run_dir: Path,
-    max_epochs: int = 10,
+    max_epochs: int = 60,
     patience: int = 3,
-    min_delta: float = 1e-4,
+    min_delta: float = 0.01,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     """Train CausalForecastingHead on top of CausalHydroEncoder with early stopping."""
     torch.manual_seed(seed)
@@ -124,7 +124,7 @@ def train_forecasting_pilot(
     initial_ckpt = run_dir / "initial_checkpoint.pt"
     torch.save({"encoder": encoder.state_dict(), "head": head.state_dict()}, initial_ckpt)
 
-    optimizer = torch.optim.Adam(list(encoder.parameters()) + list(head.parameters()), lr=1e-3)
+    optimizer = torch.optim.Adam(list(encoder.parameters()) + list(head.parameters()), lr=5e-3, weight_decay=1e-3)
     criterion = nn.BCEWithLogitsLoss()
 
     best_loss = float("inf")
@@ -141,7 +141,8 @@ def train_forecasting_pilot(
             v = batch["values"]
             o = batch["observed"]
             y = batch["labels"].float().unsqueeze(-1)
-            inp = torch.cat((v, o.float()), dim=-1)
+            v_rel = v - v[:, :1, :]
+            inp = torch.cat((v_rel, o.float()), dim=-1)
             optimizer.zero_grad()
             z = encoder(inp)
             pred = head(z)
@@ -159,7 +160,8 @@ def train_forecasting_pilot(
                 v = batch["values"]
                 o = batch["observed"]
                 y = batch["labels"].float().unsqueeze(-1)
-                inp = torch.cat((v, o.float()), dim=-1)
+                v_rel = v - v[:, :1, :]
+                inp = torch.cat((v_rel, o.float()), dim=-1)
                 z = encoder(inp)
                 pred = head(z)
                 loss = criterion(pred, y)
@@ -253,10 +255,10 @@ def run_experiment(run_dir: Path, seed: int, experiment_id: str) -> None:
         (run_dir / "method.txt").write_text("Tier 3 Tabular Ridge baseline: L2-regularized logistic regression.\n")
 
     elif family == "ea_lstm":
-        ea_trainer = EALSTMPilotTrainer(dynamic_dim=2, static_dim=4, hidden_dim=16, lr=1e-3)
+        ea_trainer = EALSTMPilotTrainer(dynamic_dim=2, static_dim=4, hidden_dim=16, lr=1e-2, weight_decay=1e-2)
         torch.save(ea_trainer.model.state_dict(), run_dir / "initial_checkpoint.pt")
         traces, meta, _ = ea_trainer.train_pilot(
-            train_loader, val_loader, max_epochs=10, patience=3
+            train_loader, val_loader, max_epochs=60, patience=3, min_delta=0.01
         )
         torch.save(ea_trainer.model.state_dict(), run_dir / "checkpoint.pt")
         with (run_dir / "history.csv").open("w", newline="") as f:
@@ -279,7 +281,7 @@ def run_experiment(run_dir: Path, seed: int, experiment_id: str) -> None:
         )
         torch.save(mh_trainer.model.state_dict(), run_dir / "initial_checkpoint.pt")
         traces, meta, _ = mh_trainer.train_pilot(
-            train_loader, val_loader, max_epochs=10, patience=3
+            train_loader, val_loader, max_epochs=60, patience=3, min_delta=0.2
         )
         torch.save(mh_trainer.model.state_dict(), run_dir / "checkpoint.pt")
         with (run_dir / "history.csv").open("w", newline="") as f:
@@ -306,7 +308,7 @@ def run_experiment(run_dir: Path, seed: int, experiment_id: str) -> None:
         )
         torch.save(mh_trainer.model.state_dict(), run_dir / "initial_checkpoint.pt")
         traces, meta, _ = mh_trainer.train_pilot(
-            train_loader, val_loader, max_epochs=10, patience=3
+            train_loader, val_loader, max_epochs=60, patience=3, min_delta=0.2
         )
         torch.save(mh_trainer.model.state_dict(), run_dir / "checkpoint.pt")
         with (run_dir / "history.csv").open("w", newline="") as f:
@@ -329,7 +331,7 @@ def run_experiment(run_dir: Path, seed: int, experiment_id: str) -> None:
 
     elif family == "causal_forecasting_head":
         meta, traces = train_forecasting_pilot(
-            train_loader, val_loader, seed, run_dir, max_epochs=10, patience=3
+            train_loader, val_loader, seed, run_dir, max_epochs=60, patience=3, min_delta=0.01
         )
         with (run_dir / "history.csv").open("w", newline="") as f:
             w = csv.DictWriter(f, fieldnames=["epoch", "train_loss", "validation_loss"])
@@ -346,12 +348,13 @@ def run_experiment(run_dir: Path, seed: int, experiment_id: str) -> None:
                 for batch in loader:
                     v = batch["values"]
                     o = batch["observed"]
-                    inp = torch.cat((v, o.float()), dim=-1)
+                    v_rel = v - v[:, :1, :]
+                    inp = torch.cat((v_rel, o.float()), dim=-1)
                     z = encoder(inp)
                     logits = head(z).squeeze(-1)
                     probs = torch.sigmoid(logits).tolist()
                     scores.extend(probs if isinstance(probs, list) else [probs])
-            return scores
+            return [float(max(min(p, 1.0 - 1e-6), 1e-6)) for p in scores]
 
         val_preds = predict_loader(val_loader)
         test_preds = predict_loader(test_loader)
