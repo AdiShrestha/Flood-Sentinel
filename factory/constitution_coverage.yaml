@@ -1,94 +1,122 @@
-schema_version: 2
+schema_version: 3
 principles:
   C70:
     level: A
-    mechanism: "Audit.training (D-074)"
-    rationale_if_null: null
+    mechanism: null
+    rationale_if_null: "Policy changes and authorization require a logged human decision; source-code ownership cannot be enforced against the same-user operator."
+    regression_tests: []
   C71:
     level: A
-    mechanism: "verify_coverage_liveness (D-082)"
+    mechanism: "gatekeeper.verify_coverage_liveness"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.StandaloneReviewTests.test_coverage_rejects_todo_duplicate_and_dead_guard"]
   C72:
     level: A
-    mechanism: "Audit.training_sufficiency (D-074)"
+    mechanism: "engine.audit.Audit.training"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.StandaloneReviewTests.test_training_policy_blocks_text_bypass"]
   C73:
     level: A
-    mechanism: "Audit.cohort (D-077)"
+    mechanism: "engine.audit.Audit.cohort"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3.LifecycleTests.test_group_leakage", "tests.test_review_regressions.StandaloneReviewTests.test_split_floor_blocks_text_bypass"]
   C74:
     level: A
-    mechanism: "verify_result_plausibility (D-080)"
+    mechanism: "gatekeeper.verify_result_plausibility"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.StandaloneReviewTests.test_unresolved_nested_result_blocks"]
   C75:
     level: A
-    mechanism: "_result_findings (D-083)"
+    mechanism: "engine.audit.Audit.experiment"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3.LifecycleTests.test_forged_metrics_even_after_rehash"]
   C76:
     level: A
-    mechanism: "Audit.analyses_traceability (D-081)"
+    mechanism: "engine.audit.Audit.analyses_traceability"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.StandaloneReviewTests.test_traceability_requires_identifiers"]
   C77:
     level: A
-    mechanism: "_acquisition_findings (D-076)"
+    mechanism: "gatekeeper._acquisition_findings"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3_1_hardening.AcquisitionAuditBlocksCertifyTests.test_certify_blocks_on_fabricated_result_sink", "tests.test_v3_1_hardening.AcquisitionAuditBlocksCertifyTests.test_scanner_finds_nothing_in_the_unmodified_fixture"]
   C78:
     level: A
-    mechanism: "tier_check (D-084)"
-    rationale_if_null: null
+    mechanism: null
+    rationale_if_null: "Paraphrase robustness is a development obligation tested by regression fixtures; a static callable check does not prove semantic generalization."
+    regression_tests: []
   C79:
     level: A
-    mechanism: "engine.io.read_json (D-087)"
+    mechanism: "engine.io.read_json"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3.LifecycleTests.test_duplicate_json", "tests.test_v3.LifecycleTests.test_path_traversal"]
   C80:
     level: A
-    mechanism: "certify (D-085)"
+    mechanism: "engine.audit.Audit.experiment"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.LifecycleAttackTests.test_deleted_failed_attempt_blocks_audit"]
   C81:
     level: A
-    mechanism: "Audit.claims (D-089)"
+    mechanism: "engine.audit.Audit.claims"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.LifecycleAttackTests.test_reproduction_relabeling_blocks_audit"]
   C82:
     level: A
-    mechanism: "engine.metrics.paired_inference (D-090)"
+    mechanism: "engine.metrics.paired_inference"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3.MetricTests.test_exact_signflip_resolution"]
   C83:
     level: A
-    mechanism: "engine.metrics.binary_metrics (D-091)"
+    mechanism: "engine.metrics.binary_metrics"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3.MetricTests.test_perfect_direction", "tests.test_v3.MetricTests.test_reverse_direction"]
   C84:
     level: A
-    mechanism: "Audit.analyses_ablation (D-093)"
+    mechanism: "engine.audit.Audit.analyses_ablation"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.StandaloneReviewTests.test_large_ablation_requires_alias_structure"]
   C85:
     level: A
-    mechanism: "validate_contract (D-095)"
+    mechanism: "engine.contract.validate_contract"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.LifecycleAttackTests.test_inline_code_rejected_before_execution", "tests.test_review_regressions.LifecycleAttackTests.test_shell_wrapper_rejected_before_execution"]
   C86:
     level: A
-    mechanism: "engine.io.merkle_root (D-096)"
+    mechanism: "engine.io.merkle_root"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3_3_hardening.SnapshotTests.test_merkle_root_changes_on_mutation"]
   C87:
     level: A
-    mechanism: "build_receipt (D-097)"
+    mechanism: "engine.audit.Audit.experiment"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.LifecycleAttackTests.test_forged_receipt_blocks_audit", "tests.test_review_regressions.LifecycleAttackTests.test_replayed_receipt_blocks_audit", "tests.test_review_addendum.ExecutionNonceTests.test_signed_duplicate_nonce_is_rejected_by_audit", "tests.test_review_addendum.ExecutionNonceTests.test_signed_ledger_nonce_must_match_record", "tests.test_review_addendum.ExecutionNonceTests.test_signed_nonce_reuse_across_epochs_is_rejected", "tests.test_review_addendum.ExecutionNonceTests.test_receipt_error_blocks_even_with_valid_signature_and_binding"]
   C88:
     level: A
-    mechanism: "expect_str (D-098)"
+    mechanism: "engine.schema.validate_training_trace"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.StandaloneReviewTests.test_vacuous_manifests", "tests.test_review_regressions.StandaloneReviewTests.test_training_policy_blocks_text_bypass"]
   C89:
     level: A
-    mechanism: "_deep_result_findings (D-099)"
+    mechanism: "gatekeeper._deep_result_findings"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.StandaloneReviewTests.test_unresolved_nested_result_blocks"]
   C90:
     level: A
-    mechanism: "_compute_assurance_level (D-100)"
+    mechanism: "engine.audit.Audit.claims"
     rationale_if_null: null
+    regression_tests: ["tests.test_review_regressions.LifecycleAttackTests.test_reproduction_relabeling_blocks_audit"]
   C91:
     level: A
-    mechanism: "_assurance_with_review (D-101)"
+    mechanism: "gatekeeper._compute_assurance_level"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3_3_hardening.AssuranceLevelTests.test_structurally_validated_without_receipts", "tests.test_v3_3_hardening.AssuranceLevelTests.test_blocked_on_errors"]
   C92:
     level: A
-    mechanism: "verify_attack_registry (D-102)"
+    mechanism: "gatekeeper.release_preflight"
     rationale_if_null: null
+    regression_tests: ["tests.test_v3_3_hardening.AttackRegistryTests.test_registry_well_formed", "tests.test_review_addendum.CertificationPreflightTests.test_ordinary_certify_runs_fresh_preflight_despite_persisted_pass", "tests.test_review_addendum.CertificationPreflightTests.test_each_failed_behavioral_stage_blocks_and_saves_failed_report"]
+  C93:
+    level: A
+    mechanism: "engine.publication.check"
+    rationale_if_null: null
+    regression_tests: ["tests.test_publication.PublicationTests.test_force_added_internal_file_is_blocked", "tests.test_publication.PublicationTests.test_outgoing_history_checks_deleted_leaks", "tests.test_publication.PublicationTests.test_annotated_tag_message_cannot_leak", "tests.test_publication.PublicationTests.test_audit_includes_and_enforces_publication"]

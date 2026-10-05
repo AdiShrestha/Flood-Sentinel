@@ -1,21 +1,22 @@
 """Recompute current bytes, not stored PASS labels. Scientific scope stays explicit."""
 import itertools
-import json
 import ast
 import re
-import math
+import datetime
 from collections import Counter, defaultdict
 from pathlib import Path
 from statistics import mean
-from .io import read_json,read_csv,inside,sha,digest,inventory
-from .metrics import binary_metrics,paired_inference,holm,number,quantile,EvidenceError
+from .io import read_json,read_csv,inside,sha,digest,inventory,merkle_root
+from .metrics import binary_metrics,paired_inference,paired_group_inference,holm,number,quantile,EvidenceError
 from .plan import validate,need,REVIEW_TOPICS
-from .supervisor import verify_receipt_signature
+from .supervisor import verify_execution_record,verify_receipt_signature,validate_execution_ledger
+from .contract import command_to_contract,validate_contract,contract_argv_template
+from .schema import validate_training_trace,validate_split_support,validate_json_value
 
 class Audit:
     def __init__(self,root,plan,epoch,freeze,engine_hash):
         self.root=Path(root).absolute();self.p=plan;self.epoch=epoch;self.freeze=freeze
-        self.engine_hash=engine_hash;self.errors=[];self.diagnostics=[];self.computed={};self.bindings={};self.observed={};self.reports={};self.executed=[]
+        self.engine_hash=engine_hash;self.errors=[];self.diagnostics=[];self.computed={};self.bindings={};self.observed={};self.reports={};self.executed=[];self.receipts={};self.attempt_counts={};self.amendments=[];self.holdout_reused=False
     def error(self,code,detail):self.errors.append({'code':code,'detail':str(detail)})
     def diagnostic(self,code,detail):
         self.diagnostics.append({'id':code+':'+digest(str(detail))[:12],'code':code,'detail':str(detail)})
@@ -26,21 +27,83 @@ class Audit:
     def table(self,relative,cols):return read_csv(self.file(relative),cols)
     def guard(self,name,fn):
         try:fn();self.executed.append(name)
-        except (EvidenceError,ValueError,KeyError,TypeError,IndexError,OSError,OverflowError) as e:self.error(name,e)
+        except (EvidenceError,ValueError,KeyError,TypeError,IndexError,OSError,OverflowError,AttributeError,UnicodeError) as e:self.error(name,e)
     def frozen(self):
         need(inventory(self.root,self.p['frozen_paths'])==self.freeze['files'],'frozen input changed, including added/deleted source files')
         need(sha(self.root/'project/research_plan.json')==self.freeze['plan_sha256'],'plan changed after freeze')
         need(self.engine_hash==self.freeze['engine_sha256'],'active factory code changed after freeze')
+        need(merkle_root(self.freeze['files'])==self.freeze.get('snapshot_merkle_root'),'freeze inventory root mismatch')
+        snapshot=self.epoch/'research_plan_snapshot.json'
+        need(sha(snapshot)==self.freeze['plan_sha256'],'frozen plan snapshot changed or missing')
+        self.bindings[str(snapshot.relative_to(self.root))]=sha(snapshot)
         self.bindings.update(self.freeze['files'])
         self.bindings['project/research_plan.json']=self.freeze['plan_sha256']
+    def history(self):
+        """Preserve amendment lineage and disclose any previously observed holdout."""
+        epoch=self.freeze['epoch'];previous=None;reserved_nonces=set()
+        current_groups=set(self.freeze.get('holdout_group_ids',[]))
+        current_samples=set(self.freeze.get('holdout_sample_ids',[]))
+        current_sources=set(self.freeze.get('holdout_source_ids',[]))
+        for number in range(1,epoch+1):
+            folder=inside(self.root,'project/.factory/epoch_'+str(number).zfill(4))
+            f=self.j(str((folder/'freeze.json').relative_to(self.root)))
+            need(isinstance(f,dict) and f.get('epoch')==number,'missing or invalid epoch lineage')
+            need(f.get('previous_freeze_sha256')==previous,'prior epoch freeze changed or deleted')
+            snapshot=self.file(str((folder/'research_plan_snapshot.json').relative_to(self.root)))
+            need(sha(snapshot)==f['plan_sha256'],'prior epoch plan snapshot changed')
+            old=read_json(snapshot);need(isinstance(old,dict),'prior plan must be an object')
+            ledger=self.j(str((folder/'execution_ledger.json').relative_to(self.root)))
+            verify_receipt_signature(ledger,public_key=f['supervisor_public_key'])
+            nonces=validate_execution_ledger(ledger,project_id=old['project_id'],epoch=number,
+                       freeze_sha256=sha(folder/'freeze.json'),run_prefix=str((folder/'runs').relative_to(self.root)),
+                       experiment_ids=[experiment['id'] for experiment in old['experiments']])
+            need(not reserved_nonces & nonces,'execution nonce reused across epochs')
+            reserved_nonces.update(nonces)
+            runs=list(folder.glob('runs/*/attempt*'))
+            need({str(path.relative_to(self.root)) for path in runs}==
+                 {entry['attempt_path'] for entry in ledger['attempts'].values()},'execution attempt membership differs from signed ledger')
+            for entry in ledger['attempts'].values():
+                if entry['execution_sha256'] is None:
+                    need(number<epoch,'active execution interrupted before receipt commit; preserve evidence and amend')
+                    self.diagnostic('INTERRUPTED_ATTEMPT',str(number)+': '+entry['attempt_path']+' reserved but not committed; no scientific evidence admitted')
+                    continue
+                record=self.file(entry['attempt_path']+'/execution.json')
+                need(sha(record)==entry['execution_sha256'],'execution receipt changed/deleted or interrupted since ledger commit')
+                need(read_json(record).get('run_nonce')==entry['run_nonce'],'execution nonce differs from signed reservation')
+            reused=(current_groups & set(f.get('holdout_group_ids',[])) or
+                    current_samples & set(f.get('holdout_sample_ids',[])) or
+                    current_sources & set(f.get('holdout_source_ids',[])))
+            if number<epoch and ledger['attempts'] and reused:
+                self.holdout_reused=True
+            if number>1:
+                previous_folder=folder.parent/('epoch_'+str(number-1).zfill(4))
+                need(inventory(self.root,[str(previous_folder.relative_to(self.root))],reject_dangerous_ext=False)==f.get('previous_epoch_evidence'),
+                     'prior epoch evidence changed or deleted after amendment')
+                predecessor=read_json(folder.parent/('epoch_'+str(number-1).zfill(4))/'research_plan_snapshot.json')
+                changes=sorted(k for k in set(old)|set(predecessor) if old.get(k)!=predecessor.get(k))
+                self.amendments.append({'epoch':number,'reason':f.get('amendment_reason'),
+                                       'changed_plan_fields':changes,'prior_execution_observed':bool(list(
+                                        (folder.parent/('epoch_'+str(number-1).zfill(4))).glob('runs/*/attempt*/execution.json')))})
+            previous=sha(folder/'freeze.json')
+        if self.holdout_reused:
+            confirmatory=any(c.get('assertion') in ('superiority','inferiority') for c in self.p['comparisons'])
+            confirmatory=confirmatory or any(c['kind']=='comparative' for c in self.p['claims'])
+            need(not confirmatory,'HOLDOUT_REUSED: confirmatory comparisons require a fresh holdout after prior execution')
+            self.diagnostic('HOLDOUT_REUSED','Prior epochs executed against overlapping heldout groups; conclusions remain exploratory')
+
     def static_scan(self):
         # Defense-in-depth scan applies to declared producer code. It is a diagnostic,
         # never a substitute for executing and recomputing outputs.
         for e in self.p['experiments']:
             if e['role'] not in ('benchmark','baseline','control','ablation','sensitivity','ood'):
                 continue
+            paths=[]
             for rel in e.get('code_paths',[]):
-                p=inside(self.root,rel); txt=p.read_text(errors='replace')
+                declared=inside(self.root,rel)
+                paths.extend(sorted(declared.rglob('*.py')) if declared.is_dir() else [declared])
+            for p in paths:
+                if p.suffix!='.py':continue
+                rel=str(p.relative_to(self.root));txt=p.read_text(errors='replace')
                 random_calls=re.findall(r'(?i)\b(?:rng|random|np\.random|numpy\.random)\.(?:normal|uniform|randn|random|choice)\b',txt)
                 result_words=re.search(r'(?i)(?:result|metric|hypothesis|taxonomy|registry|prediction).{0,100}(?:json|csv|parquet|write_text|to_csv)',txt)
                 fake_words=re.search(r'(?i)\b(?:mock|synthetic|fabricat|hardcoded substitute|fallback data)\b',txt)
@@ -49,6 +112,18 @@ class Audit:
                 try: ast.parse(txt,filename=str(p))
                 except SyntaxError as ex:self.error('SOURCE_SYNTAX',f'{rel}: {ex}')
     def cohort(self):
+        if self.p.get('data_provenance'):
+            provenance=self.j(self.p['data_provenance'])
+            need(isinstance(provenance,dict),'data provenance must be an object')
+            validate_json_value(provenance,'data_provenance')
+            identifier=provenance.get('dataset_identifier')
+            need(isinstance(identifier,str) and re.fullmatch(r'(?:https?://\S+|doi:10\.\S+)',identifier),'external dataset URL or DOI required')
+            need(provenance.get('license')==self.p['license'],'dataset license differs from plan')
+            need(provenance.get('provenance_basis')=='author_declared','local backend supports author_declared provenance only; external authenticity is not verified')
+            try:datetime.date.fromisoformat(provenance['retrieval_date'])
+            except (KeyError,TypeError,ValueError):need(False,'valid ISO retrieval_date required')
+            for field,key in [('source_records_sha256','source_records'),('cohort_sha256','cohort')]:
+                need(provenance.get(field)==sha(inside(self.root,self.p[key])),'data provenance digest mismatch: '+field)
         rows=self.table(self.p['source_records'],{'record_id','origin'})
         origins={}
         for r in rows:
@@ -74,7 +149,9 @@ class Audit:
         for split in ('train','validation','test'):
             subset=[r for r in rows if r['split']==split]
             counts=Counter(r['label'] for r in subset)
-            need(min(counts['0'],counts['1'])>=self.p['policy']['min_class_count'],f'{split}: absent/insufficient class support {dict(counts)}')
+            validate_split_support(counts,len({row['group_id'] for row in subset}),
+                                   min_class_count=self.p['policy']['min_class_count'],
+                                   min_test_groups=self.p['policy']['min_test_groups'] if split=='test' else 2,field=split)
         ng=len({r['group_id'] for r in rows if r['split']=='test'})
         need(ng>=self.p['policy']['min_test_groups'],'test independent group count below frozen design')
         if ng<30:self.diagnostic('SMALL_GROUP_COUNT',f'{ng} distinct test groups; precision/population inference must be justified')
@@ -88,58 +165,45 @@ class Audit:
         eid=e['id'];base=self.epoch/'runs'/eid
         attempts=sorted(base.glob('attempt*')) if base.exists() else []
         need(bool(attempts),eid+': no execution receipt')
+        need([a.name for a in attempts]==[f'attempt{i:04d}' for i in range(1,len(attempts)+1)],
+             eid+': execution attempt sequence missing or invalid')
+        self.attempt_counts[eid]=len(attempts)
+        need(len(attempts)==1,eid+': same-epoch retries are not admissible; preserve failures and amend prospectively')
         good=[]
+        contract=e.get('execution_contract')
+        if contract is None:contract,_=command_to_contract(e['command'],e['code_paths'])
+        validate_contract(contract,self.root,e['code_paths'])
         for a in attempts:
             rel=str((a/'execution.json').relative_to(self.root));r=self.j(rel)
-            need(r.get('experiment_id')==eid and r.get('seed')==e['seed'],eid+': execution identity mismatch')
+            need(isinstance(r,dict),eid+': execution record must be an object')
+            signed=verify_execution_record(r,project_id=self.p['project_id'],epoch=self.freeze['epoch'],
+                                           experiment=e,freeze=self.freeze,engine_hash=self.engine_hash)
             need(r.get('freeze_sha256')==sha(self.epoch/'freeze.json'),eid+': stale freeze binding')
-            need(r.get('inputs_before')==self.freeze['files'],eid+': pre-execution input binding mismatch')
-            need(r.get('inputs_after')==self.freeze['files'],eid+': source/data changed during run')
-            need(r.get('engine_sha256')==self.engine_hash,eid+': code binding mismatch')
-            expected=[arg.replace('{run_dir}',str(a.resolve())).replace('{seed}',str(e['seed'])).replace('{experiment_id}',eid) for arg in e['command']]
-            need(r.get('argv')==expected,eid+': executed command differs from plan')
+            need(r.get('argv_template')==contract_argv_template(contract),eid+': executed command differs from frozen contract')
+            need(r.get('execution_contract')==contract,eid+': executed contract differs from plan')
+            need(r.get('dependency_lock_hash')==sha(inside(self.root,self.p['dependency_lock'])),eid+': dependency-lock binding mismatch')
+            need(r.get('interpreter_hash')==r.get('runtime_attestation',{}).get('interpreter_hash'),eid+': runtime hash mismatch')
             outputs=inventory(self.root,[str(a.relative_to(self.root))],reject_dangerous_ext=False);outputs.pop(rel,None)
             need(outputs==r.get('outputs'),eid+': output hash/membership changed since execution')
-            receipt = r.get('supervisor_receipt')
-            if receipt is not None:
-                need(isinstance(receipt,dict),eid+': malformed receipt')
-                verify_receipt_signature(receipt)
-                bindings = {'receipt_version':1, 'supervisor_version':self.freeze['factory_version'],
-                            'policy_version':str(self.p['schema_version']),
-                            'runtime_id':e.get('execution_contract',{}).get('runtime_id','unknown') if e.get('execution_contract') else 'legacy-child-runtime-unattested',
-                            'project_id':self.p['project_id'], 'epoch':self.freeze['epoch'],
-                            'experiment_id':eid, 'seed':e['seed'], 'run_nonce':r.get('run_nonce'),
-                            'snapshot_merkle_root':self.freeze.get('snapshot_merkle_root',''),
-                            'input_root':digest(self.freeze['files']), 'output_root':digest(outputs),
-                            'launch_spec':digest(r.get('argv')), 'exit_status':r.get('exit_code'),
-                            'interpreter_hash':r.get('interpreter_hash'),
-                            'dependency_lock_hash':sha(inside(self.root,self.p['dependency_lock'])),
-                            'started_at':r.get('started_at'), 'finished_at':r.get('finished_at')}
-                for key,value in bindings.items():
-                    need(type(receipt.get(key)) is type(value) and receipt.get(key)==value,eid+': signed receipt binding mismatch: '+key)
-                resources=receipt.get('resource_observations')
-                need(isinstance(resources,dict),eid+': missing resource observations')
-                need(resources.get('cpu_time_seconds') is None and resources.get('memory_peak_bytes') is None,
-                     eid+': this local backend does not measure CPU time or memory')
-                need(type(resources.get('wall_time_seconds')) is float and resources['wall_time_seconds']==r.get('duration_sec'),
-                     eid+': signed wall-time observation differs from outer run')
-            else:
-                self.diagnostic('UNATTESTED_EXECUTION',eid+': '+a.name+'; legacy structural evidence only, no receipt authentication')
-            self.bindings.update(outputs)
+            self.bindings.update(outputs);self.receipts[eid]=signed
             if r.get('exit_code')==0 and not r.get('record_error'):good.append(a)
             else:self.diagnostic('FAILED_ATTEMPT',f'{eid}: {a.name}, exit {r.get("exit_code")}; retained; no silent deletion')
         need(len(good)==1,eid+': needs exactly one successful attempt; duplicate successes are not independent evidence')
         need(good[0]==attempts[-1],eid+': latest attempt did not succeed; cannot select an earlier favorable run')
         a=good[0];r=self.j(str((a/'result.json').relative_to(self.root)))
-        need(r.get('experiment_id')==eid and r.get('seed')==e['seed'],eid+': result identity mismatch')
+        need(isinstance(r,dict),eid+': result must be an object')
+        validate_json_value(r,'result')
+        need(r.get('experiment_id')==eid and type(r.get('seed')) is int and r['seed']==e['seed'],eid+': result identity mismatch')
         need(r.get('config')==e['config'],eid+': reported runtime config differs from frozen config')
         predpath=inside(a,r['predictions']);rel=str(predpath.relative_to(self.root))
-        preds=self.table(rel,{'sample_id','label','score'})
+        preds=self.table(rel,{'sample_id','score'})
         data={}
         for pr in preds:
             sid=pr['sample_id'];need(sid not in data,eid+': duplicate prediction id')
             need(sid in self.coh,eid+': phantom prediction id '+sid)
-            need(pr['label']==self.coh[sid]['label'],eid+': prediction label disagrees with source cohort')
+            if 'label' in pr:
+                need(pr['label']==self.coh[sid]['label'],eid+': prediction label disagrees with source cohort')
+            pr={**pr,'label':self.coh[sid]['label']}
             number(pr['score']);data[sid]=pr
         expected={s for s,c in self.coh.items() if c['split'] in e['evaluation_splits']}
         need(set(data)==expected,eid+': missing/extra evaluation rows; do not select favorable test subsets')
@@ -149,17 +213,24 @@ class Audit:
             y=[self.coh[s]['label'] for s in ids];scores=[data[s]['score'] for s in ids]
             need(min(y.count('0'),y.count('1'))>=self.p['policy']['min_class_count'],eid+': class count insufficient in '+split)
             metrics=binary_metrics(y,scores,e['threshold']);out[split]=metrics
-            reported=r['reported_metrics'][split]
-            need(set(reported)==set(metrics),eid+': must report all six defined metrics; AUPRC alias not accepted')
-            for k,v in metrics.items():need(abs(number(reported[k])-v)<=self.p['policy']['metric_tolerance'],f'{eid}: {split}.{k} differs from independent recomputation ({v})')
+            if 'reported_metrics' in r:
+                need(isinstance(r['reported_metrics'],dict) and set(r['reported_metrics'])==set(e['evaluation_splits']),eid+': reported metric splits differ from evaluated splits')
+                reported=r['reported_metrics'][split]
+                need(isinstance(reported,dict) and set(reported)==set(metrics),eid+': must report all six defined metrics; AUPRC alias not accepted')
+                for k,v in metrics.items():
+                    need(type(reported[k]) in (int,float),eid+': reported metric must be a JSON number')
+                    need(abs(number(reported[k])-v)<=self.p['policy']['metric_tolerance'],f'{eid}: {split}.{k} differs from independent recomputation ({v})')
             if len(set(scores))==1:self.diagnostic('CONSTANT_PREDICTION',eid+': '+split)
             if set(map(float,scores))<={0.,1.}:self.diagnostic('SATURATED_PREDICTION',eid+': '+split)
-            if metrics['auroc']<.5:self.diagnostic('BELOW_CHANCE',eid+': '+split)
+            if metrics['auroc']<.5:
+                null_only=all(c['kind']=='descriptive' and c.get('result_interpretation')=='null_result' for c in self.p['claims'] if eid in c['experiment_ids'])
+                need(null_only,eid+': '+split+' BELOW_CHANCE AUROC requires an explicit descriptive null-result claim')
+                self.diagnostic('BELOW_CHANCE',eid+': '+split+' explicitly declared null result')
             if metrics['auroc']==1.:self.diagnostic('PERFECT_RANKING',eid+': '+split)
         self.training(e,r,a)
         self.computed[eid]={'metrics':out,'seed':e['seed'],'model':e['model'],'predictions_sha256':sha(predpath),'result_path':str((a/'result.json').relative_to(self.root)),
-                            'local_receipt_signature_checked':read_json(a/'execution.json').get('supervisor_receipt') is not None,
-                            'sealed_evaluation':False}
+                            'receipt_verified':True,'execution_trust':'same_user_local',
+                            'runtime_attestation':read_json(a/'execution.json')['runtime_attestation']}
         self.observed[eid]=data;self.reports[eid]=r
     def training(self,e,result,a):
         t=e['training'];eid=e['id']
@@ -168,25 +239,10 @@ class Audit:
             p=inside(a,result['method_evidence']);self.file(str(p.relative_to(self.root)))
             return
         hist=inside(a,result['history']);rows=self.table(str(hist.relative_to(self.root)),{'epoch','train_loss','validation_loss'})
-        epochs=[int(r['epoch']) for r in rows]
+        validate_training_trace(t,rows,result.get('epochs_trained'),result.get('checkpoint_epoch'),field=eid)
+        epochs=[int(row['epoch']) for row in rows]
         self.training_sufficiency(t,eid,rows,epochs)
-        tr=[number(r['train_loss']) for r in rows];va=[number(r['validation_loss']) for r in rows]
-        need(all(x>=0 for x in tr+va),eid+': negative/nonfinite losses')
-        need(result['epochs_trained']==len(rows),eid+': declared epochs differ from raw history')
-        chosen=result['checkpoint_epoch'];need(type(chosen) is int and chosen in epochs,eid+': checkpoint epoch absent from history')
-        if t['mode']=='early_stopping':
-            best=float('inf');best_epoch=0;bad=0;stop=None
-            for epoch,loss in zip(epochs,va):
-                if loss<best-t['min_delta']:best=loss;best_epoch=epoch;bad=0
-                else:bad+=1
-                if epoch>=t['min_epochs'] and bad>=t['patience']:stop=epoch;break
-            need(stop==len(rows),eid+': early-stop event not supported by validation trace; budget exhaustion is not convergence')
-            need(chosen==best_epoch,eid+': selected checkpoint violates frozen validation selection')
-        else:
-            w=t['tail_window'];need(len(rows)==t['max_epochs'],eid+': fixed budget not completed')
-            drift=abs(mean(va[-w:])-mean(va[-2*w:-w]))/max(abs(mean(va[-2*w:-w])),1e-12)
-            need(drift<=t['relative_tolerance'],eid+': validation still changing at budget cap; extend prospectively')
-            need(chosen==min(range(len(va)),key=lambda i:va[i])+1,eid+': fixed-budget best checkpoint mismatch')
+        tr=[number(row['train_loss']) for row in rows]
         for key in ('checkpoint','initial_checkpoint'):
             p=inside(a,result[key]);need(self.file(str(p.relative_to(self.root))).stat().st_size>0,eid+': empty checkpoint')
         if sha(inside(a,result['checkpoint']))==sha(inside(a,result['initial_checkpoint'])):self.diagnostic('UNCHANGED_CHECKPOINT',eid)
@@ -212,8 +268,19 @@ class Audit:
             need(len(set(seeds))==len(seeds) and len(seeds)>=self.p['policy']['min_seeds'],'duplicate or missing independent seed units')
             need(len(models)==1,'cannot pool different model contrasts as independent seeds')
             # Orient effect so positive is improvement for the first method.
-            if c['metric'] in ('brier','log_loss'):a,b=b,a
-            x=paired_inference(a,b,alpha=c['alpha']);x.update({'id':c['id'],'sampling_unit':c['sampling_unit']});comp.append(x)
+            if c['sampling_unit']=='test_group':
+                ids=sorted(s for s,row in self.coh.items() if row['split']=='test')
+                labels=[self.coh[s]['label'] for s in ids]
+                groups=[self.coh[s]['group_id'] for s in ids]
+                scores=[([self.observed[ai][s]['score'] for s in ids],
+                         [self.observed[bi][s]['score'] for s in ids]) for ai,bi in c['pairs']]
+                thresholds=[(lookup[ai]['threshold'],lookup[bi]['threshold']) for ai,bi in c['pairs']]
+                x=paired_group_inference(labels,scores,groups,c['metric'],thresholds=thresholds,alpha=c['alpha'],draws=c.get('inference_draws',2000))
+            else:
+                if c['metric'] in ('brier','log_loss'):a,b=b,a
+                x=paired_inference(a,b,alpha=c['alpha'],draws=c.get('inference_draws',10000))
+                x['inference_scope']='fixed_test_corpus'
+            x.update({'id':c['id'],'sampling_unit':c['sampling_unit']});comp.append(x)
             need(x['ci'][1]-x['ci'][0]<=c['max_ci_width'],'precision target not met: '+c['id'])
             if x['degenerate_variance']:self.diagnostic('ZERO_SEED_VARIANCE',c['id'])
         ps=holm([x['p_raw'] for x in comp])
@@ -287,6 +354,10 @@ class Audit:
         measured=[r for r in rows if r['warmup']=='0'];need(measured and any(r['warmup']=='1' for r in rows),'measured trials and excluded warmup needed')
         for r in rows:
             need(number(r['duration_sec'])>0 and number(r['samples'])>0,'invalid measured duration/sample count')
+            need(r['warmup'] in ('0','1') and r['phase'] in ('train','inference'),'hardware phase/warmup invalid')
+            for field in ('samples','batch_size'):
+                value=number(r[field]);need(value>0 and value.is_integer(),'hardware counts must be positive integers')
+            need(number(r['elapsed_sec'])>=0,'hardware elapsed time must be nonnegative')
         batch1=[number(r['duration_sec'])*1000 for r in measured if int(r['batch_size'])==1 and r['phase']=='inference']
         need(len(batch1)>=h['min_trials'],'batch-one latency trials below preregistered minimum')
         total_time=sum(number(r['duration_sec']) for r in measured if r['phase']=='inference')
@@ -296,6 +367,7 @@ class Audit:
         self.hardware_results={'latency_ms':{str(q):quantile(batch1,q) for q in (.5,.9,.99)},'throughput_samples_sec':total_samples/total_time,'sustained_span_sec':span}
         if h.get('energy_claim'):
             need(all('energy_joules' in r for r in measured),'energy claim needs measured joules per trial')
+            need(all(number(r['energy_joules'])>=0 for r in measured),'energy readings must be nonnegative')
             self.hardware_results['joules_per_sample']=sum(number(r['energy_joules']) for r in measured)/sum(number(r['samples']) for r in measured)
         if h.get('memory_claim'):
             for phase in ('train','inference'):
@@ -322,7 +394,9 @@ class Audit:
             need(ref_exp is not None,'reproduction references unknown experiment')
             need(e['model']==ref_exp['model'],f'reproduction model identity mismatch: {e["model"]} != {ref_exp["model"]}')
             need(e['config']==ref_exp['config'],f'reproduction config differs from original; declare explicitly')
-            need(e['training']['mode']==ref_exp['training']['mode'],'reproduction training mode differs')
+            need({k:v for k,v in e['training'].items() if k!='rationale'}==
+                 {k:v for k,v in ref_exp['training'].items() if k!='rationale'},'reproduction training policy differs')
+            need(self.computed[e['id']]['runtime_attestation']==self.computed[ref]['runtime_attestation'],'reproduction runtime differs')
             a=self.observed[e['id']];b=self.observed[ref];need(set(a)==set(b),'reproduction ID mismatch')
             tol=self.p['policy']['metric_tolerance']
             need(all(abs(float(a[s]['score'])-float(b[s]['score']))<=tol for s in a),'prediction replay disagrees; report nondeterminism and preregister justified tolerance')
@@ -330,35 +404,67 @@ class Audit:
         need(needed<=reproduced,'missing fresh-process prediction replay for '+str(sorted(needed-reproduced)))
         for f in self.p['release_files']:self.file(f)
     def run(self):
-        self.guard('PLAN',lambda:validate(self.root,self.p));self.guard('FREEZE',self.frozen);self.guard('COHORT',self.cohort);self.guard('STATIC_SOURCE_SCAN',self.static_scan)
+        self.guard('PLAN',lambda:validate(self.root,self.p));self.guard('FREEZE',self.frozen);self.guard('HISTORY',self.history);self.guard('COHORT',self.cohort);self.guard('STATIC_SOURCE_SCAN',self.static_scan)
         if hasattr(self,'coh'):
             for e in self.p.get('experiments',[]):self.guard('RUN:'+e['id'],lambda e=e:self.experiment(e))
             self.guard('STATISTICS',self.comparisons);self.guard('DERIVED_ANALYSES',self.analyses);self.guard('HARDWARE',self.hardware);self.guard('CLAIMS',self.claims)
-        payload={'schema_version':3,'status':'EVIDENCE_CHECKS_PASSED' if not self.errors else 'BLOCKED','errors':self.errors,'diagnostics':self.diagnostics,'computed_runs':self.computed,'comparisons':getattr(self,'comparison_results',[]),'derived_analyses':getattr(self,'analysis_results',{}),'hardware':getattr(self,'hardware_results',{}),'checks_executed':self.executed,'file_bindings':self.bindings,'not_automated':['source authenticity beyond observed execution and hashes','population representativeness and causal identification','truth of submitted training/device telemetry','theorem and operator semantics','novelty and venue suitability','unreported experiments outside this workspace','independence from colluding or mistaken agents']}
+        payload={'schema_version':3,'status':'EVIDENCE_CHECKS_PASSED' if not self.errors else 'BLOCKED','errors':self.errors,'diagnostics':self.diagnostics,'computed_runs':self.computed,'comparisons':getattr(self,'comparison_results',[]),'derived_analyses':getattr(self,'analysis_results',{}),'hardware':getattr(self,'hardware_results',{}),'checks_executed':self.executed,'file_bindings':self.bindings,'verified_receipts':self.receipts,'attempts':self.attempt_counts,
+                 'amendments':self.amendments,'holdout_reused':self.holdout_reused,
+                 'test_label_isolation':'not_enforced_workspace_readable','not_automated':['source authenticity beyond observed execution and hashes','same-user signing key and verifier isolation','monotonic history under restoration of an earlier valid signed workspace state','test-label secrecy and unreported holdout access','dependency lock correspondence to imported libraries','independent reviewer identity','population representativeness and causal identification','truth of submitted training/device telemetry','theorem and operator semantics','novelty and venue suitability','unreported experiments outside this workspace','independence from colluding or mistaken agents']}
         payload['evidence_digest']=digest(payload)
         return payload
 
+def _review_text(value,field,minimum=80):
+    need(isinstance(value,str) and len(value.strip())>=minimum,field+': concrete reasoning required')
+    words=re.findall(r'[a-z][a-z0-9_]+',value.lower())
+    need(len(set(words))>=12,field+': repetitive or placeholder reasoning')
+    need(not re.search(r'(?i)REPLACE_ME|TODO|at least 80 characters|specific objection (?:one|two|three)',value),field+': template not completed')
+    return ' '.join(words)
+
+def _review_evidence(root,audit,refs,reasoning):
+    need(isinstance(refs,list) and bool(refs),'review needs artifact references')
+    cited=False
+    for ref in refs:
+        need(isinstance(ref,dict) and isinstance(ref.get('path'),str),'invalid review evidence reference')
+        path=ref['path'];f=inside(root,path)
+        need(f.is_file() and sha(f)==ref.get('sha256'),'review evidence file missing or changed')
+        need(path in audit['file_bindings'] or path=='project/audit_report.json','review evidence must belong to current audit')
+        cited=cited or path in reasoning or Path(path).name in reasoning
+    need(cited,'reasoning must cite at least one referenced evidence path or filename')
+
 def verify_review(root,plan,audit):
     review=read_json(inside(root,'project/review.json'))
+    need(isinstance(review,dict),'review must be an object')
+    validate_json_value(review,'review')
     need(review.get('evidence_digest')==audit['evidence_digest'],'review stale: must bind current audit evidence_digest')
     need(review.get('reviewer_role')=='Architect','Architect owns review; no standing third role')
     need(review.get('review_mode') in ('same_session_self_review','fresh_session_review','different_model_review'),'review independence must be disclosed')
-    need(review.get('reviewer_model') and review.get('session_id'),'reviewer model/session disclosure required')
+    for key in ('reviewer_model','session_id'):
+        need(isinstance(review.get(key),str) and len(review[key].strip())>=3,'reviewer model/session disclosure required')
     checks=review.get('checks',[])
-    need(len(checks)==len(REVIEW_TOPICS) and {c['topic'] for c in checks}==REVIEW_TOPICS,'review topics missing or duplicated')
+    need(isinstance(checks,list) and all(isinstance(c,dict) for c in checks),'review checks must be objects')
+    need(len(checks)==len(REVIEW_TOPICS) and {c.get('topic') for c in checks}==REVIEW_TOPICS,'review topics missing or duplicated')
+    normalized=[]
     for c in checks:
         need(c.get('verdict')=='acceptable','review has an unresolved adverse verdict')
-        need(len(c.get('reasoning','').strip())>=80,'review needs concrete reasoning, not an empty PASS')
-        need(c.get('evidence'),'review needs actual artifact references')
-        for ref in c['evidence']:
-            f=inside(root,ref['path']);need(f.is_file() and sha(f)==ref['sha256'],'review evidence file missing or changed')
+        text=_review_text(c.get('reasoning'),c['topic']);normalized.append(text)
+        _review_evidence(root,audit,c.get('evidence'),c['reasoning'])
+    need(len(set(normalized))==len(normalized),'review duplicates the same reasoning across topics')
     resolutions=review.get('diagnostic_resolutions',[])
-    need({x['id'] for x in resolutions}=={x['id'] for x in audit['diagnostics']},'unresolved audit diagnostics')
+    need(isinstance(resolutions,list) and all(isinstance(x,dict) for x in resolutions),'diagnostic resolutions must be objects')
+    need(len(resolutions)==len(audit['diagnostics']) and {x.get('id') for x in resolutions}=={x['id'] for x in audit['diagnostics']},'unresolved or duplicate audit diagnostics')
     for r in resolutions:
-        need(len(r.get('reasoning',''))>=80 and r.get('evidence'),'diagnostic requires explanation and counterevidence, not a waiver')
-        for ref in r['evidence']:need(sha(inside(root,ref['path']))==ref['sha256'],'diagnostic evidence changed')
-    need(len(review.get('objections',[]))>=3,'three concrete adversarial objections required')
-    for o in review['objections']:need(o.get('resolution') in ('fixed','claim_narrowed','disclosed_limitation') and len(o.get('reasoning',''))>=80,'unresolved reviewer objection')
-    need(review.get('limitations') and review.get('venue_sources'),'specific limitations and verified venue sources required')
-    need(not review.get('unresolved_blockers'),'unresolved scientific blocker')
+        _review_text(r.get('reasoning'),'diagnostic')
+        _review_evidence(root,audit,r.get('evidence'),r['reasoning'])
+    objections=review.get('objections',[])
+    need(isinstance(objections,list) and len(objections)>=3,'three concrete adversarial objections required')
+    for o in objections:
+        need(isinstance(o,dict) and isinstance(o.get('objection'),str) and len(o['objection'].strip())>=20,'specific reviewer objection required')
+        need(o.get('resolution') in ('fixed','claim_narrowed','disclosed_limitation'),'unresolved reviewer objection')
+        _review_text(o.get('reasoning'),'objection')
+    for field in ('limitations','venue_sources'):
+        need(isinstance(review.get(field),list) and bool(review[field]) and
+             all(isinstance(value,str) and len(value.strip())>=20 for value in review[field]),field+': specific entries required')
+    need(any(re.search(r'https?://[^\s]+',value) for value in review['venue_sources']),'primary venue source URL required')
+    need(review.get('unresolved_blockers')==[],'unresolved scientific blocker or missing blockers list')
     return review

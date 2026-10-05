@@ -1,9 +1,11 @@
-# v3 scientific protocol
+# Scientific protocol and automated scope
 
-> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
+Register every claim's estimand, target population, independent unit, split, metric, direction and evidence IDs before confirmatory execution. Freeze thresholds, seed sets, model/config, stopping rules, comparison family and precision targets. Preserve raw source/cohort joins, prediction scores, traces, checkpoints and executed receipts. The implementation enforces the supported binary profile described in `docs/SCHEMA.md`.
 
-Every claim is registered with an ID, estimand, population, split, metric definition, preregistered direction, and evidence artifact. Every result row carries dataset fingerprint, code commit, dependency lock hash, hardware, seed, fold, training steps, checkpoint hash, and wall-clock telemetry. Predictions are immutable parquet/CSV with IDs and labels; metrics are recomputed by a separate implementation.
+Plan research support of at least 30 independent test groups and 10 observations per class, adequate training evidence, at least five aligned seeds for registered comparisons, uncertainty/effect sizes and multiplicity correction. Those floors are guardrails; power and dependence require domain assessment. Group comparisons are conditional on trained models; seed comparisons remain conditional on the fixed test corpus.
 
-Minimum release evidence: five independent seeds (or a written power-based exception), untouched test set, convergence trace with stopping rule, confidence interval and effect size, multiplicity correction, trivial/canonical/current/mechanism-matched baselines with tuning/compute parity, full factorial ablation for ≤5 components, sensitivity at ±10/25/50%, at least one legitimate OOD or explicit scope limitation, subgroup failure analysis, and model/data cards. Any synthetic/demo artifact is tagged and cannot support a claim.
+Review credible baselines, tuning opportunity, operationally isolated ablations, sensitivity, realistic OOD scope and subgroup failures. Hardware claims need raw measured trials and instrumentation reasoning. Recommended sensitivity grids and model/data cards are domain review obligations rather than automatically executed requirements when absent from the plan.
 
-Certification is a scientific decision, not a completeness score. Any critical FAIL or unresolved provenance warning yields NOT_CERTIFIED.
+No text justification overrides a numeric gate. Deterministic methods explicitly disclose their method evidence and are not called converged training. Null and failed outcomes remain legitimate evidence. A new local freeze cannot restore independence after holdout exposure.
+
+Certification records current implemented checks and a declared review. It does not certify acquisition truth, scientific correctness, independent review identity or publication acceptance. The Human reads the evidence digest and material source artifacts before submission.

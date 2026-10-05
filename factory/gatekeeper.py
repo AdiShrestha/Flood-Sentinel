@@ -1,24 +1,47 @@
 #!/usr/bin/env python3
-"""Factory v3.3.0 schema, local patch 3.3.0+flood.1; see LOCAL_PATCH_CONTRACT.md."""
+"""Factory v3.3.0 fail-closed lifecycle CLI."""
 from __future__ import annotations
-import argparse,datetime as dt,hashlib,json,os,platform,shlex,subprocess,sys,time,zipfile,fcntl,ast,re,math,csv,uuid
-from contextlib import contextmanager
+import argparse,datetime as dt,hashlib,json,os,subprocess,sys,time,fcntl,ast,re,math,csv,uuid,io,signal,resource
+from contextlib import contextmanager,redirect_stdout
 from pathlib import Path
+from enum import IntEnum
 HERE=Path(__file__).resolve().parent
 if str(HERE) not in sys.path:sys.path.insert(0,str(HERE))
-from engine.io import EvidenceError,read_json,inside,inventory,sha,write_json,digest,merkle_root
+from engine.io import EvidenceError,read_json,read_csv,inside,inventory,sha,write_json,digest,merkle_root
 from engine.plan import validate
 from engine.audit import Audit,verify_review
-from engine.contract import validate_contract,resolve_contract,command_to_contract,runtime_binary_hash,KNOWN_RUNTIMES
-from engine.supervisor import sign_receipt,verify_receipt_signature,build_receipt,runtime_attestation,init_supervisor_keys
+from engine.contract import validate_contract,resolve_contract,command_to_contract,contract_argv_template
+from engine.supervisor import sign_receipt,verify_receipt_signature,build_receipt,runtime_attestation,init_supervisor_keys,supervisor_public_key,execution_binding,validate_execution_ledger,validate_run_nonce
 from engine.schema import (expect_bool,expect_int,expect_float,expect_str,expect_list,expect_dict,expect_enum,
                            validate_training_manifest,validate_split_manifest,validate_plausibility_entry,
                            validate_reproduction_manifest,ValidationError)
-VERSION='3.3.0';ROOT_PLAN='project/research_plan.json';STATE='project/.factory';EXIT_EVIDENCE=31;EXIT_SCIENCE=32;EXIT_REVIEW=33
-EXIT_CONSTITUTION=31; EXIT_TRAINING=32; EXIT_SPLIT=33; EXIT_PLAUSIBILITY=34; EXIT_TRACE=35; EXIT_REPRO=36
+class ExitCode(IntEnum):
+    SUCCESS=0
+    ACQUISITION=11
+    CONTRACT=17
+    TIER=18
+    STATISTICAL_PROTOCOL=27
+    SENSITIVITY=28
+    PRE_SUBMISSION=29
+    FAILURE_TAXONOMY=30
+    CONSTITUTION=31
+    TRAINING=32
+    SPLIT=33
+    PLAUSIBILITY=34
+    TRACEABILITY=35
+    REPRODUCTION=36
+    RELEASE_PREFLIGHT=40
+    EVIDENCE=41
+    SCIENCE=42
+    REVIEW=43
+    PUBLICATION=44
 
-# Historical assurance vocabulary; this local backend only establishes
-# STRUCTURALLY_VALIDATED or BLOCKED. Listed higher levels are not implemented.
+VERSION='3.3.0';ROOT_PLAN='project/research_plan.json';STATE='project/.factory'
+EXIT_EVIDENCE=ExitCode.EVIDENCE;EXIT_SCIENCE=ExitCode.SCIENCE;EXIT_REVIEW=ExitCode.REVIEW
+EXIT_CONSTITUTION=ExitCode.CONSTITUTION;EXIT_TRAINING=ExitCode.TRAINING;EXIT_SPLIT=ExitCode.SPLIT
+EXIT_PLAUSIBILITY=ExitCode.PLAUSIBILITY;EXIT_TRACE=ExitCode.TRACEABILITY;EXIT_REPRO=ExitCode.REPRODUCTION
+
+# ---- Assurance levels (v3.3.0) ----
 ASSURANCE_LEVELS = [
     'STRUCTURALLY_VALIDATED',
     'SUPERVISOR_ATTESTED',
@@ -48,17 +71,32 @@ def active_engine_files():
          not p.name.endswith(('.pyc','.tmp')) and p.name!='.DS_Store']
 
 def engine_hash():
- h=hashlib.sha256()
- for p in active_engine_files():
-  h.update(str(p.relative_to(HERE)).encode());h.update(p.read_bytes())
- return h.hexdigest()
+ """Hash runtime code and governing policy, excluding tests and explanatory docs."""
+ files={str(p.relative_to(HERE)):sha(p) for p in active_engine_files()
+        if ('tests' not in p.relative_to(HERE).parts and
+            (('engine' in p.relative_to(HERE).parts and p.suffix=='.py') or
+             p.name in {'gatekeeper.py','verify_bundle_standalone.py','VERSION','constitution.md','dynamic_rules.md',
+             'constitution_coverage.yaml','factory_spec.md','gatekeeper_spec.md','PUBLICATION_POLICY.md'}))}
+ return merkle_root(files)
+
+def validation_hash():
+ """Bind the executable QA programs and regression corpus separately from freezes."""
+ files={str(p.relative_to(HERE)):sha(p) for p in active_engine_files()
+        if p.suffix=='.py' and ('tests' in p.relative_to(HERE).parts or
+           (p.parent==HERE and p.name.startswith('run_')))}
+ return merkle_root(files)
 def freeze(r,amendment=None):
   r=root(r)
   p=plan_at(r); st=inside(r,STATE);st.mkdir(parents=True,exist_ok=True);cur=inside(r,STATE+'/current.json')
+  for experiment in p['experiments']:
+   experiment_contract(r,experiment)
   if cur.exists() and not amendment:die('already frozen; use --amendment with a reason to create a new epoch and preserve all prior evidence')
   if amendment is not None and not amendment.strip():die('amendment reason must be nonempty')
   if cur.exists():
-   epoch=active(r)[0]+1
+   prior_epoch,prior_path,prior_freeze=active(r)
+   if not (prior_path/'execution_ledger.json').is_file() or not (prior_path/'research_plan_snapshot.json').is_file():
+    die('legacy frozen epoch lacks authenticated execution history; preserve the old project and migrate inputs into a new project directory; receipts cannot be retroactively attested')
+   epoch=prior_epoch+1
   else:epoch=1
   # Inventory the directories themselves: pre-expansion used to silently omit
   # directory symlinks and dangling symlinks before the inventory could reject them.
@@ -66,13 +104,32 @@ def freeze(r,amendment=None):
   # Content-addressed snapshot: compute Merkle root over all frozen files
   snapshot_root=merkle_root(files)
   # Hash active checker and plan itself: rule changes require explicit epoch.
-  f={'factory_version':VERSION,'epoch':epoch,'created_at':now(),'amendment_reason':amendment,'plan_sha256':sha(r/ROOT_PLAN),'engine_sha256':engine_hash(),'frozen_paths':p['frozen_paths'],'files':files,'snapshot_merkle_root':snapshot_root}
+  previous=active(r)[1] if cur.exists() else None
+  f={'factory_version':VERSION,'epoch':epoch,'created_at':now(),'amendment_reason':amendment,'plan_sha256':sha(r/ROOT_PLAN),'engine_sha256':engine_hash(),'frozen_paths':p['frozen_paths'],'files':files,'snapshot_merkle_root':snapshot_root,
+     'previous_freeze_sha256':sha(previous/'freeze.json') if previous else None,
+     'test_label_isolation':'not_enforced_workspace_readable'}
+  test_rows=[row for row in read_csv(inside(r,p['cohort']),{'sample_id','group_id','split','label','source_ids'}) if row['split']=='test']
+  f['holdout_fingerprint']=digest(sorted(test_rows,key=lambda row:row['sample_id']))
+  f['holdout_group_ids']=sorted({row['group_id'] for row in test_rows})
+  f['holdout_sample_ids']=sorted({row['sample_id'] for row in test_rows})
+  f['holdout_source_ids']=sorted({source for row in test_rows for source in row['source_ids'].split('|')})
+  f['previous_epoch_evidence']=inventory(r,[relpath(previous,r)],reject_dangerous_ext=False) if previous else None
   ep=inside(r,STATE+f'/epoch_{epoch:04d}')
   if ep.exists():die('epoch directory already exists; prior evidence will not be overwritten')
+  if p['intent']=='research':
+   Audit(r,p,ep,f,engine_hash()).cohort()
   invalidate_certificate(r)
   # Initialize supervisor keys if needed (outside workspace)
-  init_supervisor_keys()
-  ep.mkdir();write_json(ep/'freeze.json',f);write_json(cur,{'epoch':epoch,'freeze_path':str((ep/'freeze.json').relative_to(r))})
+  private_key,_,_=init_supervisor_keys()
+  if any(inside(r,path).resolve()==private_key.resolve() for path in files):
+   die('supervisor private key cannot be included in frozen evidence or handoff files')
+  key=supervisor_public_key();f['supervisor_public_key']=key['public_key'];f['supervisor_public_key_id']=key['public_key_id']
+  ep.mkdir();(ep/'research_plan_snapshot.json').write_bytes((r/ROOT_PLAN).read_bytes())
+  write_json(ep/'freeze.json',f)
+  ledger={'artifact_type':'factory_execution_ledger','project_id':p['project_id'],'epoch':epoch,
+          'freeze_sha256':sha(ep/'freeze.json'),'attempts':{}}
+  write_json(ep/'execution_ledger.json',sign_receipt(ledger))
+  write_json(cur,{'epoch':epoch,'freeze_path':str((ep/'freeze.json').relative_to(r))})
   print(json.dumps({'status':'FROZEN','epoch':epoch,'freeze_sha256':sha(ep/'freeze.json'),'frozen_files':len(files),'snapshot_merkle_root':snapshot_root},indent=2));return 0
 
 def active(r):
@@ -91,108 +148,127 @@ def invalidate_certificate(r):
 def source_inputs(r,p,f):
  return inventory(r,p['frozen_paths'])==f['files'] and sha(r/ROOT_PLAN)==f['plan_sha256'] and engine_hash()==f['engine_sha256']
 def safe_args(args,run,seed,eid):
-  """Legacy command sanitizer. Delegates to typed contract system for
-  comprehensive validation but retains backward compatibility."""
-  out=[]
-  for x in args:
-   if not isinstance(x,str) or any(z in x for z in (';','&&','||','`','$(','>','<')):die('experiment command must be a safe argv list, not shell text')
-   out.append(x.replace('{run_dir}',str(run.resolve())).replace('{seed}',str(seed)).replace('{experiment_id}',eid))
-  # An argv list is only useful if it cannot smuggle a second shell/interpreter
-  # parser.  Keep normal script execution (``python source/run.py``) allowed,
-  # while rejecting the inline-code modes that bypass frozen code_paths.
-  if out:
-   # Detect wrappers such as ``env python3 -c`` as well as versioned
-   # interpreters (``python3.12``). This closes the same inline-code bypass
-   # regardless of how the executable is reached.
-   inline_flags={'-c','--command','/c','-e','--eval'}
-   prefixes=('sh','bash','zsh','fish','dash','cmd','powershell','pwsh',
-             'python','pypy','node','ruby','perl')
-   for i, token in enumerate(out):
-    exe=Path(token).name.lower()
-    if any(exe == prefix or exe.startswith(prefix) for prefix in prefixes):
-     # Check for both separate and attached inline flags (-cexec(...))
-     for arg in out[i+1:]:
-      low=arg.lower()
-      if low in inline_flags:
-       die('experiment command must execute frozen code_paths; inline shell/interpreter code is not permitted')
-      for flag in inline_flags:
-       if low.startswith(flag) and len(low) > len(flag):
-        die('experiment command must execute frozen code_paths; attached inline code flag is not permitted')
-  return out
+  """Compatibility adapter through the same typed command parser used by run."""
+  code_paths=[args[1]] if isinstance(args,list) and len(args)>1 else []
+  contract,_=command_to_contract(args,code_paths)
+  argv,_,_=resolve_contract(contract,run,seed,eid)
+  return argv
 
 def execution_env(seed):
-  """Return the inherited environment after rejecting code-loading hooks."""
-  blocked_exact={'PYTHONPATH','PYTHONHOME','PYTHONSTARTUP','PYTHONINSPECT',
-                 'PYTHONBREAKPOINT','PYTHONWARNINGS','LD_PRELOAD','LD_LIBRARY_PATH',
-                 'LD_AUDIT','NODE_OPTIONS','NODE_PATH','RUBYOPT','RUBYLIB',
-                 'PERL5OPT','PERL5LIB','BASH_ENV','ENV','CDPATH',
-                 'GIT_CONFIG_GLOBAL','GIT_CONFIG_SYSTEM'}
-  blocked=sorted(k for k in os.environ if k in blocked_exact or k.startswith('DYLD_'))
-  if blocked:
-   die('unsafe process environment variables present: '+', '.join(blocked))
-  env=os.environ.copy()
-  # Bind Python's hash randomization to the preregistered experiment seed so
-  # dictionary/set iteration cannot silently vary across fresh processes.
+  """Pass only declared runtime settings; do not inherit credentials or loaders."""
+  allowed={'PATH','LANG','LC_ALL','LC_CTYPE','TZ','OMP_NUM_THREADS','MKL_NUM_THREADS',
+           'OPENBLAS_NUM_THREADS','CUDA_VISIBLE_DEVICES','SYSTEMROOT','TMPDIR'}
+  env={k:v for k,v in os.environ.items() if k in allowed}
+  env.setdefault('PATH',os.defpath)
   env['PYTHONHASHSEED']=str(int(seed) % (2**32))
-  # Prevent bytecode writes that could be imported on subsequent runs.
   env['PYTHONDONTWRITEBYTECODE']='1'
   return env
 
+def experiment_contract(r,e):
+  contract=e.get('execution_contract')
+  if contract is None:
+   contract,_=command_to_contract(e['command'],e['code_paths'])
+  return validate_contract(contract,r,e['code_paths'])
+
+def execution_ledger(r,p,ep,f):
+  ledger=read_json(inside(r,relpath(ep/'execution_ledger.json',r)))
+  verify_receipt_signature(ledger,public_key=f['supervisor_public_key'])
+  validate_execution_ledger(ledger,project_id=p['project_id'],epoch=f['epoch'],freeze_sha256=sha(ep/'freeze.json'),
+                            run_prefix=relpath(ep/'runs',r),experiment_ids=[e['id'] for e in p['experiments']])
+  return ledger
+
 def run_exp(r,eid):
-  r=root(r)
-  invalidate_certificate(r)
-  p=plan_at(r);epoch,ep,f=active(r);die('frozen inputs changed before run',EXIT_SCIENCE) if not source_inputs(r,p,f) else None
+  r=root(r);invalidate_certificate(r)
+  p=plan_at(r);epoch,ep,f=active(r)
+  if not source_inputs(r,p,f):die('frozen inputs changed before run')
+  if supervisor_public_key()['public_key_id']!=f.get('supervisor_public_key_id'):
+   die('supervisor signing key changed since freeze; amend before execution')
   e=next((x for x in p['experiments'] if x['id']==eid),None)
   if not e:die('unknown experiment '+str(eid))
-  base=ep/'runs'/eid;base.mkdir(parents=True,exist_ok=True);existing=sorted(base.glob('attempt*'))
+  ledger=execution_ledger(r,p,ep,f)
+  base=inside(r,relpath(ep/'runs'/eid,r));base.mkdir(parents=True,exist_ok=True)
+  existing=sorted(base.glob('attempt*'))
+  if eid in ledger['attempts'] and not existing:
+   die('recorded execution attempt was deleted; no same-epoch retry')
   if existing:
-   last=read_json(existing[-1]/'execution.json')
-   if last.get('exit_code')==0 and not last.get('record_error'):
+   last=read_json(inside(r,relpath(existing[-1]/'execution.json',r)))
+   if isinstance(last,dict) and last.get('exit_code')==0 and not last.get('record_error'):
     return record(r,eid,relpath(existing[-1],r))
-  a=base/f'attempt{len(existing)+1:04d}'
-  inputs=f['files'];seed=e['seed']
-  # Use typed execution contract if available, fall back to legacy command
-  contract=e.get('execution_contract')
-  if contract:
-   validate_contract(contract, r, e.get('code_paths',[]))
-   argv,preexec,env_extra=resolve_contract(contract,a,seed,eid)
-  else:
-   argv=safe_args(e['command'],a,seed,eid)
-   preexec=None;env_extra={}
-  env=execution_env(seed)
-  env.update(env_extra)
-  # Capture runtime attestation for receipt
-  rt=runtime_attestation()
-  run_nonce=str(uuid.uuid4())
+   die('failed attempt retained; no same-epoch retries. Amend the plan and disclose consumed holdouts before a new execution')
+  a=inside(r,relpath(base/'attempt0001',r));seed=e['seed'];inputs=f['files']
+  contract=experiment_contract(r,e)
+  argv,preexec,env_extra=resolve_contract(contract,a,seed,eid)
+  template=contract_argv_template(contract)
+  env=execution_env(seed);env.update(env_extra)
+  rt=runtime_attestation();run_nonce=validate_run_nonce(str(uuid.uuid4()))
+  reserved=set()
+  for number in range(1,epoch+1):
+   prior=inside(r,STATE+f'/epoch_{number:04d}')
+   old_f=read_json(prior/'freeze.json');old_p=read_json(prior/'research_plan_snapshot.json')
+   old_ledger=execution_ledger(r,old_p,prior,old_f)
+   nonces={entry['run_nonce'] for entry in old_ledger['attempts'].values()}
+   if reserved & nonces:die('execution nonce reused across epochs')
+   reserved.update(nonces)
+  if run_nonce in reserved:die('execution nonce already reserved; no execution launched')
   a.mkdir()
-  pre={'factory_version':VERSION,'epoch':epoch,'experiment_id':eid,'seed':seed,'argv':argv,'freeze_sha256':sha(ep/'freeze.json'),'engine_sha256':engine_hash(),'inputs_before':inputs,'started_at':now(),'run_nonce':run_nonce,'runtime_attestation':rt,'snapshot_merkle_root':f.get('snapshot_merkle_root',''),'interpreter_hash':rt.get('interpreter_hash',''),'dependency_lock_hash':sha(r/p['dependency_lock'])}
-  write_json(a/'execution.json',pre);env.update({'FACTORY_RUN_DIR':str(a.resolve()),'FACTORY_SEED':str(seed),'FACTORY_EXPERIMENT_ID':eid})
-  t=time.monotonic()
+  ledger['attempts'][eid]={'run_nonce':run_nonce,'attempt_path':relpath(a,r),'execution_sha256':None}
+  write_json(ep/'execution_ledger.json',sign_receipt(ledger))
+  timeout=contract.get('wall_seconds',3600)
+  pre={'factory_version':VERSION,'project_id':p['project_id'],'epoch':epoch,
+       'experiment_id':eid,'seed':seed,'argv':template,'argv_template':template,
+       'execution_contract':contract,'freeze_sha256':sha(ep/'freeze.json'),
+       'engine_sha256':engine_hash(),'inputs_before':inputs,'started_at':now(),
+       'run_nonce':run_nonce,'runtime_attestation':rt,'snapshot_merkle_root':f['snapshot_merkle_root'],
+       'interpreter_hash':rt['interpreter_hash'],'dependency_lock_hash':sha(r/p['dependency_lock']),
+       'environment':{k:hashlib.sha256(v.encode()).hexdigest() for k,v in env.items()},
+       'environment_representation':'value_sha256','runtime_id':contract['runtime_id'],
+       'trust_profile':'same_user_local','network_isolation':'not_enforced',
+       'wall_timeout_seconds':timeout}
+  write_json(a/'execution.json',pre)
+  env.update({'FACTORY_RUN_DIR':str(a.resolve()),'FACTORY_SEED':str(seed),'FACTORY_EXPERIMENT_ID':eid})
+  t=time.monotonic();usage_before=resource.getrusage(resource.RUSAGE_CHILDREN)
+  proc=None;capture_error=None
   try:
    with (a/'stdout.log').open('w') as stdout,(a/'stderr.log').open('w') as stderr:
-    code=subprocess.run(argv,cwd=r,env=env,stdout=stdout,stderr=stderr,check=False,preexec_fn=preexec).returncode
-  except KeyboardInterrupt:code=130
-  except (OSError,subprocess.SubprocessError) as ex:(a/'stderr.log').write_text(str(ex));code=None
-  outputs=inventory(r,[relpath(a,r)],reject_dangerous_ext=False);outputs.pop(relpath(a/'execution.json',r),None)
-  post=inventory(r,p['frozen_paths']);rec={**pre,'returncode':code,'exit_code':code,'duration_sec':time.monotonic()-t,'finished_at':now(),'inputs_after':post,'outputs':outputs}
-  # Generate supervisor-signed receipt
+    proc=subprocess.Popen(argv,cwd=r,env=env,stdout=stdout,stderr=stderr,
+                          preexec_fn=preexec,start_new_session=True)
+    try:code=proc.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+     os.killpg(proc.pid,signal.SIGKILL);proc.wait();code=124;capture_error='wall-clock timeout'
+    except KeyboardInterrupt:
+     os.killpg(proc.pid,signal.SIGKILL);proc.wait();code=130;capture_error='interrupted'
+    finally:
+     try:os.killpg(proc.pid,signal.SIGKILL)
+     except ProcessLookupError:pass
+  except (OSError,subprocess.SubprocessError) as ex:
+   (a/'stderr.log').write_text(str(ex));code=None;capture_error=str(ex)
+  usage_after=resource.getrusage(resource.RUSAGE_CHILDREN)
   try:
-   signed=build_receipt(
-    run_nonce=run_nonce,project_id=p.get('project_id',''),epoch=epoch,
-    experiment_id=eid,snapshot_merkle_root=f.get('snapshot_merkle_root',''),
-    input_root=digest(inputs),runtime_id=contract.get('runtime_id','unknown') if contract else 'legacy-child-runtime-unattested',
-    interpreter_hash=rt.get('interpreter_hash',''),dependency_lock_hash=sha(r/p['dependency_lock']),
-    launch_spec=digest(argv),seed=seed,output_root=digest(outputs),
-    exit_status=code,cpu_time=None,memory_peak=None,wall_time=rec['duration_sec'],
-    started_at=rec['started_at'],finished_at=rec['finished_at'],
-    supervisor_version=VERSION,policy_version=str(p.get('schema_version',3)))
-   rec['supervisor_receipt']=signed
-  except Exception as _receipt_err:
-   rec['receipt_error'] = str(_receipt_err)  # Auditable; missing receipt degrades assurance level
+   outputs=inventory(r,[relpath(a,r)],reject_dangerous_ext=False)
+   outputs.pop(relpath(a/'execution.json',r),None)
+   post=inventory(r,p['frozen_paths'])
+  except EvidenceError as ex:
+   outputs={};post={};capture_error=str(ex)
+  rec={**pre,'returncode':code,'exit_code':code,'duration_sec':time.monotonic()-t,
+       'finished_at':now(),'inputs_after':post,'outputs':outputs}
+  if capture_error:rec['record_error']=capture_error
+  rec['supervisor_receipt']=build_receipt(
+    run_nonce=run_nonce,project_id=p['project_id'],epoch=epoch,experiment_id=eid,
+    snapshot_merkle_root=f['snapshot_merkle_root'],input_root=digest(inputs),
+    runtime_id=contract['runtime_id'],interpreter_hash=rt['interpreter_hash'],
+    dependency_lock_hash=pre['dependency_lock_hash'],launch_spec=digest(template),seed=seed,
+    output_root=digest(outputs),exit_status=code,
+    cpu_time=(usage_after.ru_utime+usage_after.ru_stime)-(usage_before.ru_utime+usage_before.ru_stime),
+    memory_peak=None,started_at=rec['started_at'],finished_at=rec['finished_at'],
+    supervisor_version=VERSION,policy_version=str(p['schema_version']),
+    execution_binding=execution_binding(rec),engine_sha256=pre['engine_sha256'],
+    inputs_after_root=digest(post),trust_profile='same_user_local')
   write_json(a/'execution.json',rec)
-  # record only successful runs; failed attempt remains auditable.
-  if code==0:return record(r,eid,relpath(a,r))
-  print(json.dumps({'status':'FAILED_ATTEMPT_RETAINED','attempt':relpath(a,r),'exit_code':code},indent=2))
+  ledger['attempts'][eid]['execution_sha256']=sha(a/'execution.json')
+  write_json(ep/'execution_ledger.json',sign_receipt(ledger))
+  if code==0 and not capture_error:return record(r,eid,relpath(a,r))
+  print(json.dumps({'status':'FAILED_ATTEMPT_RETAINED','attempt':relpath(a,r),
+                    'exit_code':code,'error':capture_error},indent=2))
   return EXIT_EVIDENCE
 
 def record(r,eid,runrel):
@@ -219,18 +295,22 @@ def record(r,eid,runrel):
  A=Audit(r,p,ep,f,engine_hash());A.frozen();A.cohort()
  try:
   A.experiment(e)
- except Exception as ex:
-  exmeta=read_json(a/'execution.json');exmeta['record_error']=str(ex);write_json(a/'execution.json',exmeta);raise
- result=A.computed[eid];print(json.dumps({'status':'RECORDED','run':runrel,'metrics':result['metrics']},indent=2));return 0
+ except Exception:
+  # The signed receipt is immutable even if validation fails.
+  raise
+ print(json.dumps({'status':'RECORDED','run':runrel,'heldout_metrics':'available at audit/review; labels remain workspace-readable'},indent=2));return 0
 
 def _finalize_release_checks(r,p,out):
      """Run every release-critical check and bind its result into the digest."""
      findings=_acquisition_findings([inside(r,cp) for e in p.get('experiments',[]) for cp in e.get('code_paths',[])])
      _append_factory_findings(out,findings)
      methodology_text=inside(r,p['methodology']).read_text(errors='replace')
-     if re.search(r'(?i)\bT-(?:DESC|COMP|CAUSAL)\b',methodology_text) and tier_check(inside(r,p['methodology'])):
+     with redirect_stdout(io.StringIO()):
+         tier_code=tier_check(inside(r,p['methodology'])) if re.search(r'(?i)\bT-(?:DESC|COMP|CAUSAL)\b',methodology_text) else 0
+         plausibility_code=verify_result_plausibility(out)
+     if tier_code:
          out.setdefault('errors',[]).append({'code':'TIER_CHECK','detail':'methodology claim tier is stronger than its declared evidence'})
-     if verify_result_plausibility(out):
+     if plausibility_code:
          out.setdefault('errors',[]).append({'code':'RESULT_PLAUSIBILITY','detail':'audit artifact contains unexplained implausible values'})
      live_code,live=verify_coverage_liveness(r,quiet=True)
      out.setdefault('checks_executed',[]).extend(['ACQUISITION_AUDIT','COVERAGE_LIVENESS'])
@@ -239,6 +319,13 @@ def _finalize_release_checks(r,p,out):
      from engine.attacks import verify_attack_registry
      atk_errors = verify_attack_registry()
      if atk_errors: out.setdefault('errors',[]).append({'code':'ATTACK_REGISTRY','detail':atk_errors})
+     from engine.publication import release_check
+     publication=release_check(r)
+     out['publication']=publication
+     if publication['status']=='BLOCKED':
+         out.setdefault('errors',[]).append({'code':'PUBLICATION','detail':publication['errors']})
+     if publication['status'] not in ('NOT_INITIALIZED','DISTRIBUTION'):
+         out.setdefault('checks_executed',[]).append('PUBLICATION')
      # Compute assurance level (v3.3.0)
      out['assurance_level']=_compute_assurance_level(out)
      out['status']='BLOCKED' if out.get('errors') else 'EVIDENCE_CHECKS_PASSED'
@@ -250,16 +337,16 @@ def _finalize_release_checks(r,p,out):
      return out
 
 def _compute_assurance_level(out):
-     """Local checks cannot establish an isolated supervisor or withheld evaluator."""
+     """Local signatures attest bytes under a same-user key, not isolation."""
      if out.get('errors'):
          return 'BLOCKED'
+     # This execution backend cannot establish separate-identity supervision,
+     # label escrow, or authenticated independent reviewer identity.
      return 'STRUCTURALLY_VALIDATED'
 
 def _assurance_with_review(base_level, has_review):
-     """A boolean claiming review cannot establish independent scientific review."""
-     if base_level == 'BLOCKED':
-         return 'BLOCKED'
-     return 'STRUCTURALLY_VALIDATED'
+     """A self-reported review mode cannot raise cryptographic assurance."""
+     return base_level
 
 def audit(r):
   r=root(r)
@@ -271,23 +358,97 @@ def audit_snapshot(r,p):
   out['epoch']=epoch;out['audit_at']=now()
   return _finalize_release_checks(r,p,out)
 
-def certify(r):
+def release_preflight(r):
+  """Run fresh behavioral checks; a persisted report is never an execution shortcut."""
+  from engine.attacks import run_registered_attacks
+  from run_mutation_checks import run_benchmark as mutations_benchmark
+  from run_seeded_fault_benchmark import run_benchmark as seeded_benchmark
+  report={'status':'RUNNING','created_at':now(),'engine_sha256':engine_hash(),
+          'validation_sha256':validation_hash()}
+  path=inside(r,'project/release_checks.json')
+  write_json(path,report)
+  captured=io.StringIO()
+  with redirect_stdout(captured):coverage_code=verify_constitution_coverage(r)
+  report['constitution_coverage']=json.loads(captured.getvalue())
+  code=coverage_code
+  if not code:
+   report['registered_attacks']=run_registered_attacks()
+   if report['registered_attacks'].get('status')!='PASS':code=ExitCode.RELEASE_PREFLIGHT
+  if not code:
+   report['mutation_benchmark']=mutations_benchmark(minimum_score=80)
+   if report['mutation_benchmark'].get('status')!='PASS':code=ExitCode.RELEASE_PREFLIGHT
+  if not code:
+   report['seeded_fault_benchmark']=seeded_benchmark()
+   if report['seeded_fault_benchmark'].get('status')!='PASS':code=ExitCode.RELEASE_PREFLIGHT
+  if report['engine_sha256']!=engine_hash() or report['validation_sha256']!=validation_hash():
+   report['error']='engine or validation corpus changed during preflight';code=ExitCode.RELEASE_PREFLIGHT
+  report['status']='FAIL' if code else 'PASS'
+  write_json(path,report)
+  print(json.dumps({'check':'release_preflight','status':report['status'],
+                   'checks':{name:value['status'] for name,value in report.items() if isinstance(value,dict)},
+                   'report':'project/release_checks.json'}))
+  return code,report
+
+def certify(r,*,force_preflight=False):
   r=root(r)
   invalidate_certificate(r)
-  p=plan_at(r);out=audit_snapshot(r,p);epoch=out['epoch'];write_json(inside(r,'project/audit_report.json'),out)
-  if out['errors']:print(json.dumps({'status':'NOT_CERTIFIED','reason':'audit failed','audit_report':'project/audit_report.json'},indent=2));return EXIT_SCIENCE
-  try:review=verify_review(r,p,out)
-  except (EvidenceError,KeyError,TypeError,ValueError) as ex:print(json.dumps({'status':'NOT_CERTIFIED','reason':str(ex)},indent=2));return EXIT_REVIEW
-  if p['intent']=='fixture' or p['data_origin']=='fixture':
-   print(json.dumps({'status':'FIXTURE_ONLY','reason':'fixture evidence never certifies research'}));return EXIT_REVIEW
-  # Promote assurance level with review
-  final_assurance=_assurance_with_review(out.get('assurance_level','STRUCTURALLY_VALIDATED'),True)
-  cert={'factory_version':VERSION,'status':'LOCAL_REVIEW_COMPLETE','issued_at':now(),'scope':'local byte integrity and disclosed review only; no isolated supervisor, sealed evaluation or independent scientific certification','epoch':epoch,'audit_sha256':sha(r/'project/audit_report.json'),'review_sha256':sha(r/'project/review.json'),'checks_executed':out['checks_executed'],'diagnostics_resolved':len(out['diagnostics']),'not_automated':out['not_automated'],'limitations':review['limitations'],'review_disclosure':{k:review[k] for k in ('reviewer_model','session_id','review_mode')},'assurance_level':final_assurance,'assurance_components':{'byte_integrity':'verified','execution_provenance':'local signature checks only; same-user key access is possible','runtime_integrity':'supervisor process snapshot only; child isolation unestablished','evaluation_integrity':'local arithmetic recomputation; target withholding unestablished','statistical_validity':'native conditional calculations only; population validity requires scientific review','not_automated':out['not_automated']}}
-  cert['evidence_digest']=out['evidence_digest'];cert['engine_sha256']=engine_hash()
-  write_json(inside(r,'project/RELEASE_CERTIFICATION.json'),cert);print(json.dumps(cert,indent=2));return 0
+  checks=None
+  if force_preflight:
+   plan_at(r)
+   code,checks=release_preflight(r)
+   if code:return code
+  while True:
+   p=plan_at(r);out=audit_snapshot(r,p);epoch=out['epoch']
+   write_json(inside(r,'project/audit_report.json'),out)
+   if out['errors']:
+    print(json.dumps({'status':'NOT_CERTIFIED','reason':'audit failed','errors':out['errors'],'audit_report':'project/audit_report.json'},indent=2))
+    return EXIT_SCIENCE
+   try:review=verify_review(r,p,out)
+   except (EvidenceError,KeyError,TypeError,ValueError,AttributeError) as ex:
+    print(json.dumps({'status':'NOT_CERTIFIED','reason':str(ex)},indent=2));return EXIT_REVIEW
+   if p['intent']=='fixture' or p['data_origin']=='fixture':
+    print(json.dumps({'status':'FIXTURE_ONLY','reason':'fixture evidence never certifies research'}));return EXIT_REVIEW
+   if checks is not None:break
+   code,checks=release_preflight(r)
+   if code:return code
+   # The preflight is intentionally expensive. Re-read project evidence and
+   # review afterwards so a concurrent edit cannot inherit its earlier audit.
+  if (checks.get('status')!='PASS' or checks.get('engine_sha256')!=engine_hash()
+          or checks.get('validation_sha256')!=validation_hash()):
+   print(json.dumps({'status':'NOT_CERTIFIED','reason':'release preflight is stale or failed'}));return ExitCode.RELEASE_PREFLIGHT
+  components={'byte_integrity':'verified','execution_provenance':'local_signed_receipts_verified',
+              'runtime_integrity':'recorded_same_user_runtime','evaluation_integrity':'independently_recomputed',
+              'test_label_isolation':'not_enforced_workspace_readable',
+              'statistical_validity':'registered_checks_passed' if out.get('comparisons') else 'not_applicable',
+              'review_identity':'self_reported','not_automated':out['not_automated']}
+  cert={'factory_version':VERSION,'status':'READY_FOR_HUMAN_SUBMISSION_REVIEW','issued_at':now(),
+        'scope':'local evidence consistency and recorded scientific review; same-user signing does not prove authentic execution, label isolation, or scientific truth',
+        'epoch':epoch,'audit_sha256':sha(r/'project/audit_report.json'),'review_sha256':sha(r/'project/review.json'),
+        'checks_executed':out['checks_executed'],'diagnostics_resolved':len(out['diagnostics']),
+        'not_automated':out['not_automated'],'limitations':review['limitations'],
+        'review_disclosure':{k:review[k] for k in ('reviewer_model','session_id','review_mode')},
+        'assurance_level':out['assurance_level'],'assurance_components':components,
+        'amendments':out.get('amendments',[]),'attempts':out.get('attempts',{}),
+        'holdout_reused':out.get('holdout_reused',False),'evidence_digest':out['evidence_digest'],
+        'engine_sha256':engine_hash(),'validation_sha256':validation_hash(),
+        'release_checks_sha256':sha(inside(r,'project/release_checks.json'))}
+  write_json(inside(r,'project/RELEASE_CERTIFICATION.json'),cert)
+  digest_report={'status':cert['status'],'assurance_level':cert['assurance_level'],
+                 'scope':cert['scope'],'amendments':cert['amendments'],'attempts':cert['attempts'],
+                 'holdout_reused':cert['holdout_reused'],'diagnostics':out['diagnostics'],
+                 'comparisons':out['comparisons'],'assurance_components':components,
+                 'limitations':review['limitations'],'evidence_digest':out['evidence_digest'],
+                 'release_preflight':{'status':checks['status'],'report':'project/release_checks.json',
+                       'sha256':cert['release_checks_sha256'],'validation_sha256':cert['validation_sha256'],
+                       'scope':'fresh registered regressions and constructed QA controls; known unsupported faults remain disclosed in the report'}}
+  write_json(inside(r,'project/HUMAN_EVIDENCE_DIGEST.json'),digest_report)
+  print(json.dumps(cert,indent=2));return 0
 
 def _acquisition_findings(scripts):
-    paths=[Path(x) for x in scripts if Path(x).suffix.lower()=='.py'] if scripts else list(HERE.rglob('*.py'))
+    paths=[]
+    for x in scripts or []:
+        path=Path(x)
+        paths.extend(sorted(path.rglob('*.py')) if path.is_dir() else ([path] if path.suffix.lower()=='.py' else []))
     return _scan_phantom_input_fabrication(paths)+_scan_undisclosed_synthetic_fallback(paths)
 
 def _append_factory_findings(audit, findings):
@@ -302,8 +463,17 @@ def init(r):
  r=root(r)
  for x in ('project','source','data','DROP_HERE','TAKE_THIS'): inside(r,x).mkdir(parents=True,exist_ok=True)
  p=inside(r,'project/research_plan.json')
- if not p.exists():write_json(p,{'schema_version':3,'factory_version':'3.3.0','project_id':'REPLACE_ME','profile':'binary_classification','intent':'research','data_origin':'observational','population':'REPLACE_ME','license':'REPLACE_ME','independence_rationale':'REPLACE_ME','sampling_rationale':'REPLACE_ME','cohort':'data/cohort.csv','source_records':'data/source_records.csv','methodology':'project/methodology.md','dependency_lock':'source/requirements.lock','frozen_paths':['source','data','project/methodology.md'],'experiments':[],'comparisons':[],'claims':[],'analyses':{},'release_files':[],'policy':{'min_test_groups':2,'min_class_count':2,'min_seeds':5,'metric_tolerance':1e-8}})
- print(json.dumps({'status':'INITIALIZED','next':'Architect completes research_plan.json and methodology, then freeze'},indent=2));return 0
+ if not p.exists():write_json(p,{'schema_version':3,'factory_version':'3.3.0','project_id':'REPLACE_ME','profile':'binary_classification','intent':'research','data_origin':'observational','population':'REPLACE_ME','license':'REPLACE_ME','independence_rationale':'REPLACE_ME','sampling_rationale':'REPLACE_ME','cohort':'data/cohort.csv','data_provenance':'data/provenance.json','source_records':'data/source_records.csv','methodology':'project/methodology.md','dependency_lock':'source/requirements.lock','frozen_paths':['source','data','project/methodology.md'],'experiments':[],'comparisons':[],'claims':[],'analyses':{},'release_files':[],'policy':{'min_test_groups':30,'min_class_count':10,'min_seeds':5,'metric_tolerance':1e-8}})
+ from engine.publication import initialize
+ publication=initialize(r)
+ print(json.dumps({'status':'INITIALIZED','publication':publication,'next':'Architect completes research_plan.json and methodology, then freeze'},indent=2));return 0
+
+def verify_publication(r,refs=None,staged_only=False,commit_message=None):
+ from engine.publication import check,current_refs
+ try:out=check(r,refs=[] if staged_only else (refs if refs is not None else current_refs(r)),commit_message=commit_message)
+ except (EvidenceError,OSError,ValueError) as error:out={'status':'BLOCKED','error':str(error)}
+ print(json.dumps(out,indent=2))
+ return 0 if out['status']=='PASS' else ExitCode.PUBLICATION
 
 # ---- Scientific verification surface (v3.3.0) ----------------------------
 # These checks are deliberately stdlib-only and operate on evidence bytes.  They
@@ -401,8 +571,8 @@ def _deep_result_findings(obj, _path='root', _depth=0):
     """Recursively traverse an audit artifact to find plausibility-relevant
     values at any depth. Replaces one-level flattening that missed values
     nested under computed_runs, comparisons, or other structures."""
-    if _depth > 20:
-        return []  # Prevent infinite recursion
+    if _depth > 100:
+        raise ValidationError('artifact', 'plausibility nesting exceeds 100 levels')
     findings = []
     if isinstance(obj, dict):
         # Check this dict for plausibility issues
@@ -426,24 +596,35 @@ def _deep_result_findings(obj, _path='root', _depth=0):
     return findings
 
 def _result_findings_single(e):
-    """Plausibility diagnostics are not tests that an outcome is desirable."""
-    validate_plausibility_entry(e)
-    findings=[]
-    name=str(e.get('metric',e.get('name',''))).lower()
-    v=_metric_value(e)
-    # ROC AUC has a .5 random-ranking reference. F1, precision, recall and
-    # ordinary accuracy have no population-independent .5 chance baseline.
-    chance=.5 if name in ('auroc','auc','roc_auc') else None
-    if name=='balanced_accuracy' and type(e.get('n_classes')) is int and e['n_classes']>1:
-        chance=1/e['n_classes']
-    if chance is not None and v is not None and v<chance:
-        findings.append(('below_chance',e))
-    if chance is not None and v==chance and str(e.get('verdict','')).lower() in ('supported','confirmed'):
-        findings.append(('chance_level_supported_claim',e))
-    p=e.get('p_value',e.get('p'))
-    if p is not None and p==0: findings.append(('exact_zero_p',e))
-    ci=e.get('confidence_interval',e.get('ci'))
-    if ci is not None and ci[0]==ci[1]: findings.append(('zero_width_ci',e))
+    """Inspect metric-specific baselines, finite p-values and intervals."""
+    findings = []
+    name = str(e.get('metric', e.get('name', ''))).lower()
+    value = _metric_value(e)
+    baseline = None
+    if name in ('auroc', 'auc', 'balanced_accuracy'):
+        baseline = .5
+    elif name in ('average_precision', 'auprc', 'precision', 'f1', 'accuracy'):
+        prevalence = e.get('positive_prevalence', e.get('prevalence'))
+        if type(prevalence) in (int, float) and math.isfinite(prevalence) and 0 < prevalence < 1:
+            baseline = (2 * prevalence / (1 + prevalence) if name == 'f1' else
+                        max(prevalence, 1 - prevalence) if name == 'accuracy' else prevalence)
+        elif name == 'accuracy' and type(e.get('n_classes')) is int and e['n_classes'] > 1:
+            baseline = 1 / e['n_classes']
+        elif name == 'accuracy':
+            # Even without prevalence, less than one half cannot beat a binary majority classifier.
+            baseline = .5
+    verdict = str(e.get('verdict', '')).lower()
+    is_null = verdict in ('null', 'inconclusive', 'not_supported', 'not supported', 'unsupported')
+    if value is not None and baseline is not None and value <= baseline and not is_null:
+        findings.append(('below_chance', e))
+    if e.get('p_value', e.get('p')) == 0:
+        findings.append(('exact_zero_p', e))
+    interval = e.get('confidence_interval', e.get('ci'))
+    if isinstance(interval, list) and len(interval) == 2 and all(type(x) in (int, float) for x in interval):
+        width = interval[1] - interval[0]
+        n = e.get('n', e.get('sample_size', 0))
+        if width <= 0 or type(n) in (int, float) and n > 0 and width < 1e-6 / max(1, math.sqrt(n)):
+            findings.append(('implausibly_narrow_ci', e))
     return findings
 
 def _metric_value(e):
@@ -454,22 +635,40 @@ def _metric_value(e):
     return None
 
 def _result_findings(obj):
-    entries=_flatten_entries(obj); findings=[]
-    for e in entries: findings.extend(_result_findings_single(e))
-    verdicts=[str(e['verdict']).strip().lower() for e in entries if e.get('verdict') is not None]
-    if len(verdicts)>=3 and all(v in ('supported','confirmed','pass','passed') for v in verdicts):
-        findings.append(('all_supported',{'count':len(verdicts)}))
+    entries = _flatten_entries(obj)
+    findings = [finding for entry in entries for finding in _result_findings_single(entry)]
+    verdicts = [str(entry['verdict']).lower() for entry in entries if entry.get('verdict') is not None]
+    if len(verdicts) >= 3 and all(v in ('supported', 'confirmed', 'pass', 'passed') for v in verdicts):
+        findings.append(('all_supported', {'count': len(verdicts)}))
     return findings
 
 def _coverage_entries(path):
-    entries={}; current=None
-    for line in Path(path).read_text(errors='replace').splitlines():
-        m=re.match(r'\s{2}(C\d+):\s*$',line)
-        if m: current=m.group(1);entries[current]={};continue
+    """Parse the small coverage schema strictly, without accepting duplicate IDs."""
+    entries = {}; current = None; seen_fields = set()
+    for line_number, line in enumerate(Path(path).read_text().splitlines(), 1):
+        match = re.match(r'\s{2}(C\d+):\s*$', line)
+        if match:
+            current = match.group(1)
+            if current in entries: raise EvidenceError('duplicate coverage principle: ' + current)
+            entries[current] = {}; seen_fields = set(); continue
         if current:
-            m=re.match(r'\s{4}(level|mechanism|rationale_if_null):\s*(.*)$',line)
-            if m:
-                val=m.group(2).strip(); entries[current][m.group(1)]=None if val in ('null','~','') else val.strip('"\'')
+            match = re.match(r'\s{4}(level|mechanism|rationale_if_null|regression_tests):\s*(.*)$', line)
+            if match:
+                key, raw = match.groups()
+                if key in seen_fields: raise EvidenceError(f'duplicate {current}.{key}')
+                seen_fields.add(key)
+                value = raw.strip()
+                if key == 'regression_tests':
+                    try: value = json.loads(value)
+                    except ValueError as error: raise EvidenceError(f'{current}.regression_tests must be a JSON-compatible array') from error
+                elif value in ('null', '~', ''): value = None
+                elif value.startswith('"'):
+                    try: value = json.loads(value)
+                    except ValueError as error: raise EvidenceError(f'{current}.{key}: invalid quoted value') from error
+                else: value = value.strip("'")
+                entries[current][key] = value
+            elif line.startswith('    ') and line.strip() and not line.lstrip().startswith('#'):
+                raise EvidenceError(f'unsupported coverage field at line {line_number}')
     return entries
 
 def _constitution_principles(path):
@@ -480,100 +679,135 @@ def _constitution_principles(path):
     return out
 
 def verify_constitution_coverage(r):
-    cpath=HERE/'constitution.md'; ypath=HERE/'constitution_coverage.yaml'; principles=_constitution_principles(cpath)
-    if not ypath.exists(): print(json.dumps({'status':'FAIL','error':'missing constitution_coverage.yaml'})); return EXIT_CONSTITUTION
-    entries=_coverage_entries(ypath); errors=[]
-    for cid,p in principles.items():
-        e=entries.get(cid)
-        if not e: errors.append(f'{cid} missing from coverage'); continue
-        if e.get('level')!=p['level']: errors.append(f'{cid} level drift')
-        mech=e.get('mechanism'); rat=e.get('rationale_if_null')
-        if p['level']=='A' and ((mech is None)==(rat is None)): errors.append(f'{cid} must have exactly one of mechanism/rationale_if_null')
-        if mech and not re.search(r'(?:Audit\.|engine\.|[A-Za-z_][A-Za-z0-9_-]*)',mech): errors.append(f'{cid} mechanism is not a callable or command')
-    extra=set(entries)-set(principles)
-    if extra: errors.append('coverage contains unknown principles: '+','.join(sorted(extra)))
-    if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return EXIT_CONSTITUTION
-    print(f'{sum(1 for e in entries.values() if e.get("level")=="A" and e.get("mechanism")):d}/{len(principles)} Level-A principles mechanized, {sum(1 for e in entries.values() if e.get("level")=="A" and e.get("rationale_if_null")):d} with documented rationale, 0 gaps'); return 0
+    """Validate coverage declarations and references; no claim of behavioral proof."""
+    try:
+        principles = _constitution_principles(HERE / 'constitution.md')
+        entries = _coverage_entries(HERE / 'constitution_coverage.yaml')
+        errors = []
+        if not principles: errors.append('constitution has no active principles')
+        for cid, principle in principles.items():
+            entry = entries.get(cid)
+            if not entry: errors.append(cid + ' missing from coverage'); continue
+            if entry.get('level') != principle['level']: errors.append(cid + ' level drift')
+            mechanism, rationale = entry.get('mechanism'), entry.get('rationale_if_null')
+            if (mechanism is None) == (rationale is None): errors.append(cid + ' must name exactly one mechanism or limitation')
+            if rationale and (not isinstance(rationale, str) or len(rationale.strip()) < 40): errors.append(cid + ' requires a specific limitation rationale')
+            if mechanism:
+                tests = entry.get('regression_tests')
+                if not isinstance(tests, list) or not tests or any(not isinstance(test, str) or not test for test in tests):
+                    errors.append(cid + ' mechanism requires named behavioral regression tests')
+        if set(entries) != set(principles): errors.append('coverage IDs differ from active constitution')
+        if not errors:
+            _, live = verify_coverage_liveness(r, quiet=True)
+            errors.extend(live.get('errors', []))
+    except (EvidenceError, OSError, ValueError, TypeError) as error:
+        errors = [str(error)]; entries = {}; principles = {}
+    output = {'status': 'FAIL' if errors else 'PASS', 'principles_checked': len(principles),
+              'mapped_mechanisms': sum(bool(entry.get('mechanism')) for entry in entries.values()),
+              'documented_limitations': sum(bool(entry.get('rationale_if_null')) for entry in entries.values()),
+              'scope': 'declarations, callable reachability and regression references; execute release tests for behavioral evidence'}
+    if errors: output['errors'] = errors
+    print(json.dumps(output, indent=2)); return EXIT_CONSTITUTION if errors else 0
 
 def verify_training_sufficiency(path):
-    try: m=_json_load(path)
-    except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return EXIT_TRAINING
-    # Use strict schema validation (v3.3.0)
-    try: c=validate_training_manifest(m)
-    except ValidationError as e: print(json.dumps({'status':'FAIL','errors':[str(e)]},indent=2)); return EXIT_TRAINING
-    epochs=c.get('epochs_trained')
-    early_raw=c.get('early_stopping_triggered')
-    # Strict boolean check: early_stopping_triggered must be a real boolean if present
-    early=False
-    if early_raw is not None:
-        if type(early_raw) is not bool:
-            print(json.dumps({'status':'FAIL','errors':['early_stopping_triggered must be a JSON boolean']},indent=2)); return EXIT_TRAINING
-        early=early_raw
-    justification=str(c.get('justification','')).strip(); errors=[]
-    # Reject NaN/Inf explicitly: comparisons with NaN are false and previously
-    # let malformed manifests pass every numeric threshold.
-    if (isinstance(epochs,bool) or not isinstance(epochs,(int,float)) or
-            not math.isfinite(float(epochs)) or epochs<=0): errors.append('epochs_trained must be a finite number > 0')
-    elif epochs<10 and not early and not justification: errors.append('fewer than 10 epochs requires early stopping or a specific justification')
-    curve=c.get('loss_curve',[])
-    try: threshold=float(c.get('criterion_threshold',.001) or .001)
-    except (TypeError,ValueError): threshold=float('nan')
-    if not math.isfinite(threshold) or threshold<=0: errors.append('criterion_threshold must be finite and > 0')
-    if isinstance(curve,list) and len(curve)>=5 and not early and not justification:
-        try:
-            tail=[float(x) for x in curve[max(0,int(len(curve)*.8)):]]
-            if not all(math.isfinite(x) for x in tail): raise ValueError
-            slope=(tail[-1]-tail[0])/max(1,len(tail)-1)
-            if abs(slope)>threshold: errors.append(f'validation loss slope {slope:.6g} exceeds criterion threshold {threshold}')
-        except (TypeError,ValueError): errors.append('loss_curve must contain finite numeric values')
-    if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return EXIT_TRAINING
-    print(json.dumps({'status':'PASS','epochs_trained':epochs})); return 0
+    """Check actual stopping evidence through the same trace validator as audit."""
+    from engine.schema import validate_training_trace
+    try:
+        manifest = _json_load(path)
+        convergence = validate_training_manifest(manifest)
+        epochs = convergence['epochs_trained']
+        curve = convergence.get('loss_curve')
+        expect_list(curve, 'loss_curve', min_len=2)
+        for i, loss in enumerate(curve):
+            expect_float(loss, f'loss_curve[{i}]', minimum=0)
+        policy = manifest.get('frozen_policy', convergence.get('convergence_policy'))
+        if policy is None:
+            policy = {'mode': 'fixed', 'min_epochs': 10, 'max_epochs': epochs,
+                      'tail_window': max(2, epochs // 5), 'relative_tolerance': .001}
+        expect_dict(policy, 'convergence_policy')
+        early = convergence.get('early_stopping_triggered', False)
+        if early != (policy.get('mode') == 'early_stopping'):
+            raise ValidationError('early_stopping_triggered', 'must agree with the declared stopping policy')
+        rows = [{'epoch': i, 'train_loss': loss, 'validation_loss': loss} for i, loss in enumerate(curve, 1)]
+        checkpoint = convergence.get('checkpoint_epoch', min(range(len(curve)), key=curve.__getitem__) + 1)
+        verified = validate_training_trace(policy, rows, epochs, checkpoint)
+    except (EvidenceError, OSError, TypeError, ValueError, KeyError) as error:
+        print(json.dumps({'status': 'FAIL', 'errors': [str(error)]})); return EXIT_TRAINING
+    print(json.dumps({'status': 'PASS', 'epochs_trained': epochs, 'verified_policy': verified})); return 0
 
-def verify_split_integrity(path,tier=None):
-    try: m=_json_load(path)
-    except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return EXIT_SPLIT
-    # Use strict schema validation (v3.3.0)
-    try: validate_split_manifest(m)
-    except ValidationError as e: print(json.dumps({'status':'FAIL','errors':[str(e)]},indent=2)); return EXIT_SPLIT
-    counts=m.get('test_label_distribution',m.get('label_distribution',{})); justification=str(m.get('sample_size_justification','')).strip(); errors=[]; warnings=[]
-    if not isinstance(counts,dict): errors.append('label distribution must be an object')
-    elif not counts: errors.append('label distribution must not be empty')
-    else:
-        bad=[k for k,v in counts.items() if isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(float(v)) or v<0]
-        if bad: errors.append('label counts must be finite nonnegative numbers: '+','.join(map(str,bad)))
-    total=sum(float(v) for v in counts.values()) if isinstance(counts,dict) and not errors else 0
-    if tier not in ('T-DESC','T_DESC') and total<30 and not justification: errors.append(f'test sample size {total} is below floor 30 without sample_size_justification')
-    if counts:
-        vals=sorted([float(v) for v in counts.values()]) if isinstance(counts,dict) and not errors else []
-        if vals and vals[0]<10 and tier not in ('T-DESC','T_DESC') and not justification: errors.append(f'minimum class count {vals[0]} is below floor 10 without justification')
-        if vals and vals[0] and vals[-1]/vals[0]>100:
-            handling=str(m.get('imbalance_handling','') or m.get('methodology','')).strip()
-            (errors if not handling else warnings).append('class imbalance exceeds 100:1; handling statement required')
-    if errors: print(json.dumps({'status':'FAIL','errors':errors,'warnings':warnings},indent=2)); return EXIT_SPLIT
-    print(json.dumps({'status':'PASS','warnings':warnings,'n':total})); return 0
+def verify_split_integrity(path, tier=None):
+    """Validate integral binary support; free text never waives a count floor."""
+    from engine.schema import validate_split_support
+    try:
+        manifest = _json_load(path)
+        validate_split_manifest(manifest)
+        if tier not in (None, 'T-DESC', 'T_DESC', 'T-COMP', 'T_COMP', 'T-CAUSAL', 'T_CAUSAL'):
+            raise ValidationError('tier', 'unknown evidence tier')
+        counts = manifest.get('test_label_distribution', manifest.get('label_distribution'))
+        policy = manifest.get('frozen_policy', {})
+        expect_dict(policy, 'frozen_policy')
+        descriptive = tier in ('T-DESC', 'T_DESC')
+        minimum_class = 2 if descriptive else 10
+        minimum_groups = 2 if descriptive else 30
+        class_floor = expect_int(policy.get('min_class_count', minimum_class), 'min_class_count', minimum=minimum_class)
+        group_floor = expect_int(policy.get('min_test_groups', minimum_groups), 'min_test_groups', minimum=minimum_groups)
+        groups = manifest.get('test_group_count', manifest.get('independent_group_count'))
+        validate_split_support(counts, groups, min_class_count=class_floor, min_test_groups=group_floor)
+        total = sum(counts.values())
+        if not descriptive and total < 30:
+            raise ValidationError('test_label_distribution', 'test sample size is below comparative floor 30')
+        if max(counts.values()) / min(counts.values()) > 100:
+            expect_str(manifest.get('imbalance_handling'), 'imbalance_handling', min_len=40)
+    except (EvidenceError, OSError, TypeError, ValueError, KeyError) as error:
+        print(json.dumps({'status': 'FAIL', 'errors': [str(error)]})); return EXIT_SPLIT
+    print(json.dumps({'status': 'PASS', 'n': total, 'test_group_count': groups})); return 0
 
 def verify_result_plausibility(path):
-    try: obj=path if isinstance(path,(dict,list)) else _json_load(path)
-    except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return EXIT_PLAUSIBILITY
-    # Use recursive deep findings in addition to flat findings
+    """Inspect typed result values, then require a resolved, specific investigation."""
     try:
-        findings=_result_findings(obj)
-        deep_findings=_deep_result_findings(obj) if isinstance(obj,(dict,list)) else []
-    except ValidationError as e:
-        print(json.dumps({'status':'FAIL','error':str(e)})); return EXIT_PLAUSIBILITY
-    all_findings=findings+[f for f in deep_findings if f not in findings]
-    if all_findings:
-        note=(obj.get('investigation_note','') if isinstance(obj,dict) else '') or ''
-        if not note: note=' '.join(str(e.get('investigation_note','')) for _,e in all_findings if isinstance(e,dict))
-        if not str(note).strip(): print(json.dumps({'status':'FAIL','findings':[k for k,_ in all_findings],'error':'investigation_note required'})); return EXIT_PLAUSIBILITY
-        # Investigation note must have a disposition, not just free text
-        disposition=None
-        if isinstance(obj,dict):
-            disposition=obj.get('investigation_disposition')
-        if disposition and disposition not in ('explained','claim_narrowed','unresolved'):
-            print(json.dumps({'status':'FAIL','error':'investigation_disposition must be explained, claim_narrowed, or unresolved'})); return EXIT_PLAUSIBILITY
-        print(json.dumps({'status':'PASS_WITH_INVESTIGATION','findings':[k for k,_ in all_findings],'note_verified':False,'disposition':disposition})); return 0
-    print(json.dumps({'status':'PASS'})); return 0
+        obj = path if isinstance(path, (dict, list)) else _json_load(path)
+        if not isinstance(obj, (dict, list)) or not obj:
+            raise ValidationError('artifact', 'requires a nonempty structured result artifact')
+        inspected = 0
+        def validate_values(value, location='artifact'):
+            nonlocal inspected
+            if isinstance(value, dict):
+                if any(key in value for key in ('p_value', 'p', 'confidence_interval', 'ci', 'metric')):
+                    validate_plausibility_entry(value, location)
+                    for key in ('p_value', 'p'):
+                        if key in value: expect_float(value[key], location + '.' + key, minimum=0, maximum=1)
+                    if 'metric' in value:
+                        expect_str(value['metric'], location + '.metric')
+                        metric_value = next((value[k] for k in ('value', 'metric_value', 'score', 'estimate') if k in value), None)
+                        if metric_value is not None:
+                            metric_name=value['metric'].lower()
+                            if metric_name in ('auroc','auc','average_precision','auprc','accuracy','balanced_accuracy','f1','precision','recall','brier'):
+                                expect_float(metric_value, location+'.value', minimum=0, maximum=1)
+                            elif metric_name == 'log_loss': expect_float(metric_value, location+'.value', minimum=0)
+                            else: expect_float(metric_value, location + '.value')
+                    inspected += 1
+                for key, child in value.items(): validate_values(child, location + '.' + str(key))
+            elif isinstance(value, list):
+                for index, child in enumerate(value): validate_values(child, f'{location}[{index}]')
+        validate_values(obj)
+        if not inspected and not isinstance(path, (dict, list)):
+            raise ValidationError('artifact', 'contains no metric, p-value or confidence interval to inspect')
+        findings = _result_findings(obj)
+        findings += [finding for finding in _deep_result_findings(obj) if finding not in findings]
+        if findings:
+            note = obj.get('investigation_note') if isinstance(obj, dict) else None
+            disposition = obj.get('investigation_disposition') if isinstance(obj, dict) else None
+            expect_str(note, 'investigation_note', min_len=80)
+            if len(set(re.findall(r'[A-Za-z0-9]+', note.lower()))) < 10:
+                raise ValidationError('investigation_note', 'repetitive padding is not an investigation')
+            expect_enum(disposition, {'explained', 'claim_narrowed'}, 'investigation_disposition')
+            if any(kind == 'below_chance' for kind, _ in findings):
+                raise ValidationError('below_chance', 'comparative support requires an explicit null/inconclusive verdict')
+            print(json.dumps({'status': 'PASS_WITH_INVESTIGATION', 'findings': [kind for kind, _ in findings],
+                              'note_verified': False, 'disposition': disposition})); return 0
+    except (EvidenceError, OSError, TypeError, ValueError, KeyError) as error:
+        print(json.dumps({'status': 'FAIL', 'error': str(error)})); return EXIT_PLAUSIBILITY
+    print(json.dumps({'status': 'PASS', 'results_inspected': inspected})); return 0
 
 def _ids_from_obj(obj):
     ids=set()
@@ -592,7 +826,13 @@ def verify_cross_artifact_traceability(analysis,sources,id_pattern=None):
     try: text=Path(analysis).read_text(errors='replace')
     except OSError as e:
         print(json.dumps({'status':'FAIL','error':'cannot read analysis: '+str(e)})); return EXIT_TRACE
+    if pat.groups != 1:
+        print(json.dumps({'status':'FAIL','error':'id pattern must contain exactly one capture group'})); return EXIT_TRACE
     wanted={m.group(1) for m in pat.finditer(text)}; found=set(); errors=[]
+    if not wanted:
+        print(json.dumps({'status':'FAIL','error':'no identifiers recognized; supply an explicit id pattern'})); return EXIT_TRACE
+    if not sources:
+        print(json.dumps({'status':'FAIL','error':'at least one source artifact is required'})); return EXIT_TRACE
     for src in sources:
         p=Path(src)
         try:
@@ -615,15 +855,30 @@ def verify_cross_artifact_traceability(analysis,sources,id_pattern=None):
     print(json.dumps({'status':'PASS','identifiers_checked':len(wanted)})); return 0
 
 def acquisition_audit(scripts):
-    paths=[Path(x) for x in scripts] if scripts else list(HERE.rglob('*.py'))
-    findings=_scan_phantom_input_fabrication(paths)+_scan_undisclosed_synthetic_fallback(paths)
-    print(json.dumps({'status':'FAIL' if any(x['severity']=='HARD_FAIL' for x in findings) else 'PASS','findings':findings},indent=2)); return 11 if any(x['severity']=='HARD_FAIL' for x in findings) else 0
+    """Scan explicit producer paths; omitted inputs must not scan the installation."""
+    if not scripts:
+        print(json.dumps({'status': 'FAIL', 'error': 'declare producer scripts with --scripts'})); return ExitCode.ACQUISITION
+    paths = [Path(path) for path in scripts]
+    errors = [str(path) for path in paths if not path.is_file()]
+    if errors:
+        print(json.dumps({'status': 'FAIL', 'missing_scripts': errors})); return ExitCode.ACQUISITION
+    findings = _scan_phantom_input_fabrication(paths) + _scan_undisclosed_synthetic_fallback(paths)
+    failed = any(finding['severity'] == 'HARD_FAIL' for finding in findings)
+    print(json.dumps({'status': 'FAIL' if failed else 'PASS', 'findings': findings,
+                      'scope': 'static heuristic; semantic acquisition honesty requires review'}, indent=2)); return ExitCode.ACQUISITION if failed else 0
 
 def tier_check(path):
-    text=Path(path).read_text(errors='replace'); m=re.search(r'(?i)\b(T-(?:DESC|COMP|CAUSAL))\b',text); declared=m.group(1).upper() if m else 'T-DESC'; inferred='T-CAUSAL' if re.search(r'(?i)causal|mechanism|intervention',text) else 'T-COMP' if _TCOMP_STRONG_RE.search(text) or _detects_verdict_enum(text) else 'T-DESC'
-    order={'T-DESC':0,'T-COMP':1,'T-CAUSAL':2}; out={'declared':declared,'inferred':inferred}
-    if order.get(inferred,0)>order.get(declared,0): print(json.dumps({'status':'FAIL','tier_mismatch':out})); return 18
-    print(json.dumps({'status':'PASS',**out})); return 0
+    """Flag explicit positive comparative/causal wording; disclose heuristic scope."""
+    text = Path(path).read_text(errors='replace')
+    match = re.search(r'(?i)\b(T-(?:DESC|COMP|CAUSAL))\b', text)
+    declared = match.group(1).upper() if match else 'T-DESC'
+    filtered = re.sub(r'(?i)\b(?:no|without|does not|do not|not|non)[ -]+(?:causal(?: claims?| inference)?|mechanisms?|interventions?)\b', '', text)
+    causal = re.search(r'(?i)\b(?:causal effect|causal identification|causally|causes|intervention effect|identified mechanism)\b', filtered)
+    inferred = 'T-CAUSAL' if causal else 'T-COMP' if _TCOMP_STRONG_RE.search(filtered) or _detects_verdict_enum(filtered) else 'T-DESC'
+    order = {'T-DESC': 0, 'T-COMP': 1, 'T-CAUSAL': 2}
+    output = {'declared': declared, 'inferred': inferred, 'scope': 'wording heuristic; not semantic claim validation'}
+    failed = order[inferred] > order[declared]
+    print(json.dumps({'status': 'FAIL' if failed else 'PASS', **output})); return ExitCode.TIER if failed else 0
 
 def verify_reproducibility(manifest):
     try: m=_json_load(manifest)
@@ -661,218 +916,259 @@ def verify_reproducibility(manifest):
 
 def verify_sensitivity_analysis(manifest):
     try: m=_json_load(manifest)
-    except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return 28
+    except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return ExitCode.SENSITIVITY
     findings=[]; errors=[]
-    entries=m.get('sweeps',m.get('entries',m if isinstance(m,list) else []))
+    entries=m.get('sweeps',m.get('entries',[])) if isinstance(m,dict) else m if isinstance(m,list) else []
     if isinstance(entries,dict): entries=[entries]
-    if not entries: errors.append('manifest requires at least one sensitivity sweep')
+    if not isinstance(entries,list) or not entries: errors.append('manifest requires at least one sensitivity sweep'); entries=[]
     for item in entries or []:
         if not isinstance(item,dict): errors.append('each sensitivity sweep must be an object'); continue
-        if 'expected_flat' in item and type(item['expected_flat']) is not bool:
-            errors.append('expected_flat must be a JSON boolean'); continue
         vals=item.get('metrics',item.get('values',[])) if isinstance(item,dict) else []
         if isinstance(vals,dict): vals=list(vals.values())
         try:
-            nums=[float(v) for v in vals]
-            if not nums or not all(math.isfinite(v) for v in nums): raise ValueError
+            expect_str(item.get('parameter'),'sensitivity.parameter')
+            expect_list(vals,'sensitivity.metrics',min_len=3)
+            expected=expect_bool(item.get('expected_flat',False),'sensitivity.expected_flat')
+            if expected: expect_str(item.get('flat_rationale'),'sensitivity.flat_rationale',min_len=40)
+            nums=[expect_float(v,'sensitivity.metrics') for v in vals]
+            if not all(math.isfinite(v) for v in nums): raise ValueError
             if len(nums)>1 and max(nums)-min(nums)<max(.005,.01*max(abs(v) for v in nums)) and not item.get('expected_flat'): findings.append(item.get('parameter','unknown'))
-        except (TypeError,ValueError): errors.append(f"{item.get('parameter','unknown')}: metrics must be a nonempty finite numeric list")
+        except (EvidenceError,TypeError,ValueError) as error: errors.append(str(error))
     if errors:
-        print(json.dumps({'status':'FAIL','errors':errors,'flat_parameters':findings},indent=2)); return 28
-    if findings:
-        note=m.get('investigation_note') if isinstance(m,dict) else None
-        if not isinstance(note,str) or not note.strip():
-            print(json.dumps({'status':'FAIL','flat_parameters':findings,'error':'investigate flat responses; do not force a nonflat result'})); return 28
-        print(json.dumps({'status':'PASS_WITH_INVESTIGATION','flat_parameters':findings,'note_verified':False})); return 0
+        print(json.dumps({'status':'FAIL','errors':errors,'flat_parameters':findings},indent=2)); return ExitCode.SENSITIVITY
+    if findings: print(json.dumps({'status':'FAIL','flat_parameters':findings})); return ExitCode.SENSITIVITY
     print(json.dumps({'status':'PASS'})); return 0
 
 def verify_statistical_protocol(path):
-    """Validate a structured statistical protocol and its reported values."""
-    try: obj=_json_load(path)
-    except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return 27
-    proto=obj.get('statistical_protocol',obj) if isinstance(obj,dict) else {}
-    if not isinstance(proto,dict):
-        print(json.dumps({'status':'FAIL','error':'statistical_protocol must be an object'})); return 27
-    required=('primary_metric','sampling_unit','test','alpha','effect_size','confidence_interval','multiplicity_correction')
-    missing=[k for k in required if k not in proto]
-    errors=[]
-    if missing: errors.append('missing structured fields: '+', '.join(missing))
+    """Require typed estimand, sampling scope, uncertainty and a multiplicity family."""
     try:
-        alpha=expect_float(proto.get('alpha'),'alpha')
-        if not 0<alpha<=.1: errors.append('alpha must be in (0, .1]')
-    except (TypeError,ValueError): errors.append('alpha must be a finite number')
-    try:
-        for key in ('primary_metric','sampling_unit','test'):
-            expect_str(proto.get(key),key)
-        expect_float(proto.get('effect_size'),'effect_size')
-        if 'p_values' in proto:
-            expect_list(proto['p_values'],'p_values')
-            for value in proto['p_values']: expect_float(value,'p_value',minimum=0,maximum=1)
-    except ValidationError as ex: errors.append(str(ex))
-    ci=proto.get('confidence_interval')
-    if not isinstance(ci,list) or len(ci)!=2: errors.append('confidence_interval must be [low, high]')
-    elif any(isinstance(x,bool) or not isinstance(x,(int,float)) or not math.isfinite(float(x)) for x in ci) or ci[0]>ci[1]: errors.append('confidence_interval is invalid')
-    if isinstance(proto.get('p_values'),list) and len(proto['p_values'])>1 and not proto.get('multiplicity_correction'): errors.append('multiplicity correction required for multiple p-values')
-    if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return 27
-    print(json.dumps({'status':'PASS','fields_checked':len(required)})); return 0
+        obj = _json_load(path)
+        expect_dict(obj, 'artifact')
+        protocol = expect_dict(obj.get('statistical_protocol', obj), 'statistical_protocol')
+        for key in ('primary_metric', 'sampling_unit', 'test', 'multiplicity_correction'):
+            expect_str(protocol.get(key), key)
+        expect_enum(protocol['test'].lower(), {'permutation','paired permutation','bootstrap','paired bootstrap','sign_flip','paired_group_permutation','paired_t','welch_t','wilcoxon','mann_whitney','delong'}, 'test')
+        expect_enum(protocol['primary_metric'], {'auroc', 'average_precision', 'accuracy', 'f1', 'brier', 'log_loss'}, 'primary_metric')
+        expect_enum(protocol['sampling_unit'], {'seed_fixed_test', 'item', 'group', 'site', 'subject', 'dataset'}, 'sampling_unit')
+        if protocol['sampling_unit'] == 'seed_fixed_test':
+            expect_enum(protocol.get('inference_scope'), {'fixed_test_corpus'}, 'inference_scope')
+        expect_float(protocol.get('alpha'), 'alpha', minimum=0, maximum=.1)
+        if protocol['alpha'] == 0: raise ValidationError('alpha', 'must be > 0')
+        expect_float(protocol.get('effect_size'), 'effect_size')
+        interval = expect_list(protocol.get('confidence_interval'), 'confidence_interval', min_len=2, max_len=2)
+        for i, value in enumerate(interval): expect_float(value, f'confidence_interval[{i}]')
+        if interval[0] > interval[1]: raise ValidationError('confidence_interval', 'bounds must be ordered')
+        correction = protocol['multiplicity_correction'].lower()
+        expect_enum(correction, {'holm', 'bonferroni', 'none'}, 'multiplicity_correction')
+        values = protocol.get('p_values', [])
+        expect_list(values, 'p_values')
+        for i, value in enumerate(values): expect_float(value, f'p_values[{i}]', minimum=0, maximum=1)
+        if len(values) > 1 and correction == 'none':
+            raise ValidationError('multiplicity_correction', 'a correction is required for multiple confirmatory p-values')
+        if any(value == 0 for value in values): raise ValidationError('p_values', 'finite randomization p-values cannot be exact zero')
+    except (EvidenceError, OSError, TypeError, ValueError, KeyError) as error:
+        print(json.dumps({'status': 'FAIL', 'error': str(error)})); return ExitCode.STATISTICAL_PROTOCOL
+    print(json.dumps({'status': 'PASS', 'sampling_scope': protocol.get('inference_scope', protocol['sampling_unit'])})); return 0
 
 def pre_submission_audit(path):
-    """Require a value-bearing, machine-readable release readiness record."""
-    try: obj=_json_load(path)
-    except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return 29
-    if not isinstance(obj,dict): print(json.dumps({'status':'FAIL','error':'artifact must be an object'})); return 29
-    required=('claims','data_provenance','baselines','ablations','limitations','reproducibility')
-    errors=[]
-    for k in required:
-        v=obj.get(k)
-        if v is None or v=='' or v==[] or v=={}: errors.append('missing substantive section: '+k)
-    claims=obj.get('claims',[])
-    if isinstance(claims,list):
-        for i,c in enumerate(claims):
-            if not isinstance(c,dict) or not c.get('evidence') or not c.get('scope'): errors.append(f'claim {i} needs evidence and scope')
-    if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return 29
-    print(json.dumps({'status':'PASS','sections_checked':len(required)})); return 0
+    """Check structured claim/evidence links instead of nonempty section strings."""
+    try:
+        obj = expect_dict(_json_load(path), 'artifact')
+        def evidence_refs(references, field):
+            expect_list(references, field, min_len=1)
+            for reference in references:
+                expected_hash=None
+                if isinstance(reference,dict):
+                    relative=expect_str(reference.get('path'), field+'.path')
+                    expected_hash=expect_str(reference.get('sha256'), field+'.sha256')
+                    if not re.fullmatch(r'[0-9a-f]{64}',expected_hash): raise ValidationError(field,'invalid SHA-256')
+                else: relative=expect_str(reference,field+'.path')
+                target=inside(Path(path).absolute().parent,relative)
+                if not target.is_file(): raise ValidationError(field,'missing evidence: '+relative)
+                if expected_hash is not None and sha(target)!=expected_hash: raise ValidationError(field,'evidence hash mismatch: '+relative)
+                if target.suffix.lower()=='.json':
+                    value=_json_load(target)
+                    if not isinstance(value,(dict,list)) or not value: raise ValidationError(field,'vacuous JSON evidence: '+relative)
+        claims = expect_list(obj.get('claims'), 'claims', min_len=1)
+        ids = set()
+        from engine.schema import expect_id
+        for i, claim in enumerate(claims):
+            expect_dict(claim, f'claims[{i}]')
+            expect_id(claim.get('id'), f'claims[{i}].id', seen=ids)
+            expect_str(claim.get('scope'), f'claims[{i}].scope', min_len=20)
+            evidence = expect_list(claim.get('evidence'), f'claims[{i}].evidence', min_len=1)
+            evidence_refs(evidence,'claim.evidence')
+        for key in ('data_provenance', 'reproducibility'):
+            section = expect_dict(obj.get(key), key)
+            evidence_refs(section.get('evidence'),key+'.evidence')
+            expect_str(section.get('assessment'), key + '.assessment', min_len=40)
+        for key in ('baselines', 'ablations'):
+            rows = expect_list(obj.get(key), key, min_len=1)
+            for row in rows:
+                expect_dict(row, key + '.entry')
+                expect_str(row.get('id'), key + '.entry.id')
+                expect_str(row.get('assessment'), key + '.entry.assessment', min_len=40)
+                evidence_refs(row.get('evidence'),key+'.entry.evidence')
+        expect_list(obj.get('limitations'), 'limitations', min_len=1,
+                    element_validator=lambda value, field: expect_str(value, field, min_len=20))
+    except (EvidenceError, OSError, TypeError, ValueError, KeyError) as error:
+        print(json.dumps({'status': 'FAIL', 'error': str(error)})); return ExitCode.PRE_SUBMISSION
+    print(json.dumps({'status': 'PASS', 'scope': 'structured readiness record; evidence semantics require human review'})); return 0
 
 def verify_failure_taxonomy(path):
-    """Validate failure cases as traced, categorized observations."""
-    try: obj=_json_load(path)
-    except Exception as e: print(json.dumps({'status':'FAIL','error':str(e)})); return 30
-    rows=obj.get('failures',obj.get('taxonomy',[])) if isinstance(obj,dict) else []
-    errors=[]
-    if not isinstance(rows,list) or len(rows)<3: errors.append('at least three failure categories are required')
-    seen=set()
-    for i,row in enumerate(rows if isinstance(rows,list) else []):
-        if not isinstance(row,dict): errors.append(f'failure {i} must be an object'); continue
-        if not row.get('category'): errors.append(f'failure {i} missing category')
-        if row.get('category') in seen: errors.append(f'duplicate failure category: {row.get("category")}')
-        seen.add(row.get('category'))
-        if not row.get('condition_ids') and not row.get('candidate_ids'): errors.append(f'failure {i} missing traced condition/candidate IDs')
-        try: expect_float(row.get('prevalence',row.get('rate')),f'failure {i}.prevalence',minimum=0,maximum=1)
-        except ValidationError as ex: errors.append(str(ex))
-        if row.get('severity') not in ('SEV-1','SEV-2','SEV-3','SEV-4'): errors.append(f'failure {i} missing severity SEV-1..SEV-4')
-    if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return 30
-    print(json.dumps({'status':'PASS','categories_checked':len(rows)})); return 0
+    """Require integral identifier lists and bounded, finite failure prevalence."""
+    try:
+        obj = expect_dict(_json_load(path), 'artifact')
+        rows = expect_list(obj.get('failures', obj.get('taxonomy')), 'failures', min_len=3)
+        seen = set()
+        for i, row in enumerate(rows):
+            expect_dict(row, f'failures[{i}]')
+            category = expect_str(row.get('category'), f'failures[{i}].category')
+            if category in seen: raise ValidationError('category', 'duplicate failure category: ' + category)
+            seen.add(category)
+            identifiers = row.get('condition_ids', row.get('candidate_ids'))
+            expect_list(identifiers, f'failures[{i}].condition_ids', min_len=1, element_validator=expect_str)
+            if len(set(identifiers)) != len(identifiers): raise ValidationError('condition_ids', 'duplicate identifiers')
+            expect_float(row.get('prevalence', row.get('rate')), f'failures[{i}].prevalence', minimum=0, maximum=1)
+            expect_enum(row.get('severity'), {'SEV-1', 'SEV-2', 'SEV-3', 'SEV-4'}, f'failures[{i}].severity')
+    except (EvidenceError, OSError, TypeError, ValueError, KeyError) as error:
+        print(json.dumps({'status': 'FAIL', 'error': str(error)})); return ExitCode.FAILURE_TAXONOMY
+    print(json.dumps({'status': 'PASS', 'categories_checked': len(rows)})); return 0
+def _live_ast_nodes(node):
+    """Walk executable syntax, excluding constant-false arms and nested definitions."""
+    yield node
+    for child in ast.iter_child_nodes(node):
+        if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        if isinstance(child, ast.If) and isinstance(child.test, ast.Constant):
+            yield child.test
+            for statement in child.body if child.test.value else child.orelse:
+                yield from _live_ast_nodes(statement)
+        else:
+            yield from _live_ast_nodes(child)
 
-_MODULE_BY_FILE={'audit.py':'engine.audit','metrics.py':'engine.metrics','io.py':'engine.io'}
 
 def _call_graph(paths):
-    graph={}; defs={}
+    """Resolve module imports and class callbacks, without suffix/attribute guesses."""
+    graph = {}; definitions = {}; scopes = {}
     for path in paths:
-        try: tree=ast.parse(Path(path).read_text(errors='replace'),filename=str(path))
-        except (OSError,SyntaxError): continue
-        module=_MODULE_BY_FILE.get(Path(path).name,'gatekeeper')
+        path = Path(path)
+        try: tree = ast.parse(path.read_text(), filename=str(path))
+        except (OSError, SyntaxError): continue
+        module = 'gatekeeper' if path.name == 'gatekeeper.py' else 'engine.' + path.stem
+        aliases = {}
         for node in ast.walk(tree):
-            if isinstance(node,(ast.FunctionDef,ast.AsyncFunctionDef)):
-                key=f'{module}.{node.name}'; defs[key]=node; graph.setdefault(key,set())
-                for call in ast.walk(node):
-                    if isinstance(call,ast.Call):
-                        name=_fn_name(call.func).split('.')[-1]
-                        if name: graph[key].add(name)
-                    elif isinstance(call,ast.Attribute):
-                        # Guarded callbacks (for example self.cohort passed to
-                        # self.guard) are references rather than Call nodes.
-                        graph[key].add(call.attr)
-    return graph,defs
-
+            if isinstance(node, ast.ImportFrom):
+                source = ('engine.' + (node.module or '')) if node.level else (node.module or '')
+                for alias in node.names: aliases[alias.asname or alias.name] = source + '.' + alias.name
+            elif isinstance(node, ast.Import):
+                for alias in node.names: aliases[alias.asname or alias.name.split('.')[0]] = alias.name
+        def collect(body, class_name=None):
+            for node in body:
+                if isinstance(node, ast.ClassDef): collect(node.body, node.name)
+                elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    key = module + ('.' + class_name if class_name else '') + '.' + node.name
+                    definitions[key] = node
+                    scopes[key] = (module, class_name, aliases)
+                    graph[key] = set()
+        collect(tree.body)
+    for key, node in definitions.items():
+        module, class_name, aliases = scopes[key]
+        local = dict(aliases)
+        def resolve(expression):
+            if isinstance(expression, ast.Name):
+                if expression.id in ('self', 'cls') and class_name: return module + '.' + class_name
+                return local.get(expression.id, module + '.' + expression.id)
+            if isinstance(expression, ast.Attribute):
+                base = resolve(expression.value)
+                return base + '.' + expression.attr if base else ''
+            if isinstance(expression, ast.Call): return resolve(expression.func)
+            return ''
+        for descendant in _live_ast_nodes(node):
+            if isinstance(descendant, ast.Assign) and isinstance(descendant.value, ast.Call):
+                for target in descendant.targets:
+                    if isinstance(target, ast.Name): local[target.id] = resolve(descendant.value.func)
+            if isinstance(descendant, ast.Call):
+                target = resolve(descendant.func)
+                if target in definitions: graph[key].add(target)
+                # Audit.guard is the sole callback dispatcher that executes its supplied function.
+                if target.endswith('.Audit.guard'):
+                    for argument in descendant.args:
+                        if isinstance(argument, (ast.Name, ast.Attribute)):
+                            callback = resolve(argument)
+                            if callback in definitions: graph[key].add(callback)
+    return graph, definitions
 
 def _is_trivial_body(node):
-    """True if THIS function's own body, ignoring its docstring, has no
-    assertion, exception, loop, branch, or call into the guard vocabulary.
-    Does not look at what the function calls; see _is_substantive for that."""
-    body=list(node.body)
-    if body and isinstance(body[0],ast.Expr) and isinstance(getattr(body[0],'value',None),ast.Constant) and isinstance(body[0].value.value,str): body=body[1:]
-    if not body or (len(body)==1 and isinstance(body[0],ast.Pass)): return True
-    if len(body)==1 and isinstance(body[0],ast.Return) and (body[0].value is None or isinstance(body[0].value,ast.Constant)): return True
-    for n in ast.walk(node):
-        if isinstance(n,(ast.Assert,ast.Raise,ast.For,ast.While,ast.If)): return False
-        if isinstance(n,ast.Call):
-            fn=_fn_name(n.func)
-            if fn and fn.split('.')[-1] in ('need','error','diagnostic'): return False
+    """A dead branch, pass, or constant return is not a live guard."""
+    for descendant in _live_ast_nodes(node):
+        if isinstance(descendant, (ast.Assert, ast.Raise, ast.For, ast.While, ast.If, ast.Try)):
+            return False
+        if isinstance(descendant, ast.Call) and _fn_name(descendant.func).split('.')[-1] in ('need', 'error', 'diagnostic'):
+            return False
     return True
 
-def _is_substantive(target,graph,defs,seen=None):
-    """A mechanism counts as real evidence of enforcement if it, or anything
-    reachable from it in the call graph, is non-trivial by _is_trivial_body.
-    A thin dispatcher that only calls real checking functions is substantive
-    through its callees; a stub that calls nothing real is not, no matter how
-    many layers of dispatch sit on top of it."""
-    if seen is None: seen=set()
+def _is_substantive(target, graph, defs, seen=None):
+    seen = set() if seen is None else seen
     if target in seen: return False
     seen.add(target)
-    node=defs.get(target)
-    if node is not None and not _is_trivial_body(node): return True
-    for callee in graph.get(target,set()):
-        for candidate in graph:
-            if candidate.endswith('.'+callee) and candidate not in seen:
-                if _is_substantive(candidate,graph,defs,seen): return True
-    return False
+    if target in defs and not _is_trivial_body(defs[target]): return True
+    return any(_is_substantive(callee, graph, defs, seen) for callee in graph.get(target, set()))
 
-def verify_coverage_liveness(r,quiet=False):
-    """Check coverage claims against callable existence, reachability and rule drift."""
-    ypath=HERE/'constitution_coverage.yaml'; dpath=HERE/'dynamic_rules.md'
-    entries=_coverage_entries(ypath) if ypath.exists() else {}; errors=[]
-    dynamic={}
-    if dpath.exists():
-        block=None
-        for line in dpath.read_text(errors='replace').splitlines():
-            m=re.match(r'###\s+(D-\d+)',line)
-            if m: block=m.group(1); continue
-            if block and 'Implementation:' in line:
-                dynamic[block]=line.split('Implementation:',1)[1].strip().strip('`')
-    graph,defs=_call_graph([HERE/'gatekeeper.py',HERE/'engine/audit.py',HERE/'engine/metrics.py',HERE/'engine/io.py',HERE/'engine/contract.py',HERE/'engine/supervisor.py',HERE/'engine/schema.py',HERE/'engine/attacks.py'])
-    reachable=set(); todo=['gatekeeper.certify','gatekeeper.audit','engine.audit.run','gatekeeper.run_exp','gatekeeper.freeze']
-    while todo:
-        key=todo.pop()
-        if key in reachable: continue
-        reachable.add(key)
-        for callee in graph.get(key,set()):
-            for candidate in graph:
-                if candidate.endswith('.'+callee): todo.append(candidate)
-    resolved={};
-    for cid,e in entries.items():
-        mech=e.get('mechanism')
-        if not mech: continue
-        dm=re.search(r'\((D-\d+)\)',mech); dcode=dm.group(1) if dm else None
-        target=mech.split('(',1)[0].strip().replace('`','')
-        target=target.replace(' (','').strip()
-        if target.startswith('Audit.'):
-            target='engine.audit.'+target.split('.',1)[1]
-        elif target.startswith('engine.'):
-            pass
-        elif target in ('read_json','inside','paired_inference','binary_metrics'):
-            target=('engine.metrics.' if target in ('paired_inference','binary_metrics') else 'engine.io.')+target
-        else: target='gatekeeper.'+target.replace('-','_')
-        if target in resolved.values(): errors.append(f'{cid} duplicates mechanism callable {target}')
-        resolved[cid]=target
-        if target not in graph:
-            errors.append(f'{cid} mechanism is not a callable: {target}')
-        elif target not in reachable:
-            errors.append(f'{cid} mechanism is not reachable from certify/audit roots: {target}')
-        if target in graph and not _is_substantive(target,graph,defs):
-            errors.append(f'{cid} mechanism {target} (and everything it calls) has no assertion, branch, or need()/error()/diagnostic() call — it cannot fail, so it cannot be evidence of enforcement')
-        if dcode and dcode in dynamic:
-            impl=dynamic[dcode].replace('`','')
-            token=target.split('.')[-1]
-            if token not in impl and target not in impl:
-                errors.append(f'{cid} mechanism disagrees with {dcode} Implementation: {impl}')
-    if errors:
-        out={'status':'FAIL','errors':errors}
-        if not quiet: print(json.dumps(out,indent=2))
-        return 40,out
-    out={'status':'PASS','principles_checked':len(entries),'callables_resolved':len(resolved)}
-    if not quiet: print(json.dumps(out,indent=2))
-    return 0,out
+def verify_coverage_liveness(r, quiet=False):
+    """Check exact call resolution and named regression references, not scientific truth."""
+    errors = []; resolved = {}; entries = {}
+    try:
+        entries = _coverage_entries(HERE / 'constitution_coverage.yaml')
+        principles = _constitution_principles(HERE / 'constitution.md')
+        if not principles or set(entries) != set(principles): errors.append('coverage IDs differ from the active constitution')
+        for cid, entry in entries.items():
+            if entry.get('level') != 'A': errors.append(cid + ' level drift')
+            mechanism, rationale = entry.get('mechanism'), entry.get('rationale_if_null')
+            if (mechanism is None) == (rationale is None): errors.append(cid + ' must name exactly one mechanism or limitation')
+            if rationale and (not isinstance(rationale,str) or len(rationale.strip()) < 40): errors.append(cid + ' requires a specific limitation rationale')
+        graph, definitions = _call_graph([HERE / 'gatekeeper.py'] + sorted((HERE / 'engine').glob('*.py')))
+        reachable = set(); pending = ['gatekeeper.certify', 'gatekeeper.audit', 'gatekeeper.run_exp', 'gatekeeper.freeze', 'engine.audit.Audit.run']
+        while pending:
+            target = pending.pop()
+            if target in reachable: continue
+            reachable.add(target); pending.extend(graph.get(target, set()))
+        from engine.attacks import resolve_attack_fixture
+        for cid, entry in entries.items():
+            mechanism = entry.get('mechanism')
+            if not mechanism: continue
+            target = mechanism.split('(', 1)[0].strip()
+            if target.startswith('Audit.'): target = 'engine.audit.' + target
+            elif not target.startswith(('engine.', 'gatekeeper.')):
+                target = 'gatekeeper.' + target.replace('-', '_')
+            resolved[cid] = target
+            if target not in definitions: errors.append(cid + ' mechanism is not a callable: ' + target)
+            elif target not in reachable: errors.append(cid + ' callable is not reached from the audit/execution roots: ' + target)
+            elif not _is_substantive(target, graph, definitions): errors.append(cid + ' callable has no live validation branch: ' + target)
+            tests = entry.get('regression_tests', [])
+            if not isinstance(tests, list) or not tests: errors.append(cid + ' requires behavioral regression references'); continue
+            for test in tests:
+                try: resolve_attack_fixture(test)
+                except (EvidenceError, ValueError, TypeError, ImportError, AttributeError) as error:
+                    errors.append(cid + ' invalid regression: ' + str(error))
+    except (EvidenceError, OSError, ValueError, TypeError) as error: errors.append(str(error))
+    output = {'status': 'FAIL' if errors else 'PASS', 'principles_checked': len(entries), 'callables_resolved': len(resolved),
+              'scope': 'static reachability and regression references; execute tests to establish observed enforcement'}
+    if errors: output['errors'] = errors
+    if not quiet: print(json.dumps(output, indent=2))
+    return (40 if errors else 0), output
 
 def check_contract(path):
     """Validate a real structured contract; prose mentioning check names is insufficient."""
     try: obj=_json_load(path)
-    except Exception as e: print(json.dumps({'status':'FAIL','error':'contract must be strict JSON with executable checks: '+str(e)})); return 17
-    if not isinstance(obj,dict) or not isinstance(obj.get('checks'),list): print(json.dumps({'status':'FAIL','error':'contract requires a checks array'})); return 17
-    errors=[]; allowed={'audit','certify','verify-constitution-coverage','verify-training-sufficiency','verify-split-integrity','verify-result-plausibility','verify-cross-artifact-traceability','verify-reproducibility','acquisition-audit','tier-check','verify-sensitivity-analysis','verify-statistical-protocol','pre-submission-audit','verify-failure-taxonomy'}
+    except Exception as e: print(json.dumps({'status':'FAIL','error':'contract must be strict JSON with executable checks: '+str(e)})); return ExitCode.CONTRACT
+    if not isinstance(obj,dict) or not isinstance(obj.get('checks'),list) or not obj['checks']: print(json.dumps({'status':'FAIL','error':'contract requires a checks array'})); return ExitCode.CONTRACT
+    errors=[]; allowed={'audit','certify','verify-constitution-coverage','verify-training-sufficiency','verify-split-integrity','verify-result-plausibility','verify-cross-artifact-traceability','verify-reproducibility','acquisition-audit','tier-check','verify-sensitivity-analysis','verify-statistical-protocol','pre-submission-audit','verify-failure-taxonomy','verify-publication'}
     for i,c in enumerate(obj['checks']):
-        if not isinstance(c,dict) or c.get('command') not in allowed: errors.append(f'check {i} has no registered executable command')
-        if not isinstance(c.get('artifacts'),list) or not c['artifacts']: errors.append(f'check {i} must bind artifacts')
-    if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return 17
+        if not isinstance(c,dict): errors.append(f'check {i} must be an object'); continue
+        if c.get('command') not in allowed: errors.append(f'check {i} has no registered executable command')
+        if not isinstance(c.get('artifacts'),list) or not c['artifacts'] or any(not isinstance(a,str) or not a.strip() for a in c['artifacts']): errors.append(f'check {i} must bind artifacts')
+    if errors: print(json.dumps({'status':'FAIL','errors':errors},indent=2)); return ExitCode.CONTRACT
     print(json.dumps({'status':'PASS','checks':len(obj['checks'])})); return 0
 
 @contextmanager
@@ -908,37 +1204,47 @@ def handoff(r):
  # must not replace that audit solely to change its timestamp.
  files=set(out['file_bindings'])|{'project/audit_report.json'}
  files.update(k for k in inventory(r,[STATE]) if k!=STATE+'/operation.lock')
- for rel in ('project/review.json','project/RELEASE_CERTIFICATION.json'):
+ for rel in ('project/review.json','project/RELEASE_CERTIFICATION.json','project/HUMAN_EVIDENCE_DIGEST.json','project/release_checks.json'):
   if inside(r,rel).is_file():files.add(rel)
  paths={rel:inside(r,rel) for rel in files}
  paths.update({'factory/'+str(path.relative_to(HERE)):path for path in active_engine_files()})
+ if (HERE.parent/'LICENSE').is_file():paths['LICENSE']=HERE.parent/'LICENSE'
  dest=inside(r,'TAKE_THIS');dest.mkdir(exist_ok=True)
  name=inside(r,'TAKE_THIS/review_bundle_'+out['evidence_digest'][:12]+'.zip')
  create_bundle(name,paths,{'factory_version':VERSION,'evidence_digest':out['evidence_digest'],
-                   'release_status':'LOCAL_REVIEW_COMPLETE' if certified else 'NOT_CERTIFIED'})
+                         'assurance_level':out['assurance_level'],
+                         'release_status':'READY_FOR_HUMAN_SUBMISSION_REVIEW' if certified else 'NOT_CERTIFIED'},sign_manifest=True)
  print(json.dumps({'status':'BUNDLE_CREATED','path':str(name),'sha256':sha(name),
-                   'release_status':'LOCAL_REVIEW_COMPLETE' if certified else 'NOT_CERTIFIED',
+                   'release_status':'READY_FOR_HUMAN_SUBMISSION_REVIEW' if certified else 'NOT_CERTIFIED',
                    'includes':'evidence, retained epochs, active factory, review reports and checksum manifest'},indent=2));return 0
 
 def certificate_current(r,p,out):
  try:
   cert=read_json(inside(r,'project/RELEASE_CERTIFICATION.json'))
   if out['errors'] or p['intent']=='fixture' or p['data_origin']=='fixture':return False
-  if cert.get('status')!='LOCAL_REVIEW_COMPLETE' or cert.get('assurance_level')!='STRUCTURALLY_VALIDATED':return False
+  if cert.get('status')!='READY_FOR_HUMAN_SUBMISSION_REVIEW':return False
   if cert.get('epoch')!=out['epoch'] or cert.get('factory_version')!=VERSION:return False
   if cert.get('evidence_digest')!=out['evidence_digest'] or cert.get('engine_sha256')!=engine_hash():return False
+  if cert.get('validation_sha256')!=validation_hash():return False
+  if cert.get('release_checks_sha256')!=sha(inside(r,'project/release_checks.json')):return False
+  checks=read_json(inside(r,'project/release_checks.json'))
+  if (checks.get('status')!='PASS' or checks.get('engine_sha256')!=engine_hash()
+          or checks.get('validation_sha256')!=validation_hash()):return False
   if cert.get('audit_sha256')!=sha(inside(r,'project/audit_report.json')):return False
   if cert.get('review_sha256')!=sha(inside(r,'project/review.json')):return False
   verify_review(r,p,out)
   return True
  except (EvidenceError,OSError,KeyError,TypeError,AttributeError):return False
 
-def verify_handoff(path):
+def verify_handoff(path,public_key=None):
  from engine.bundle import verify_bundle
- manifest=verify_bundle(path)
+ manifest=verify_bundle(path,public_key_path=public_key)
  print(json.dumps({'status':'BUNDLE_INTEGRITY_VERIFIED','files':len(manifest['files']),
-                   'release_status':manifest.get('release_status'),
-                   'scope':'membership and byte integrity only; re-audit after extraction'}));return 0
+                   'release_status':manifest.get('release_status') if manifest.get('manifest_signature_verified') else 'UNVERIFIED_METADATA',
+                   'assurance_level':manifest.get('assurance_level') if manifest.get('manifest_signature_verified') else 'UNVERIFIED_METADATA',
+                   'manifest_signature_verified':manifest.get('manifest_signature_verified',False),
+                   'scope':manifest.get('verification_scope','membership and byte integrity; externally pinned key needed for authenticity')}))
+ return 0
 
 def main(argv=None):
  ap=argparse.ArgumentParser();sub=ap.add_subparsers(dest='cmd',required=True)
@@ -946,7 +1252,8 @@ def main(argv=None):
  x=sub.add_parser('freeze');x.add_argument('project',nargs='?',default='.');x.add_argument('--amendment')
  x=sub.add_parser('run');x.add_argument('project');x.add_argument('experiment')
  x=sub.add_parser('record');x.add_argument('project');x.add_argument('experiment');x.add_argument('run_dir')
- x=sub.add_parser('verify-bundle');x.add_argument('archive')
+ x=sub.add_parser('verify-bundle');x.add_argument('archive');x.add_argument('--public-key')
+ x=sub.add_parser('verify-publication');x.add_argument('project',nargs='?',default='.');x.add_argument('--ref',action='append');x.add_argument('--staged-only',action='store_true');x.add_argument('--commit-message')
  for cmd in ('audit','certify','status','handoff'):sub.add_parser(cmd).add_argument('project',nargs='?',default='.')
  sub.add_parser('verify-constitution-coverage')
  x=sub.add_parser('verify-training-sufficiency');x.add_argument('--manifest',required=True)
@@ -965,9 +1272,29 @@ def main(argv=None):
  x=sub.add_parser('release-certify');x.add_argument('project',nargs='?',default='.')
  x=sub.add_parser('self-check');x.add_argument('project',nargs='?',default='.')
  a=ap.parse_args(argv);r=root(getattr(a,'project','.') or '.')
+ captured=io.StringIO()
+ try:
+  with redirect_stdout(captured):
+   if a.cmd in {'init','freeze','run','record','audit','certify','status','handoff','release-certify','verify-publication'}:
+    with workspace_lock(r):code=_dispatch(a,r)
+   else:code=_dispatch(a,r)
+ except Exception as ex:
+  code=EXIT_EVIDENCE
+  captured=io.StringIO(json.dumps({'status':'BLOCKED','error':str(ex),'error_type':type(ex).__name__,'code':code}))
+ text=captured.getvalue().strip();values=[];decoder=json.JSONDecoder()
+ while text:
+  try:value,end=decoder.raw_decode(text)
+  except ValueError:
+   values.append({'output':text});break
+  values.append(value);text=text[end:].lstrip()
+ output=values[0] if len(values)==1 else {'status':'PASS' if code==0 else 'BLOCKED','results':values}
+ print(json.dumps(output,indent=2));return code
+
+def _dispatch(a,r):
  try:
   if a.cmd=='init':return init(r)
-  if a.cmd=='verify-bundle':return verify_handoff(a.archive)
+  if a.cmd=='verify-publication':return verify_publication(r,a.ref,a.staged_only,a.commit_message)
+  if a.cmd=='verify-bundle':return verify_handoff(a.archive,a.public_key)
   if a.cmd=='freeze':return freeze(r,a.amendment)
   if a.cmd=='run':
    if a.experiment=='all':
@@ -996,30 +1323,12 @@ def main(argv=None):
   if a.cmd=='check':return check_contract(a.contract)
   if a.cmd=='verify-coverage-liveness':return verify_coverage_liveness(r)[0]
   if a.cmd=='release-certify':
-   coverage=verify_constitution_coverage(r)
-   return coverage if coverage else certify(r)
+   return certify(r,force_preflight=True)
   if a.cmd=='self-check':
-   verify_constitution_coverage(r); print(json.dumps({'status':'DIAGNOSTIC','version':VERSION})); return 0
+   code=verify_constitution_coverage(r); print(json.dumps({'status':'DIAGNOSTIC' if code==0 else 'BLOCKED','version':VERSION})); return code
   return certify(r)
- except (EvidenceError,KeyError,TypeError,ValueError,OSError) as e:
-  code=40 if a.cmd in ('certify','release-certify') and 'missing project/research_plan.json' in str(e) else EXIT_EVIDENCE
+ except Exception as e:
+  code=ExitCode.RELEASE_PREFLIGHT if a.cmd in ('certify','release-certify') and 'missing project/research_plan.json' in str(e) else EXIT_EVIDENCE
   print(json.dumps({'status':'NOT_CERTIFIED','error':str(e),'code':code},indent=2));return code
 if __name__=='__main__':
- try:
- # project is the second positional token for every command.
-  r=root(sys.argv[2] if len(sys.argv)>2 and not sys.argv[2].startswith('-') else '.')
-  # Standalone artifact validators are read-only and must not create project
-  # state in the factory bundle. Only lifecycle operations take the lock.
-  locked_commands={'init','freeze','run','record','audit','certify','status','handoff','release-certify'}
-  if len(sys.argv)>1 and sys.argv[1] in locked_commands:
-   with workspace_lock(r):code=main()
-  else:code=main()
- except EvidenceError as ex:
- # A missing project is a release preflight failure, distinct from an evidence
- # failure inside an otherwise initialized project. Keep the CLI contract
- # stable for automation while direct Python calls still raise EvidenceError.
-  if len(sys.argv)>1 and sys.argv[1] in ('certify','release-certify') and 'missing project/research_plan.json' in str(ex):
-   print(json.dumps({'status':'NOT_CERTIFIED','error':str(ex),'code':40}));code=40
-  else:
-   print(json.dumps({'status':'BLOCKED','error':str(ex)}));code=EXIT_EVIDENCE
- sys.exit(code)
+ sys.exit(main())

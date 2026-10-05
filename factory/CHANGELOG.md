@@ -1,4 +1,15 @@
+> October 2026 correction within v3.3.0: earlier entries describe historical claims and test runs. Local execution now requires Ed25519 (`cryptography`), verifies receipt bindings, and reports structural same-user assurance. Sealed evaluation and independent reviewer identity are not provided. Current validation must be read from the new machine report; historical counts are not a guarantee about this checkout.
+
 # CHANGELOG — Factory v3.3.0
+
+## October 2026 review addendum within v3.3.0
+
+- Validate unique canonical execution nonces across signed reservations and retained epochs, including reservation/record equality and identity-bound attempt paths.
+- Require fresh attack, mutation and matched seeded-fault QA before either certification path issues research readiness. Bind the QA corpus and report bytes to certificates, revalidate evidence after preflight and include the private report in handoffs.
+- Expand the declared mutation operators and add 36 synthetic fault projects with 36 matched clean controls, per-family uncertainty and explicit undetected same-user limits.
+- Add inference simulations across null/unequal models and sample sizes, and an explicit actor/capability assurance boundary document. Scientific/publication limitations remain required in project methods; private workflow narration stays private.
+
+The following sections retain historical release statements. The current implementation and validation artifacts supersede their HMAC, isolation, assurance and test-count claims.
 
 ## v3.3.0 — trust-boundary hardening
 
@@ -190,3 +201,7 @@ The lifecycle remains backward compatible in shape. Version metadata was 3.0.1; 
 
 ### Evidence and limits
 Evidence for D-074–D-086 is one thoroughly audited project; D-087–D-094 originated as mechanisms observed in a noncompliant build and are not multi-project findings. The checks are deterministic and best effort; they do not prove the scientific truth of arbitrary prose, and the remaining judgment calls stay visible in review.
+
+### Project publication boundary within v3.3.0
+
+Added neutral public allowlist ignores, private local policy/reports, chained commit/message/push hooks, real Git blob/history/tag/ref inspection, exact binary artifact approvals, and `verify-publication` (exit 44). Audit and certification include applicable publication results. Public project source, comments and reproduction instructions remain independent of internal orchestration.

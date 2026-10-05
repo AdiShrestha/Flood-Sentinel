@@ -30,7 +30,7 @@ The active plan parser and audit code define machine enforcement. `docs/COVERAGE
 # C70 — Scientific Sufficiency Over Execution Speed
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C12, C51, C72
+**Related Rules:** Rule 12, Rule 5, C72
 
 No verification gate may be relaxed to reduce wall-clock time or compute cost. Loosening a check requires an explicit, logged Human decision.
 
@@ -44,42 +44,42 @@ Every Mandatory principle is mapped in `constitution_coverage.yaml` to a registe
 # C72 — Convergence Is Prerequisite To Comparison
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C05, C51
+**Related Rules:** Rule 5, Rule 5
 
 Comparative claims require recorded convergence evidence for each trained model; an epoch count alone is insufficient.
 
 # C73 — A Result Indistinguishable From Chance Or Sample-Size Artifact Is Not A Finding
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C01, C04
+**Related Rules:** Rule 1, Rule 4
 
 Below-chance results and unsupported sample sizes are Stop Conditions unless explicitly investigated and reported as null results.
 
 # C74 — Suspiciously Perfect Evidence Requires Investigation, Not Celebration
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C01, C10
+**Related Rules:** Rule 1, Rule 10
 
 Exact-zero p-values, implausibly narrow intervals, and all-supported result sets require an investigation note before release.
 
 # C75 — A Cited Artifact's Values Must Be Inspected, Not Merely Named
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C04, C11
+**Related Rules:** Rule 4, Rule 11
 
 Machine-readable artifacts backing scientific claims must be loaded and checked for their actual values.
 
 # C76 — Cross-Artifact Identifiers Must Resolve
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C01, C04
+**Related Rules:** Rule 1, Rule 4
 
 Identifiers in analyses must resolve to identifiers in the declared source artifacts.
 
 # C77 — An Unused Declared Input Is A Fabrication Signal
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C01, C04
+**Related Rules:** Rule 1, Rule 4
 
 An unused real-data parameter combined with literal-dense result output is a hard provenance failure.
 
@@ -93,42 +93,42 @@ Keyword checks must include paraphrase fixtures so they test generalization rath
 # C79 — Evidence Bytes Are Untrusted Input
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C01, C04, C71
+**Related Rules:** Rule 1, Rule 4, C71
 
 JSON, CSV, and paths are untrusted until strict parsing rejects duplicate keys, non-finite values, and symlink escapes.
 
 # C80 — No Favorable-Attempt Selection
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C02, C11
+**Related Rules:** Rule 2, Rule 11
 
-Every attempt remains in the evidence record; certification may use only the latest successful attempt.
+Every attempt remains in the evidence record. Only one attempt is admissible per experiment in an epoch; a failed attempt requires a disclosed prospective amendment before another execution.
 
 # C81 — Reproducibility Is Evidence, Not Aspiration
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C06, C10
+**Related Rules:** Rule 6, Rule 10
 
 Nondeterministic benchmark claims require a fresh-process replay within a declared tolerance.
 
 # C82 — A Statistic That Cannot Be Zero Must Never Be Allowed To Read As Zero
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C04
+**Related Rules:** Rule 4
 
 Finite Monte Carlo p-values use add-one correction; exact enumeration is used when tractable.
 
 # C83 — The Gate Checks Against Its Own Arithmetic, Not The Report's
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C04, C75
+**Related Rules:** Rule 4, C75
 
 Metric verification uses Gatekeeper-owned reference arithmetic applied to raw prediction rows.
 
 # C84 — Interaction Claims Beyond Full Coverage Require A Disclosed Design
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C08
+**Related Rules:** Rule 8
 
 Large ablations require a disclosed fractional-factorial alias structure rather than silent under-coverage.
 
@@ -144,48 +144,55 @@ The project declares what to run (runtime_id, entrypoint, arguments); the superv
 # C86 — Frozen Inputs Are Content-Addressed
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C79, C04
+**Related Rules:** C79, Rule 4
 
 Frozen file inventories produce a Merkle root; any single byte change produces a different root. Symlinks, device files, FIFOs, sockets, and importable binaries (.pyc, .so, .dylib) are rejected.
 
 # C87 — Execution Receipts Are Supervisor-Signed
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C01, C04
+**Related Rules:** Rule 1, Rule 4
 
-Every execution receipt binds run nonce, project ID, epoch, experiment ID, source snapshot root, runtime identity, interpreter hash, dependency lock hash, seed, output root, exit status, and timestamps under a cryptographic signature the workspace cannot forge.
+Every execution receipt binds run nonce, project ID, epoch, experiment ID, source snapshot root, runtime identity, interpreter hash, dependency lock hash, seed, output root, exit status, and timestamps under a verified Ed25519 signature bound to a pinned local public key. Execution identity/exit fields and signed bindings preserve exact JSON types; an explicit `receipt_error` blocks even when signed. Each nonce is a canonical UUID4, matches its signed attempt reservation and occurs only once across retained epochs; duplicate reservation fails before launch. The signer and experiment share an OS user, so that user can access the private key; the signature detects inconsistent bytes but does not provide an external trust boundary. The implementation must disclose same-user local trust and cannot claim sealed labels.
 
 # C88 — Evidence Validators Use Strict Typed Schemas
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C79, C04
+**Related Rules:** C79, Rule 4
 
-Validators reject boolean/string/integer type confusion, empty structures that satisfy vacuous checks, and justification strings that bypass numeric requirements. One code path serves both standalone and certification use.
+Validators reject boolean/string/integer type confusion, empty structures that satisfy vacuous checks, and justification strings that bypass numeric requirements. Shared typed trace and count validators serve standalone and lifecycle checks; standalone artifacts additionally require their own structured evidence fields. Neither path may waive an actual numeric requirement with prose.
 
 # C89 — Plausibility Analysis Is Recursive
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C04, C75
+**Related Rules:** Rule 4, C75
 
-Zero p-values, below-chance metrics, and implausibly narrow confidence intervals are detected regardless of nesting depth in computed_runs, comparisons, derived_analyses, or any other result container.
+Zero p-values, below-chance metrics, and implausibly narrow confidence intervals are detected through supported result containers, with excessive nesting rejected rather than silently skipped. Metric-specific baselines require prevalence where relevant; unknown baselines are not invented.
 
 # C90 — Reproduction Identity Is Bound
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C06, C81
+**Related Rules:** Rule 6, C81
 
 A reproduction must match the original's model identity, config digest, training mode, and runtime. Relabeling an easier baseline as a reproduction of the target is a hard provenance failure.
 
 # C91 — Assurance Level Is Machine-Readable
 
 **Enforcement Level:** A — Mandatory
-**Related Rules:** C11, C71
+**Related Rules:** Rule 11, C71
 
-The audit report and release certification declare an explicit assurance level (STRUCTURALLY_VALIDATED, SUPERVISOR_ATTESTED, SEALED_EVALUATION_ATTESTED, INDEPENDENT_REVIEW_COMPLETE, READY_FOR_HUMAN_SUBMISSION_REVIEW) with machine-checkable prerequisites for each level.
+The audit and release report declare machine-readable status and assurance separately. This local same-user implementation reports STRUCTURALLY_VALIDATED after successful checks. READY_FOR_HUMAN_SUBMISSION_REVIEW is a workflow status after a recorded review; it does not promote execution isolation, label sealing or reviewer independence. Stronger levels require an independently verified external trust boundary and are not issued here.
 
-# C92 — Every Security Invariant Has A Behavioral Mutation Test
+# C92 — Registered Security Checks Have Behavioral Evidence
 
 **Enforcement Level:** A — Mandatory
 **Related Rules:** C71, C78
 
-The attack registry lists 18 concrete attacks with invariant, implementation, fixture, and expected transition. A release candidate is blocked until every listed attack fails through the complete lifecycle.
+The attack registry lists concrete regressions with invariant, implementation, fixture, expected transition and actual enforcement scope. Both certification paths execute fresh attack regressions, the declared mutation benchmark and matched seeded-fault QA controls before issuing research readiness. Failed, missing, skipped or stale checks block. Reports bind the engine, executable QA corpus and actual outcomes; persisted reports never replace execution. Freeze, standalone validator, audit and archive tests retain distinct scopes; passing them is not proof against arbitrary same-user code compromise. Unsupported faults in the QA benchmark remain visible as undetected limits.
+
+# C93 — Public Repositories Contain Project Artifacts
+
+**Enforcement Level:** A — Mandatory
+**Related Rules:** C71, C79, C92
+
+Project publication follows `PUBLICATION_POLICY.md`. Neutral public ignore rules and private commit/push hooks separate project deliverables from internal engine, procedure, execution and review state. Actual index blobs, outgoing history, messages and tag/ref metadata are inspected; failure blocks local publication. Audit and certification include applicable Git checks. Non-Git evidence workspaces have no publication assurance. Public scientific evidence, required credits and disclosures remain truthful. Local hooks and content heuristics cannot enforce this boundary against their owner or inspect external issue/PR uploads.

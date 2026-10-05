@@ -23,7 +23,7 @@ def read_json(p):
     try:
         return json.loads(Path(p).read_text(encoding='utf-8'),parse_constant=reject_constant,
                           parse_float=finite_float,object_pairs_hook=unique_object)
-    except (OSError, ValueError) as e:
+    except (OSError, ValueError, UnicodeError, RecursionError) as e:
         raise EvidenceError(f'{p}: {e}') from e
 
 def finite_float(value):
@@ -52,7 +52,7 @@ def _normalize_path(name):
     normalized = posixpath.normpath(name)
     # posixpath.normpath converts 'a/./b' to 'a/b' — if the input differs
     # from the normalized form, someone is using dot-segment tricks.
-    if normalized != name and name != normalized + '/' and not name.endswith('/'):
+    if normalized != name and name != normalized + '/':
         raise EvidenceError(f'path contains dot-segment tricks: {name} (normalized: {normalized})')
     return normalized
 
@@ -67,6 +67,8 @@ def inside(root, name):
     # matters on macOS where /var and /private/var are aliases.
     root_lex = Path(root)
     root_real = root_lex.resolve()
+    if not isinstance(name, (str, Path)):
+        raise EvidenceError('evidence path must be a string or Path')
     name = str(name)
     # Reject null bytes — they truncate C-level path operations
     if '\x00' in name:
@@ -161,15 +163,24 @@ def inventory(root, paths, *, reject_dangerous_ext=True):
     return out
 
 def merkle_root(file_hashes):
-    """Historical API name: flat SHA-256 content root, not a binary Merkle tree.
+    """Compute a Merkle root over a dict of {path: sha256_hex}.
 
-    The unchanged construction sorts paths and hashes path bytes plus digests.
-    No tree-membership proof is implemented or implied by this function.
+    Files are sorted by path to produce a deterministic root.
+    Returns the hex digest of the Merkle root.
     """
     if not file_hashes:
         raise EvidenceError('cannot compute merkle root of empty inventory')
     h = hashlib.sha256()
+    h.update(b'factory-file-inventory-v2\x00')
     for path in sorted(file_hashes.keys()):
-        h.update(path.encode('utf-8'))
-        h.update(bytes.fromhex(file_hashes[path]))
+        encoded = path.encode('utf-8')
+        h.update(len(encoded).to_bytes(8, 'big'))
+        h.update(encoded)
+        try:
+            value = bytes.fromhex(file_hashes[path])
+        except (TypeError, ValueError) as exc:
+            raise EvidenceError('invalid file digest') from exc
+        if len(value) != 32:
+            raise EvidenceError('invalid file digest length')
+        h.update(value)
     return h.hexdigest()

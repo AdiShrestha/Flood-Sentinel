@@ -1,0 +1,52 @@
+{
+  "cli_result": {
+    "results": [
+      {
+        "check": "release_preflight",
+        "checks": {
+          "constitution_coverage": "PASS",
+          "mutation_benchmark": "PASS",
+          "registered_attacks": "PASS",
+          "seeded_fault_benchmark": "PASS"
+        },
+        "report": "project/release_checks.json",
+        "status": "PASS"
+      },
+      {
+        "reason": "fixture evidence never certifies research",
+        "status": "FIXTURE_ONLY"
+      }
+    ],
+    "status": "BLOCKED"
+  },
+  "cli_single_json_document": true,
+  "engine_sha256": "1632a7117a671242b9733ae8606ccaced50dc1c11c5773e0f7c070af0fd3830c",
+  "exit_code": 43,
+  "factory_version": "3.3.0",
+  "fixture_research_certification_refused": true,
+  "focused_mutations": {
+    "errors": [],
+    "killed": 35,
+    "score_percent": 100.0,
+    "status": "PASS",
+    "survivors": [],
+    "total": 35
+  },
+  "registered_attacks": {
+    "registered_attacks": 22,
+    "scope": "concrete regressions with per-entry lifecycle scope",
+    "status": "PASS",
+    "tests_run": 22
+  },
+  "seeded_fault_benchmark": {
+    "clean_false_positives": 0,
+    "clean_projects": 36,
+    "fault_projects": 36,
+    "known_limits_observed": 6,
+    "status": "PASS",
+    "supported_faults_detected": 30
+  },
+  "status": "PASS",
+  "stderr_empty": true,
+  "validation_sha256": "89a0f6b51772557d94cad1ee48dac0d6dcadc88e141cc53c28b90e70e08bde24"
+}

@@ -1,0 +1,66 @@
+{
+  "commands": {
+    "mutation_checks": "python3 -B factory/run_mutation_checks.py --report /tmp/factory-final-mutations.json",
+    "pytest": "python3 -m pytest factory/tests -q",
+    "self_tests": "python3 factory/run_self_tests.py --report /tmp/factory-final-self-tests.json"
+  },
+  "date": "2026-10-02",
+  "engine_sha256": "e627e09b200716bc10aaf41eec7f46da95d7b517b05677adbe9189c5f13c20cf",
+  "factory_version": "3.3.0",
+  "limits": [
+    "Sandbox prohibits UNIX socket creation",
+    "Same-user key/verifier/label isolation unsupported",
+    "Signed-state rollback needs external monotonic witness",
+    "Archived legacy code excluded from active validation"
+  ],
+  "mutation_checks": {
+    "baseline_tests": 20,
+    "errors": [],
+    "killed": 19,
+    "scope": "declared critical-guard deletion benchmark; not repository-wide mutation score",
+    "score_percent": 100.0,
+    "status": "PASS",
+    "survivors": [],
+    "total": 19
+  },
+  "pytest": {
+    "passed": 403,
+    "skipped": 1,
+    "status": "PASS",
+    "subtests_passed": 28
+  },
+  "release_smoke": {
+    "cli_json_documents": 1,
+    "fixture_release_blocked": true,
+    "mutants_killed": 19,
+    "mutation_status": "PASS",
+    "registered_attacks": {
+      "registered_attacks": 18,
+      "scope": "concrete regressions with per-entry lifecycle scope",
+      "status": "PASS",
+      "tests_run": 18
+    },
+    "release_exit_code": 43,
+    "status": "PASS"
+  },
+  "review": "Independent read-only candidate review; verified repaired probes; no remaining actionable finding within disclosed local execution scope",
+  "self_tests": {
+    "errors": 0,
+    "factory_version": "3.3.0",
+    "failures": 0,
+    "python_version": "3.12.8 (v3.12.8:2dc476bcb91, Dec  3 2024, 14:43:19) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "scope": "active regressions; archived legacy code excluded",
+    "skipped": [
+      {
+        "reason": "sandbox prohibits creating UNIX sockets",
+        "test": "test_unix_socket_in_frozen_path_rejected (test_v3_3_stress.SpecialFileStressTests.test_unix_socket_in_frozen_path_rejected)"
+      }
+    ],
+    "status": "PASS",
+    "tests_run": 404
+  },
+  "syntax_and_diff": {
+    "compileall": "PASS",
+    "git_diff_check": "PASS"
+  }
+}

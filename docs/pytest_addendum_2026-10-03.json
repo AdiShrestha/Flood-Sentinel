@@ -1,0 +1,12 @@
+{
+  "duration_seconds": 51.21,
+  "engine_sha256": "1632a7117a671242b9733ae8606ccaced50dc1c11c5773e0f7c070af0fd3830c",
+  "factory_version": "3.3.0",
+  "passed": 468,
+  "scope": "active factory/tests, including function-style tests; same sandbox socket capability skip as self-test runner",
+  "skipped": 1,
+  "status": "PASS",
+  "subtests_passed": 73,
+  "summary": "468 passed, 1 skipped, 73 subtests passed in 51.21s",
+  "validation_sha256": "89a0f6b51772557d94cad1ee48dac0d6dcadc88e141cc53c28b90e70e08bde24"
+}

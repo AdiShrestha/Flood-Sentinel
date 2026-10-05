@@ -1,0 +1,18 @@
+{
+  "engine_sha256": "1632a7117a671242b9733ae8606ccaced50dc1c11c5773e0f7c070af0fd3830c",
+  "errors": 0,
+  "factory_version": "3.3.0",
+  "failures": 0,
+  "python_version": "3.12.8 (v3.12.8:2dc476bcb91, Dec  3 2024, 14:43:19) [Clang 13.0.0 (clang-1300.0.29.30)]",
+  "scope": "active regressions; archived legacy code excluded",
+  "skipped": [
+    {
+      "reason": "sandbox prohibits creating UNIX sockets",
+      "test": "test_unix_socket_in_frozen_path_rejected (test_v3_3_stress.SpecialFileStressTests.test_unix_socket_in_frozen_path_rejected)"
+    }
+  ],
+  "source_unchanged_during_tests": true,
+  "status": "PASS",
+  "tests_run": 469,
+  "validation_sha256": "89a0f6b51772557d94cad1ee48dac0d6dcadc88e141cc53c28b90e70e08bde24"
+}

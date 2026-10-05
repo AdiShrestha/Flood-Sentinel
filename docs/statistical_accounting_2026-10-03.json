@@ -1,0 +1,14 @@
+{
+  "engine_sha256": "1632a7117a671242b9733ae8606ccaced50dc1c11c5773e0f7c070af0fd3830c",
+  "independent_oracle": "scipy.stats.beta.ppf",
+  "intervals_validated": 54,
+  "maximum_absolute_delta": 3.164135620181696e-15,
+  "raw_study_counts_recomputed": true,
+  "scipy_version": "1.18.0",
+  "scope": "original metric simulations retain their generation hashes; current log-space binomial accounting independently checked from raw outcomes, including 5000-trial boundaries; SciPy is QA-only",
+  "simulation_artifact_sha256": "669c0d1c9603f125e41b29d58b3244bb5f8622eb96d5daa3ebf1754a478fee45",
+  "simulation_generation_validation_sha256": "7afb178451ed2fab87b27c1df77a332a021002ce3041fdfe9452cf3e2165a532",
+  "source_interval_script_sha256": "2aae7c9239b84d0513983a7a428364b60d4a75fea182a18f17dc4103671d645f",
+  "status": "PASS",
+  "validation_sha256": "89a0f6b51772557d94cad1ee48dac0d6dcadc88e141cc53c28b90e70e08bde24"
+}

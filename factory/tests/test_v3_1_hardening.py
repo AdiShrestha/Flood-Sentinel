@@ -15,8 +15,8 @@ class V31HardeningTests(unittest.TestCase):
     def test_coverage_liveness_is_clean(self):
         code, report = g.verify_coverage_liveness(FACTORY, quiet=True)
         self.assertEqual(code, 0)
-        self.assertEqual(report['principles_checked'], 23)
-        self.assertEqual(report['callables_resolved'], 23)
+        self.assertEqual(report['principles_checked'], 24)
+        self.assertEqual(report['callables_resolved'], 22)
 
     def test_check_contract_rejects_keyword_theater(self):
         with self.subTest('prose is not a contract'):
@@ -38,7 +38,7 @@ class V31HardeningTests(unittest.TestCase):
     def test_statistical_protocol_is_value_level(self):
         p = HERE / '.tmp_stats.json'
         try:
-            p.write_text(json.dumps({'primary_metric':'average_precision','sampling_unit':'seed_fixed_test','test':'permutation','alpha':0.05,'effect_size':0.2,'confidence_interval':[0.1,0.3],'multiplicity_correction':'Holm'}))
+            p.write_text(json.dumps({'primary_metric':'average_precision','sampling_unit':'seed_fixed_test','inference_scope':'fixed_test_corpus','test':'permutation','alpha':0.05,'effect_size':0.2,'confidence_interval':[0.1,0.3],'multiplicity_correction':'Holm'}))
             self.assertEqual(g.verify_statistical_protocol(p), 0)
         finally:
             p.unlink(missing_ok=True)

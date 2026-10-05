@@ -1,0 +1,42 @@
+{
+  "engine_sha256": "1632a7117a671242b9733ae8606ccaced50dc1c11c5773e0f7c070af0fd3830c",
+  "factory_version": "3.3.0",
+  "probes": [
+    {
+      "errors": [
+        {
+          "code": "HISTORY",
+          "detail": "execution nonce reused across reservations"
+        }
+      ],
+      "probe": "duplicate_nonce",
+      "status": "BLOCKED"
+    },
+    {
+      "errors": [
+        {
+          "code": "HISTORY",
+          "detail": "execution nonce differs from signed reservation"
+        }
+      ],
+      "probe": "ledger_nonce_mismatch",
+      "status": "BLOCKED"
+    },
+    {
+      "errors": [
+        {
+          "code": "RUN:known",
+          "detail": "execution record contains receipt_error; no evidence admitted"
+        },
+        {
+          "code": "CLAIMS",
+          "detail": "claim lacks validated experiments: fixture"
+        }
+      ],
+      "probe": "receipt_error_with_valid_signature_and_wrapper_binding",
+      "status": "BLOCKED"
+    }
+  ],
+  "scope": "isolated fixtures, valid signatures and complete wrapper bindings isolate each semantic guard; no research certificate issued",
+  "validation_sha256": "7afb178451ed2fab87b27c1df77a332a021002ce3041fdfe9452cf3e2165a532"
+}

@@ -16,4 +16,4 @@ This checklist is a review aid; the gate does not pretend to infer mathematical 
 
 ### Scientific sufficiency floors
 
-Document and cite any domain-specific reason to override the default 30-row total, 10-per-class, or 10-epoch floors. Overrides belong in the contract evidence and require a specific justification; an agent must not silently lower a floor.
+Research requires at least 30 independent test groups and 10 observations per class, plus a prospectively justified stopping policy. A prose justification cannot override a numeric gate. Domain-specific designs outside this profile require a reviewed adapter and explicit limits.

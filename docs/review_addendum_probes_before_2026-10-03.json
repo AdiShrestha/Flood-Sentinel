@@ -1,0 +1,31 @@
+{
+  "engine_sha256": "a8fb52e4b4b16e8d491685f32298b3841c8c16f5666650d18175b29a5d6d4eed",
+  "factory_version": "3.3.0",
+  "probes": [
+    {
+      "errors": [],
+      "probe": "duplicate_nonce",
+      "status": "EVIDENCE_CHECKS_PASSED"
+    },
+    {
+      "errors": [],
+      "probe": "ledger_nonce_mismatch",
+      "status": "EVIDENCE_CHECKS_PASSED"
+    },
+    {
+      "errors": [
+        {
+          "code": "RUN:known",
+          "detail": "supervisor receipt binding mismatch: execution_binding"
+        },
+        {
+          "code": "CLAIMS",
+          "detail": "claim lacks validated experiments: fixture"
+        }
+      ],
+      "probe": "receipt_error_with_valid_signature",
+      "status": "BLOCKED"
+    }
+  ],
+  "scope": "isolated fixture projects; trusted ledger signing isolates missing consistency checks; no research certificates issued"
+}

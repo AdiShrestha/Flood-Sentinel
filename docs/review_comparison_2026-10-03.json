@@ -1,0 +1,28 @@
+{
+  "original_sha256": "2c40922b4f0ded0dcc1d7d990ceaa771ee15b2c413a09b75dd07ed34c2f4af8e",
+  "updated_sha256": "c389867fbfdce8db3ed6b3fa293e2e373e046f87d51b16874a0d0efeff473b69",
+  "original_lines": 544,
+  "updated_lines": 794,
+  "net_added_lines": 250,
+  "changes": [
+    {
+      "kind": "replace",
+      "original_start_line": 63,
+      "original_line_count": 1,
+      "updated_start_line": 63,
+      "updated_line_count": 1
+    },
+    {
+      "kind": "insert",
+      "original_start_line": 545,
+      "original_line_count": 0,
+      "updated_start_line": 545,
+      "updated_line_count": 250
+    }
+  ],
+  "original_findings": 35,
+  "updated_findings": 35,
+  "new_finding_ids": [],
+  "changed_finding_ids": [],
+  "scope": "document comparison only; report claims independently assessed against current code"
+}

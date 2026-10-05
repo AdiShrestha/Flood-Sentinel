@@ -1,0 +1,40 @@
+{
+  "bootstrap_public_clone": "PASS",
+  "diff_whitespace": "PASS",
+  "engine_sha256": "a8fb52e4b4b16e8d491685f32298b3841c8c16f5666650d18175b29a5d6d4eed",
+  "errors": 0,
+  "factory_version": "3.3.0",
+  "failures": 0,
+  "focused_mutations": {
+    "killed": 24,
+    "score_percent": 100.0,
+    "status": "PASS",
+    "total": 24
+  },
+  "publication_regressions": 43,
+  "pytest": {
+    "duration_seconds": 42.51,
+    "passed": 446,
+    "skipped": 1,
+    "status": "PASS",
+    "subtests_passed": 51
+  },
+  "python_version": "3.12.8 (v3.12.8:2dc476bcb91, Dec  3 2024, 14:43:19) [Clang 13.0.0 (clang-1300.0.29.30)]",
+  "registered_attacks": {
+    "registered_attacks": 22,
+    "scope": "concrete regressions with per-entry lifecycle scope",
+    "status": "PASS",
+    "tests_run": 22
+  },
+  "scope": "active regressions; archived legacy code excluded",
+  "skipped": [
+    {
+      "reason": "sandbox prohibits creating UNIX sockets",
+      "test": "test_unix_socket_in_frozen_path_rejected (test_v3_3_stress.SpecialFileStressTests.test_unix_socket_in_frozen_path_rejected)"
+    }
+  ],
+  "status": "PASS",
+  "syntax": "PASS",
+  "tests_run": 447,
+  "validated_at": "2026-10-03T01:37:32.169129+00:00"
+}

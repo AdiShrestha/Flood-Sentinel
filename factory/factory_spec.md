@@ -1,14 +1,12 @@
 # Factory specification — v3.3.0
 
-> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
-
 ## Active repository
 
 `factory/` contains active policy and code. `project/` contains one agent-authored frozen plan, methodology, epoch state, run attempts, audit, review, and release report. `source/` contains implementation and lockfile. `data/` contains only declared source records/cohorts. `DROP_HERE/` and `TAKE_THIS/` are optional handoff inbox/outbox. `factory/legacy/v2_6_0/` is historical and never active.
 
 ## Lifecycle
 
-The Architect authors the plan and claim/evidence map. The Implementor executes each planned seed using an argv command with `{run_dir}` and `{seed}`. The wrapper captures immutable inputs, outputs, stdout/stderr, exit status, timing, and environment bindings. A successful command is then independently recorded; a failed or rejected attempt remains. The audit reloads current bytes and recomputes predictions, joins, metrics, statistical comparisons, ablations, sensitivity and hardware rows. The Architect writes a review tied to the audit digest. Only `certify` emits a scoped release report.
+The Architect authors the plan and claim/evidence map. The Implementor executes each planned seed using a validated typed launch contract (legacy argv is translated). The wrapper captures immutable inputs, outputs, stdout/stderr, exit status, timing, and environment bindings. A successful command is then independently recorded; a failed or rejected attempt remains. The audit reloads current bytes and recomputes predictions, joins, metrics, statistical comparisons, ablations, sensitivity and hardware rows. The Architect writes a review tied to the audit digest. Only `certify` emits a scoped release report.
 
 A new hypothesis, dataset, method, stopping rule, threshold, or post-test repair requires `freeze --amendment REASON`. Earlier epochs remain in `.factory/epoch_NNNN/`; their findings cannot be erased or counted as current evidence. The active freeze includes every file beneath each declared frozen path and the active policy-code hash.
 
@@ -18,8 +16,12 @@ The plan is the contract. The gate rejects omitted fields rather than inferring 
 
 ## Exit meanings
 
-0 means the requested lifecycle operation completed and, for audit/certify, all checks in that operation passed. 31 means malformed/missing evidence or unsafe lifecycle state; 32 means scientific evidence or diagnostics block; 33 means review missing, stale, or unresolved. No exit code means journal acceptance.
+0 means the requested lifecycle operation completed and, for audit/certify, all checks in that operation passed. 40 means release preflight or callable liveness failed; 41 means malformed/missing lifecycle evidence or unsafe state; 42 means scientific evidence or diagnostics block; 43 means review missing, stale, unresolved or fixture-only. Standalone diagnostic codes are documented in `gatekeeper_spec.md`. No exit code means journal acceptance.
 
 ## v3.3.0 evidence additions
 
-A training or evaluation run records `convergence_evidence` (epochs, criterion, threshold, loss curve, early-stopping state, and any justification), `test_label_distribution`, `evaluation_sample_size`, and an optional sample-size justification. Claim and verdict JSON artifacts may carry `investigation_note`; it is required when `verify-result-plausibility` reports a below-chance or suspicious-perfection finding. No-mock invariant passes identify the producing script/function and its `acquisition-audit` result.
+A training or evaluation run records `convergence_evidence` (epochs, criterion, threshold, loss curve, early-stopping state, and any justification), `test_label_distribution`, `evaluation_sample_size`, and an independent test-group count; a justification never overrides numeric support. Claim and verdict JSON artifacts may carry `investigation_note`; it is required when `verify-result-plausibility` reports a below-chance or suspicious-perfection finding. No-mock invariant passes identify the producing script/function and its `acquisition-audit` result.
+
+Local Ed25519 receipt signatures require cryptography and provide integrity relative to a pinned key. They do not isolate an experiment from its same-user signer or labels. The assurance level remains STRUCTURALLY_VALIDATED; read the human evidence digest before a release decision.
+
+Project Git publication is checked separately from private review transfer. Initialization installs neutral allowlist ignores and private chained hooks. `engine.publication` checks index blobs, full outgoing commit history, messages and tag/ref metadata; `verify-publication` returns 44 on a blocked boundary. Audit/certification include publication results when Git exists. See `PUBLICATION_POLICY.md` for binary review, limits and truthful public evidence requirements.

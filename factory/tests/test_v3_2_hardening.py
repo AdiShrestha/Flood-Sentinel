@@ -24,8 +24,7 @@ class V32HardeningTests(unittest.TestCase):
 
     def test_code_loading_environment_is_rejected(self):
         with patch.dict(g.os.environ, {'PYTHONPATH': '/tmp/injected'}, clear=False):
-            with self.assertRaises(EvidenceError):
-                g.execution_env(7)
+            self.assertNotIn('PYTHONPATH', g.execution_env(7))
 
     def test_json_rejects_overflow_number(self):
         with tempfile.TemporaryDirectory() as td:

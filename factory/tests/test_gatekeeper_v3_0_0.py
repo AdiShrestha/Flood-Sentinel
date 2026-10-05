@@ -21,11 +21,11 @@ class V3ScientificTests(unittest.TestCase):
     def test_result_note_required(self):
         p=self.write('r.json',json.dumps({'entries':[{'metric':'AUROC','value':0.5,'verdict':'SUPPORTED'}]})); self.assertEqual(g.verify_result_plausibility(p),34)
     def test_result_note_allows_investigation(self):
-        p=self.write('r.json',json.dumps({'entries':[{'metric':'AUROC','value':0.5,'verdict':'SUPPORTED'}],'investigation_note':'checked'})); self.assertEqual(g.verify_result_plausibility(p),0)
+        p=self.write('r.json',json.dumps({'entries':[{'metric':'AUROC','value':0.5,'verdict':'INCONCLUSIVE'}],'investigation_note':'checked'})); self.assertEqual(g.verify_result_plausibility(p),0)
     def test_training_floor(self):
         p=self.write('m.json',json.dumps({'convergence_evidence':{'epochs_trained':3}})); self.assertEqual(g.verify_training_sufficiency(p),32)
     def test_training_justification(self):
-        p=self.write('m.json',json.dumps({'convergence_evidence':{'epochs_trained':3,'justification':'fixed analytic solver'}})); self.assertEqual(g.verify_training_sufficiency(p),0)
+        p=self.write('m.json',json.dumps({'convergence_evidence':{'epochs_trained':3,'justification':'fixed analytic solver'}})); self.assertEqual(g.verify_training_sufficiency(p),32)
     def test_split_floor(self):
         p=self.write('m.json',json.dumps({'test_label_distribution':{'0':5,'1':5}})); self.assertEqual(g.verify_split_integrity(p),33)
     def test_traceability(self):

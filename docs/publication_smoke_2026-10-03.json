@@ -1,0 +1,15 @@
+{
+  "factory_version": "3.3.0",
+  "engine_sha256": "a8fb52e4b4b16e8d491685f32298b3841c8c16f5666650d18175b29a5d6d4eed",
+  "status": "PASS",
+  "bootstrap": "INSTALLED",
+  "repeated_bootstrap": "INSTALLED",
+  "publication": "PASS",
+  "public_tracked_files": [
+    ".gitignore",
+    "README.md",
+    "source/evaluate.py"
+  ],
+  "public_clone_runs_without_private_engine": true,
+  "remote": "temporary local bare Git repository"
+}

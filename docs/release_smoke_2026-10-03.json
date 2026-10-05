@@ -1,0 +1,20 @@
+{
+  "factory_version": "3.3.0",
+  "engine_sha256": "a8fb52e4b4b16e8d491685f32298b3841c8c16f5666650d18175b29a5d6d4eed",
+  "status": "PASS",
+  "fixture_research_certification_refused": true,
+  "exit_code": 43,
+  "cli_single_json_document": true,
+  "registered_attacks": {
+    "registered_attacks": 22,
+    "scope": "concrete regressions with per-entry lifecycle scope",
+    "status": "PASS",
+    "tests_run": 22
+  },
+  "focused_mutations": {
+    "status": "PASS",
+    "total": 24,
+    "killed": 24,
+    "score_percent": 100.0
+  }
+}

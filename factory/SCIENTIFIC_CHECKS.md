@@ -1,17 +1,11 @@
-# What v3 actually checks
+# Implemented checks and practical limits
 
-> Local implementation notice: this checkout uses correctness patch `3.3.0+flood.1`. Read [LOCAL_PATCH_CONTRACT.md](LOCAL_PATCH_CONTRACT.md). Historical stronger assurance descriptions below do not establish capabilities implemented by this local backend; automatic assurance is structural validation and reviewed completion is LOCAL_REVIEW_COMPLETE.
+The gate binds declared plan/source/data bytes, normalizes evidence paths, rejects symlinks and unsafe input types, parses strict JSON/CSV, validates typed execution contracts, and rechecks input/output membership. It launches argv without a shell using an environment allowlist and verifies signed local receipts against the pinned key. Same-user execution remains outside a security isolation boundary.
 
-The active gate reads the frozen plan and run receipts. It hashes every declared source and dataset byte, rejects symlinks and unsafe paths, disallows duplicate JSON keys and non-finite values, and refuses plan or source changes after freeze. Experiment commands use an argument vector without a shell. Each preregistered seed gets an immutable attempt directory; failed attempts remain visible.
+Prediction CSVs require unique `sample_id,score`; optional supplied labels are checked against frozen cohort labels. The audit joins source IDs and split/group/entity membership, verifies binary support and probability range, and recomputes AUROC, average precision, accuracy, F1, Brier and log loss. Constant/saturated outputs are diagnostics; below-baseline support needs explicit null/inconclusive scope and cannot be excused with padding.
 
-Before an experiment starts, the gate rejects common interpreter and loader
-injection variables (`PYTHONPATH`, `LD_PRELOAD`, `DYLD_*`, `NODE_OPTIONS`, and
-similar hooks) and sets `PYTHONHASHSEED` from the preregistered seed. This keeps
-fresh-process runs tied to the recorded environment while preserving ordinary
-project variables that are not code-loading hooks.
+Research policies require at least 30 test groups and 10 observations per class. Training checks use the observed contiguous loss history, preregistered stopping rule and selected checkpoint. Small counts and stable losses are necessary guards, not scientific sufficiency proofs. Group-paired inference is conditional on trained models; seed-only inference is explicitly conditional on the fixed test corpus. One declared Holm family, effect floor, precision target and test feasibility are checked.
 
-A run is admissible only when its prediction CSV has unique sample IDs, nonempty source IDs, two labels with at least two examples each in test, no group crossing train/validation/test, probabilities in range, nonconstant scores, and independently recomputed AUROC, average precision, accuracy, F1, Brier, and log loss. Reported numbers must agree to machine precision. A real loss trace, stopping reason, minimum training budget, source hashes, and hardware/dependency information are required. The engine uses paired bootstrap intervals and sign-flip tests only for aligned independent units, and Holm correction for a declared family; it does not infer independence from row count.
+Configured failure analyses derive denominators from joined predictions; sensitivity needs registered levels and repeat seeds; ablations need executed boolean cells and replication, with a disclosed alias structure for large fractional designs. Hardware checks compare measured rows to declared trial/sustained-workload requirements but cannot independently establish truthful instrumentation.
 
-Static scans are defense in depth, not proof. They flag random sampling and mock/fabrication language in declared result producers; agents must explain training-only randomness or remove it. They cannot prove arbitrary code is honest, so semantic review and raw artifact inspection remain required and are disclosed in the certificate.
-
-The certificate is deliberately scoped. It cannot establish causal validity, external validity, theoretical correctness, or journal acceptance from files alone. Those require domain judgment and evidence documented in the review.
+Acquisition/tier scans are heuristics with regression controls. They cannot prove honest source use or semantic claim strength. Reviews must point to current evidence, give specific distinct reasoning, resolve diagnostics and disclose mode. Human evidence inspection, data authenticity, representativeness, operator semantics and external reviewer identity remain outside automatic assurance.

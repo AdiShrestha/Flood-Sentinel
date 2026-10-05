@@ -1,0 +1,3724 @@
+{
+  "benchmark_script_sha256": "2aae7c9239b84d0513983a7a428364b60d4a75fea182a18f17dc4103671d645f",
+  "cases": [
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "859216127450259db97f3843871d2b5c3fecbd35a2f1794bb367068c56ca91ea"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "f046ea20bbd0911b7bd0ec6b35bc3636409e382fb90f86958549a9b9b3bf1cdf",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "c57e081f8df89f340809d7a36c103739387323c4828485f7316ea1f313001f16"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "group_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "c98e2c0a6ee2463440cb4e0144e0611024fdd3cf1ed9cdd0f7f49633825e94fe"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "group leakage across splits: ['g0']"
+            },
+            "stage": "run",
+            "stdout_sha256": "880a31484baac1b5b1fa8fb401883cc5200d5216017570e5a85429bdf6cf2128"
+          }
+        ]
+      },
+      "seed": 20261003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "830f389a3b9f492f7857c1eef34a6e3bfbf8c0e97a86253add0bc3031ffd356a"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "b3ab0d87490c8466a186eb3b3cb79da77fc2c4f1c1b131badc0db2f014a270a5",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "121359c2c80fe167af9bb1fb21ef1c6559d174c81bbecb2155bcd1e7bd912c63"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "group_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "ed5652bf6cad6e244e40054ab6278a5676f4db16b62241153db1a096db2ee1e9"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "group leakage across splits: ['g0']"
+            },
+            "stage": "run",
+            "stdout_sha256": "880a31484baac1b5b1fa8fb401883cc5200d5216017570e5a85429bdf6cf2128"
+          }
+        ]
+      },
+      "seed": 20261004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "6a5da75a01cca13f92990510beac3ecdabfe393077b21136248e7f8233bab402"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "a88d26d9a23ae9635c28eefd6060a1c037f30a0635475d435ba61925020ab307",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "68fd7f2f7f9277559cd36e734f907a78cbd8b9a41ddc8229ce4127d1d4f78998"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "group_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "75e9bb17dd30a1514eb4cbbdf57d830c025af7a394ff4b932a2e46eb793ef4e7"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "group leakage across splits: ['g0']"
+            },
+            "stage": "run",
+            "stdout_sha256": "880a31484baac1b5b1fa8fb401883cc5200d5216017570e5a85429bdf6cf2128"
+          }
+        ]
+      },
+      "seed": 20261005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "f30ef4ca7e6dbda26df643c3af3391377ebe6cb48930ad6796a1839b109c106d"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "0a609646a261ded469470da1e1d8a3b812a472f0a1affe1034180f46a2ae13c9",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "af68d2c54970ef7e3164965785f9f0dd487c3cb873f382fdfe90194a59c5cc78"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "entity_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "510cb847131ea3534d817dd9a50486041e8d705d3109b5d66bea5e61bb8324a9"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "entity leakage across splits: ['e0']"
+            },
+            "stage": "run",
+            "stdout_sha256": "7e7ce11c9aeccfa60d142e43e8533520e1eb7f7f204a4c628c090ca1a21ffeee"
+          }
+        ]
+      },
+      "seed": 20262003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "aeee592e6f400f5ee7e70cf513538158296c0db3b46126cbca10e13cfa6acf6f"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "a033c421a138d08278fc301e442112e41398d03c4ad704e1fde01ae0dad36bad",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "664e7f68d1ea8727f76e1d13ad975ca0836f0736daa181700db6e7b6c1442920"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "entity_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "4f6b74349b6e66a5eb413cef2a62079b7acd48ba2457c6539e32b3837e56fea4"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "entity leakage across splits: ['e0']"
+            },
+            "stage": "run",
+            "stdout_sha256": "7e7ce11c9aeccfa60d142e43e8533520e1eb7f7f204a4c628c090ca1a21ffeee"
+          }
+        ]
+      },
+      "seed": 20262004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "616b10fdf794701b11f738ff2df96855355e4d6f7da55517fdcf97d6e6ecd304"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "4196e9ac8ee26952fc04011c71bca550dc40f4d0abea2b165dd35add5f77a86b",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "7a396cad64cb5d04ae1c16e787d94c4aa765b856d639638bbba96de53e89d70b"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "entity_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "7704ccc17210b8a359dc63e98b42925ef75f6e5971f6a096e7b02dbfc257b4cd"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "entity leakage across splits: ['e0']"
+            },
+            "stage": "run",
+            "stdout_sha256": "7e7ce11c9aeccfa60d142e43e8533520e1eb7f7f204a4c628c090ca1a21ffeee"
+          }
+        ]
+      },
+      "seed": 20262005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "950e625a91376b3ddd5545a3fe7dfab3cfcaf10533649d47ad0a3e68f0767f54"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "581833529211174f34d91ae815287ffd4a457763cc62a83896ea4cee225c3f60",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "4cae7b462df861e720ef8304301efbfdc552bf70902037943ae97f756525e271"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "temporal_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "ca423b529dd6c642213e83513a07baaba78aa95597c98f98de8dcea736cff318"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "temporal order violated; do not stratify away future/past constraints"
+            },
+            "stage": "run",
+            "stdout_sha256": "7e1672854b3ba0ca48e6e50ce5bff52ee68255fa6b888ff510ad1c2f00214d7c"
+          }
+        ]
+      },
+      "seed": 20263003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "38491ef3d3c61c61e75097abe8fd209a352e32a09f3a4b42d943683fc76372fa"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "82aa8653c25fa0b245728f427ecdda89ff6b58ebec17673ae0ac36b6a03ed75c",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "8f523d8353a76b6196968bc0f06bbe5644c95d3e62d5d23bcc6898ce8bf38096"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "temporal_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "7cd69aa9db1d3ea83cc8d9f6f62aaf046397b540f20e705996a149fe6ee9f6d2"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "temporal order violated; do not stratify away future/past constraints"
+            },
+            "stage": "run",
+            "stdout_sha256": "7e1672854b3ba0ca48e6e50ce5bff52ee68255fa6b888ff510ad1c2f00214d7c"
+          }
+        ]
+      },
+      "seed": 20263004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "56e0e1f6412a44f56a3a5a3c6f929cbbb068cc8d1470d2cf2e24b5fd7c03ed04"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "26db6934c0e690c47d502a3ef918ccfdb3f51ef0aa865465bf69e9289d3d19bd",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "e8a81366cdb8e191d747aa9f3cdfc740fd28cd9a992f122ece4c0c0a852685e0"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "temporal_leakage",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "b013da1e646ad265dbf9bc29cfcf7fb50e11744281f851e5263dabeccd067330"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "temporal order violated; do not stratify away future/past constraints"
+            },
+            "stage": "run",
+            "stdout_sha256": "7e1672854b3ba0ca48e6e50ce5bff52ee68255fa6b888ff510ad1c2f00214d7c"
+          }
+        ]
+      },
+      "seed": 20263005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "2493502339d848c2c20d140af101ed677d7ac427ea338fe57ab831ba842cc0b0"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "0a447ab33d7a3dcd4e1a839a33b00b89c282666f5af426ed21156a12afe0d0ef",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "e6382959feb46253ad1d36f3532ae8ad54b8c1f90e14a64f63e2f31e80836e99"
+          }
+        ]
+      },
+      "detected": false,
+      "family": "label_peeking",
+      "fault": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "e469b19ea69b7d2a54dbf8cc80f957d550fd174e87c1a77c5418df1e6498f869"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "e09e55c6b2ab341a131326b811b7d0a77690f1ecbd332dd075fd0257d1ec4680",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "2ba3c5379708ea8644a9533ca9aa13481037a58fad37c0420f4c0c721bc885d8"
+          }
+        ]
+      },
+      "seed": 20264003,
+      "status": "PASS",
+      "supported_guard": false,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "5c54797f7f215748fff11f3d006035f15d3d54fdff5441a15463cbead84f5e7a"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "e3c08275ee8aa088325846277867115567d3a4e7bc0e372ce1c3b11e11b2bde2",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "a4b6246a54b40cc9226bf826234b481c17a9e30b6bfbfa1f38b7df64914b73a0"
+          }
+        ]
+      },
+      "detected": false,
+      "family": "label_peeking",
+      "fault": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "618bdf46bbacb916284f1e1ae0bff2f4f07316e1f0ce9a5a5eb2010677c55c3b"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "a2a27adea3b13a23d63c746998331e5bad8a460be7bbf14e96fb3161140f1a07",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "f1c90bd1c20d37a689fe24eef0fa78c6601cdc2af6dc7990183df35f9879457b"
+          }
+        ]
+      },
+      "seed": 20264004,
+      "status": "PASS",
+      "supported_guard": false,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "e9d01b189c0a9475b3b6d778242d4d64b939d74ddb396a7e391601d3917ec00f"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "805c4f0e6a88094e49789030e9247b35fb66b34c1c5fa2cf188556d5e742ec9d",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "f5fdcc86191569649c22d4822e4acc7ad3b8db10db1c57ce65ffea61bd4276b9"
+          }
+        ]
+      },
+      "detected": false,
+      "family": "label_peeking",
+      "fault": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "8f08b138d9876b68b2af9cc7093f2e20b9e0ab90221b1a2580cb905ce14a34b0"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "80e82153e1a3bce70675056c91d9b706031c621db257b8572faa669103d11fa2",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "158cd6c9353f04f63d6454fb2fdb454220bf17a89414ecd16b1e3347588b414c"
+          }
+        ]
+      },
+      "seed": 20264005,
+      "status": "PASS",
+      "supported_guard": false,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "00b39206e93506ce4d27152920c45413c2c979e06e345c30c963f058b6f6fa38"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "5dbff3c7e0d1c6e9d942eef20267db54413ca1f5f876e4140151329f93890872",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "a7811761ee9b5e7e95779e6f8016538d458b1568630ccdfed1180104a849c236"
+          }
+        ]
+      },
+      "detected": false,
+      "family": "fabricated_origin",
+      "fault": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "7fd986792fed180421d9689d346a4d94a56555e68eefd21755bc0b24094f7081"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "a2be5ffd8990cdd98214a9e2d3fbf12e3920d0d512f49035a4af20e9b3b291dc",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "cfcf6baa30357106568ac22f688970a0907f98e4d115ae7662442e3ec3a1c6d3"
+          }
+        ]
+      },
+      "seed": 20265003,
+      "status": "PASS",
+      "supported_guard": false,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "ccaf9de2d1536b24047571c6eeec92b42acb985794d182b4040bd406ac256d75"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "b254e2882114618a05fa5bec7e3d17f246b7887202469722a8ce2d1d313dc162",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "30f4ec4506abc3705b8a9245067216082d2eea330887bc98a7f8d1a7aa2abcee"
+          }
+        ]
+      },
+      "detected": false,
+      "family": "fabricated_origin",
+      "fault": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "144d0fcfd5ec2ec2f731e522a661bfa7d8d79489d437b6ea9970f2f368231f38"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "6ca9074b55bcf64199443ab9bc1a51196226b2a586a86c839c7297937f771921",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "1f0ac1dc877f26b94a20a7f2b10686765a9e6c0b823645c249ab5cbe9ecfc57e"
+          }
+        ]
+      },
+      "seed": 20265004,
+      "status": "PASS",
+      "supported_guard": false,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "1f9099ad9f882baf680ce210e1828b9c6bd821a6d15164f9f3c83904b63992e3"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "1b193e353fdf57cdd25a69d02b654f1045e25e89247fcef3b1783ab79f2d6dcc",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "f28ae97a346794463d5dd5101ba17f52c47ec58c779cc219842ba53c8c4caf2d"
+          }
+        ]
+      },
+      "detected": false,
+      "family": "fabricated_origin",
+      "fault": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "49ab11f391b88635f0e8b9a713c36dc98e4c1bb1f2bc2e5020e3cb1fdb51514c"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "b6e3a5239cd451416ac55bd51ac0676eb3dd9c3a7b684868acc818b1a8ce566f",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "504c3e8ffb147748b63d3bd27555190c93628f0709da72960c1b91c1916c072f"
+          }
+        ]
+      },
+      "seed": 20265005,
+      "status": "PASS",
+      "supported_guard": false,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "0a05464d56771d01255c74f5f417c8e4a1574cb66ab1c9dca0e38f3b6e5143c9"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "1cfd9800b32ad166af2b67105122a21b29b8e802f4507a51d8084432be2101c4",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "2a18c61773368c81497b3b570ddf3178bcf44575ad33f0bfcf9803f7a1c194e4"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "test_tuned_threshold",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "741a4be745160997fbfd34a41fb137a18cccc1b71601a30d5a4a2d82c1928d70"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "FREEZE",
+                  "detail": "plan changed after freeze"
+                }
+              ],
+              "evidence_digest": "7619d0db675cf83a69bca84defaef7de059839b0851676287855fa2a363310bf",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "db908f1f576cd5ea19aedf2aa5593af54f0c040d55f1271483a2295efdf6d96e"
+          }
+        ]
+      },
+      "seed": 20266003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "a1cfb3440bd16614f4092f709681f08221ad18c5945231bf755ac0f05a286296"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "7debef4da502dac7bce19ea0da8cc04cb54a1e81c7e616e7d78997151ad16155",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "ee9e0cb4148eb2e1a91576820fbfa04791f9d8662e423ea0ab37fa463d67131a"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "test_tuned_threshold",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "7367098cad39f6011b5491dc1d210775652e2bdc97086fcf6777b1a4cf8decc5"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "FREEZE",
+                  "detail": "plan changed after freeze"
+                }
+              ],
+              "evidence_digest": "6323621276867bf64ef4288ea91c45631b58fc28ec663008376d0732d8c9bc7e",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "9dfd3e322a1e8d3501b559605ad761fe0e606f36bc255e145256620ea1a3b7ec"
+          }
+        ]
+      },
+      "seed": 20266004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "7a83bc895703f987918054a64dc1cdf0e4f29c15729aaa92053461e010f34cb0"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "c7630a59b9b7e51216feec4a55c1179d6fbf3d4b042e77ffb44c5b1fc43dccf8",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "217c7a097268a0c56be8e904beb2dcea775250c15029ede1fa731e59b348e6a6"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "test_tuned_threshold",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "ad8fade3901ce75cefff34a022fe2189f1f094d407fc3889301a5c1e27d0b1a3"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "FREEZE",
+                  "detail": "plan changed after freeze"
+                }
+              ],
+              "evidence_digest": "26131a2633c946a14c7af0b37b371cf3a0608e5136c71354dafbb3100a8e0dc4",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "2c78f023eff4fc38508db3c4def5602724a75de5d888ef98916ed44d4a4eaf53"
+          }
+        ]
+      },
+      "seed": 20266005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "75f3fc31a08240d44f35e0b4c7195afa195f0d0e26a13a81627b78233eb6ca5e"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "0ad5b2f935f889d1a03aeb0d32682aeb0cdb9295ea503ee0f52ecf3d17a69799",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "f65e22d5d86652b0aafc698b7b4b779b7f88c3756662830eb97f5c78747aaada"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "favorable_attempt_selection",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "9b925c90c5c8b49041639c7fa2483f418dddf3abfa3e032de8c241bb53d5e74b"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "HISTORY",
+                  "detail": "execution attempt membership differs from signed ledger"
+                },
+                {
+                  "code": "RUN:fixed",
+                  "detail": "fixed: same-epoch retries are not admissible; preserve failures and amend prospectively"
+                },
+                {
+                  "code": "CLAIMS",
+                  "detail": "claim lacks validated experiments: fixture"
+                }
+              ],
+              "evidence_digest": "0efa968a59e0dc3f8441672f458b132f4f9db9d2bf91fb369d820b0c77ff5e4a",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "d8966149146b83f7a19fa58783cf04ca53120fd9638e18c4392511df15756bc3"
+          }
+        ]
+      },
+      "seed": 20267003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "bba58dbf28089f6556f7c58b83b49aff8b731be96b388615b56ed47019a4189b"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "2a49e508b9230770cfb270b37cebfa95d19e5a7a72bed0a5e3ba2a4d2ab42941",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "1d437d4db83c4eb23295ebfd17266d8d707b52b1c10089208bc98151d163b121"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "favorable_attempt_selection",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "501fc59a8ad09835bd857350b5d55ae344a42eb8770f3b030a90607f8645b151"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "HISTORY",
+                  "detail": "execution attempt membership differs from signed ledger"
+                },
+                {
+                  "code": "RUN:fixed",
+                  "detail": "fixed: same-epoch retries are not admissible; preserve failures and amend prospectively"
+                },
+                {
+                  "code": "CLAIMS",
+                  "detail": "claim lacks validated experiments: fixture"
+                }
+              ],
+              "evidence_digest": "3b948bff8b15f4b97dc75eda23ebb97b6aba8a03e38cb397a610306d4c478a09",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "b460b5aa626c3be10bace670c9298082af4e508edb711518f7b69e981d85558b"
+          }
+        ]
+      },
+      "seed": 20267004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "5230a30ce97d0cb9de695a4cdcb660ccbff1b2ba1bf8ffad2bce37565b650ef2"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "7f68c93e2de45bf59f75ea6779230f836de8977309ef9ef7d57349d175063f45",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "3750c9660b43a71a60fa738f6ded66e03723d1b0b0e85cb61975e6508107bed6"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "favorable_attempt_selection",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "1d0991b0b0e515da1e66ad4522c042bbda758f003b96c8148dd86eb0df3100d0"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "HISTORY",
+                  "detail": "execution attempt membership differs from signed ledger"
+                },
+                {
+                  "code": "RUN:fixed",
+                  "detail": "fixed: same-epoch retries are not admissible; preserve failures and amend prospectively"
+                },
+                {
+                  "code": "CLAIMS",
+                  "detail": "claim lacks validated experiments: fixture"
+                }
+              ],
+              "evidence_digest": "7341f2fe3c6d95bdf6b8d2806a271a57e6ca19bc8835818459bf1c67b4a4625d",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "43adfc5d4cd17ca845fd3a8029df11e99b4a02e2f3540b9907941111ca2e7686"
+          }
+        ]
+      },
+      "seed": 20267005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "b6543d6d9f90e672d5332751ce83e1366387cd7a7251a71c22f446120600e44a"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "2634f4e87dd5877b1a734c3321ac6d35328d7912d53b7bef6fe8bdf058203266",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "dbdef6979f7418beaef78cb307c6d607e2e058aae6dd1c785a16745108169054"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "unfrozen_payload",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 41,
+            "response": {
+              "code": 41,
+              "error": "entrypoint must be a Python script under frozen source/",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "9245a3f418e5e81a9689f7a2041d75d9be2318a7bd9dd636a1f26290cd7a13de"
+          }
+        ]
+      },
+      "seed": 20268003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "843bbef40daf7882f0bbae9c9db688c123d7ae04c569bed778840bb89f98e71d"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "72a58da205f717027c0ab2722e76a24e1c1e96e535ecc15c3002ada319d8283b",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "9a54ca257bc896dcea142a3513bdc73ce39d57ab2c0b1ef37813c3c671a7257a"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "unfrozen_payload",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 41,
+            "response": {
+              "code": 41,
+              "error": "entrypoint must be a Python script under frozen source/",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "9245a3f418e5e81a9689f7a2041d75d9be2318a7bd9dd636a1f26290cd7a13de"
+          }
+        ]
+      },
+      "seed": 20268004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "cd76170fcaf4a0b08fd3ad2e17297c2dd2eae8926409d9fa36b0281241f849ea"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "f9b9add978815398e2e28ae3a659fdc8294eeada4e2f189173bc23cc934da125",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "a2128cc5ac3e74c4243d9f9838a5b2e10a238c0e990e54c065ab16047dfa0c9b"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "unfrozen_payload",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 41,
+            "response": {
+              "code": 41,
+              "error": "entrypoint must be a Python script under frozen source/",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "9245a3f418e5e81a9689f7a2041d75d9be2318a7bd9dd636a1f26290cd7a13de"
+          }
+        ]
+      },
+      "seed": 20268005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "b9e02ae828c0c7d2d1bc6a51e9f43c3656b7bbcc3be4b8c0cbb7029ecf9008c9"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "15ecc0962cb1fcfb3e70e1622452326ac6d116808d9610a471bc9ff5d046d12d",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "c8ad72e0c59637d7e35f66f4d5f3fba4019e40a5cba6e5a5817fa5244c3d6f5d"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "forged_receipt",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "6a97b2597b8883be8788c76a1efcb7b7f731b40c4c6faec81477bd9f13c31056"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "HISTORY",
+                  "detail": "execution receipt changed/deleted or interrupted since ledger commit"
+                },
+                {
+                  "code": "RUN:fixed",
+                  "detail": "receipt signature verification failed: "
+                },
+                {
+                  "code": "CLAIMS",
+                  "detail": "claim lacks validated experiments: fixture"
+                }
+              ],
+              "evidence_digest": "03ffcadf2e67c5d8a770187a40466e4cbe5be5a73a232fdedb24c39494ba2dfe",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "767c1458a0ac27b103bef29712ae2eb4ef5d439af4f40c4b96e35f18bb45a205"
+          }
+        ]
+      },
+      "seed": 20269003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "522604d210ee895e5f4f9b0345595232b58f7dd4ab2300e99f35b4ed2d45afc8"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "32a3f68e99bea3ff747c8b3070c3f3197c9efefadb7cbe0a5e0202799bf0fe88",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "32f993d49742ac24ba55e120008f633b9cee92213c662ac8947d926ec84aa8bc"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "forged_receipt",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "d04141a8b76b925b379dad3eb1c5ec44fa9d2bf3cb706097af19be38e66dbcb7"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "HISTORY",
+                  "detail": "execution receipt changed/deleted or interrupted since ledger commit"
+                },
+                {
+                  "code": "RUN:fixed",
+                  "detail": "receipt signature verification failed: "
+                },
+                {
+                  "code": "CLAIMS",
+                  "detail": "claim lacks validated experiments: fixture"
+                }
+              ],
+              "evidence_digest": "a2ea65d2baeef93204cf360b3bde4775f8bb63909356057591e3f4e9fceed288",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "4f5af3c3f55018c453f595d60badf00ecb3e62a4b25be05da0b6aba13c6e8e46"
+          }
+        ]
+      },
+      "seed": 20269004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "89e695ca78fc5b30bdd806e69e1d52e7f77f157ed162d1184288713555d3fdcc"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "1d1fdd96232f4b01dbcb2db0d61b1054663be264b7e8bff75036212c2ddc1fd5",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "e6ab71f1e8504adf58f2dd25068c2fe02ff23008e42859e5781c1c10b9180ccd"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "forged_receipt",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "08ed3da0c9da26ef6a5e8fbec6f5a632c062c1391ae72f45f04cbac1d1f9eb2c"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 42,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [
+                {
+                  "code": "HISTORY",
+                  "detail": "execution receipt changed/deleted or interrupted since ledger commit"
+                },
+                {
+                  "code": "RUN:fixed",
+                  "detail": "receipt signature verification failed: "
+                },
+                {
+                  "code": "CLAIMS",
+                  "detail": "claim lacks validated experiments: fixture"
+                }
+              ],
+              "evidence_digest": "9c615774a04cbce80e77164c7eaff0e4dd9a79eeab75124781b2b2579a737f3e",
+              "status": "BLOCKED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "fa6381a263bd459751e6760aa8c2071d9d34d5f6b8125c00c9e417677c04be87"
+          }
+        ]
+      },
+      "seed": 20269005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "ae35a38154ef8b5a7d10303a37f6b8560bb1948190a5e9ba9e981c364e3119aa"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "0bc4963b32e399f21777ecc1b7ee6ad75f90c74051c7eb7af78143e07ac90fa2",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "8ff36d9127269621b7e2ac6625842815408a772b3a171401d84fa3cf8a94fb9b"
+          },
+          {
+            "exit_code": 43,
+            "response": {
+              "reason": "fixture evidence never certifies research",
+              "status": "FIXTURE_ONLY"
+            },
+            "stage": "certify",
+            "stdout_sha256": "c54b0c0c75718e91de43b6394b6b53ba60c74cc2100259fc68b6599517ebb501"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "padded_review",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "ca297d8b06af304c6fcb6f9630bfef9374c412648106d29aff8fd98f919f2e76"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "95e6b3688ee061b4d05bdfa4b936095a2066d070e77ab61a0f491a0b161f6fb5",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "045a65133ded88b54804d94d2d7723acce2424dc197eb1bcff552440833a19ea"
+          },
+          {
+            "exit_code": 43,
+            "response": {
+              "reason": "ablation_sensitivity: repetitive or placeholder reasoning",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "certify",
+            "stdout_sha256": "e234fe6dac7088196ea7ef8cc0950edc24aee0b891397772be4699e08ed24509"
+          }
+        ]
+      },
+      "seed": 20270003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "0804bdcbd7b9d5cf69c96569bc1f8a7e66e0635c0102f53d0f9a737d5419fd00"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "917c88220ca2e3da4d967e73c5ef28f1cdbb9e26e6000cd3e8372c6b6e2983a2",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "ba79ad2590d3766625851d8269cbacbb699a0c3352a5c7bbed13eacf8e494e7e"
+          },
+          {
+            "exit_code": 43,
+            "response": {
+              "reason": "fixture evidence never certifies research",
+              "status": "FIXTURE_ONLY"
+            },
+            "stage": "certify",
+            "stdout_sha256": "c54b0c0c75718e91de43b6394b6b53ba60c74cc2100259fc68b6599517ebb501"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "padded_review",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "b2d537ceb3e0d8e67290496596992c62562dfcc505aef8763b41ba6f6302ecd0"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "9b6316ab36e8a7276b05baaa658a6c3c7d4d13197a3f36e90ac57b0445ad4817",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "8278dd86ac2c5d509c724fd1db9c34ea606631561a8268cc785670c391dbc490"
+          },
+          {
+            "exit_code": 43,
+            "response": {
+              "reason": "ablation_sensitivity: repetitive or placeholder reasoning",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "certify",
+            "stdout_sha256": "e234fe6dac7088196ea7ef8cc0950edc24aee0b891397772be4699e08ed24509"
+          }
+        ]
+      },
+      "seed": 20270004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "b5e477436dfc649479d0ca53c9d82fe87a8696e9c3293e89364c156f8a121831"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "bb72457564f1db41243330e4c42ef6f38c7ed54f9a0fae0e8f51a150cf311f25",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "920783cd7159a416c9ee1f62342f1e64958235d6adf39952cee5a01be2f8aa93"
+          },
+          {
+            "exit_code": 43,
+            "response": {
+              "reason": "fixture evidence never certifies research",
+              "status": "FIXTURE_ONLY"
+            },
+            "stage": "certify",
+            "stdout_sha256": "c54b0c0c75718e91de43b6394b6b53ba60c74cc2100259fc68b6599517ebb501"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "padded_review",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "5d1e0b1b4b3e4ca4480d0aef1927d4a99ede39ecbfd270b5bd2a649fc75f60ff"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "2bbe65c022d0d0a467275c5c24fd7724187962e1c7108982318e157433803fb9",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "761ab494c72b1f18a71b327fca4f3f685c89fe5e58cb52058f38946fbc4c7fa8"
+          },
+          {
+            "exit_code": 43,
+            "response": {
+              "reason": "ablation_sensitivity: repetitive or placeholder reasoning",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "certify",
+            "stdout_sha256": "e234fe6dac7088196ea7ef8cc0950edc24aee0b891397772be4699e08ed24509"
+          }
+        ]
+      },
+      "seed": 20270005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "bd70b7715243d08952d7627e2b0d91ef07bf2ad12c5378d22496e1c306da68b4"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "349861f05d36f15373ac1b29936e343f75f67f7216b41048fc871034d3a4530e",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "2101d0691b9b566f49c0df1d464cdec912984217704de22dce1321efeace0e6e"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "below_chance_result",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "cdfefa2b8339b0a3c5694670444c5a4e50065259e50c357b622e598651b6e632"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "fixed: validation BELOW_CHANCE AUROC requires an explicit descriptive null-result claim"
+            },
+            "stage": "run",
+            "stdout_sha256": "d2d85a0f7b64e62c3757de82e1e05a7d000938e7f0cd8db6e0b7eed2251224cd"
+          }
+        ]
+      },
+      "seed": 20271003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "365cfd2ceeac06ab8734750a8a5744c79cf57adde00aad513f8af25a385ff899"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "0b2da01a6c4eb4a548d3d0880992d45de73d7de094c68c3d78e451264bfa4b1d",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "5f340a46c23a272f0e6a2c8fff124161bbc73ca3e1f840beb75f11cdafb5affa"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "below_chance_result",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "84713016b9a6f0c999d992177255f2cdc876a703a7f6bcc3e8fa22d887412b8c"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "fixed: validation BELOW_CHANCE AUROC requires an explicit descriptive null-result claim"
+            },
+            "stage": "run",
+            "stdout_sha256": "d2d85a0f7b64e62c3757de82e1e05a7d000938e7f0cd8db6e0b7eed2251224cd"
+          }
+        ]
+      },
+      "seed": 20271004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "74c98e8a934cd3eed33153ce03604612df0443fe40d2375e83b51ab2b8fc6e75"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "RECORDED"
+            },
+            "stage": "run",
+            "stdout_sha256": "aeaf85732b5ab2fb46ac023ebb9ce3c7d730e9793f46b1e80e4904756593c2bd"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:fixed",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "53cc56aa745a759eedbdea1ad70bf8bc88f27359ec8f68158e478df418d96d97",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "e8566defb51af085156ff4788ee9de98899c7439b87041983244ce0d9a63ae19"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "below_chance_result",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "90fcd86449ffa9ce3d74c3d7817d215ab05aa3337f833ea16fe6efdf24dedec7"
+          },
+          {
+            "exit_code": 41,
+            "response": {
+              "error": "fixed: validation BELOW_CHANCE AUROC requires an explicit descriptive null-result claim"
+            },
+            "stage": "run",
+            "stdout_sha256": "d2d85a0f7b64e62c3757de82e1e05a7d000938e7f0cd8db6e0b7eed2251224cd"
+          }
+        ]
+      },
+      "seed": 20271005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "4a20a4bb690b47ab64af946f7b1ac8fda6087e8cccb8206ae6197abb9ddcf734"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "results": [
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                }
+              ],
+              "status": "PASS"
+            },
+            "stage": "run",
+            "stdout_sha256": "3a880466cfaea7f1a9bc6ddc88d35385a7c4c4603563f01909bcb451214d47f2"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:a0",
+                "RUN:b0",
+                "RUN:a1",
+                "RUN:b1",
+                "RUN:a2",
+                "RUN:b2",
+                "RUN:a3",
+                "RUN:b3",
+                "RUN:a4",
+                "RUN:b4",
+                "RUN:a5",
+                "RUN:b5",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "834ae3d5d4ea8bbee6d90ef0774ed3d45bb646353b1b64def611b3979fde2e66",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "c29f59631eae254cfb19d4e670da29825e5cc4da45707d6b84b6f34b0923a27f"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "wrong_inference_unit",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 41,
+            "response": {
+              "code": 41,
+              "error": "seed inference requires explicit inference_scope=fixed_test_corpus",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "f6ffa1f6ac72c8c796fdfe9da471edc75f20932e76d7a0051912501dd76dafe5"
+          }
+        ]
+      },
+      "seed": 20272003,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 0
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "b8814f882c857b23e0e6b0666a0ecf579fe23d4c0494d5e2aee949420473576d"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "results": [
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                }
+              ],
+              "status": "PASS"
+            },
+            "stage": "run",
+            "stdout_sha256": "3a880466cfaea7f1a9bc6ddc88d35385a7c4c4603563f01909bcb451214d47f2"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:a0",
+                "RUN:b0",
+                "RUN:a1",
+                "RUN:b1",
+                "RUN:a2",
+                "RUN:b2",
+                "RUN:a3",
+                "RUN:b3",
+                "RUN:a4",
+                "RUN:b4",
+                "RUN:a5",
+                "RUN:b5",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "1d3a2342c3e6d9be030c0a7b1af3a4d296ee94d81a1ac4eaffffc07bcd9e1d48",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "a72567e6e58a928024a635b04ef99006ac423d8b764eddffd888e69d57be13d7"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "wrong_inference_unit",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 41,
+            "response": {
+              "code": 41,
+              "error": "seed inference requires explicit inference_scope=fixed_test_corpus",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "f6ffa1f6ac72c8c796fdfe9da471edc75f20932e76d7a0051912501dd76dafe5"
+          }
+        ]
+      },
+      "seed": 20272004,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 1
+    },
+    {
+      "clean": {
+        "accepted": true,
+        "blocked": false,
+        "intended_check_observed": false,
+        "transitions": [
+          {
+            "exit_code": 0,
+            "response": {
+              "status": "FROZEN"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "26e75ea4224a3ba04c25353b12f5c7465aca6bea2ec7216985a6c9e215ba6f05"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "results": [
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                },
+                {
+                  "status": "RECORDED"
+                }
+              ],
+              "status": "PASS"
+            },
+            "stage": "run",
+            "stdout_sha256": "3a880466cfaea7f1a9bc6ddc88d35385a7c4c4603563f01909bcb451214d47f2"
+          },
+          {
+            "exit_code": 0,
+            "response": {
+              "checks_executed": [
+                "PLAN",
+                "FREEZE",
+                "HISTORY",
+                "COHORT",
+                "STATIC_SOURCE_SCAN",
+                "RUN:a0",
+                "RUN:b0",
+                "RUN:a1",
+                "RUN:b1",
+                "RUN:a2",
+                "RUN:b2",
+                "RUN:a3",
+                "RUN:b3",
+                "RUN:a4",
+                "RUN:b4",
+                "RUN:a5",
+                "RUN:b5",
+                "STATISTICS",
+                "DERIVED_ANALYSES",
+                "HARDWARE",
+                "CLAIMS",
+                "ACQUISITION_AUDIT",
+                "COVERAGE_LIVENESS"
+              ],
+              "errors": [],
+              "evidence_digest": "5673a0ffa707689599187032e01160953e53ece7b1dec7db35d5d7a4f98d5d1a",
+              "status": "EVIDENCE_CHECKS_PASSED"
+            },
+            "stage": "audit",
+            "stdout_sha256": "697ea158cd6f6aab2b7230f3885bbe065840c04c0368a4b4eb979e848af73aaa"
+          }
+        ]
+      },
+      "detected": true,
+      "family": "wrong_inference_unit",
+      "fault": {
+        "accepted": false,
+        "blocked": true,
+        "intended_check_observed": true,
+        "transitions": [
+          {
+            "exit_code": 41,
+            "response": {
+              "code": 41,
+              "error": "seed inference requires explicit inference_scope=fixed_test_corpus",
+              "status": "NOT_CERTIFIED"
+            },
+            "stage": "freeze",
+            "stdout_sha256": "f6ffa1f6ac72c8c796fdfe9da471edc75f20932e76d7a0051912501dd76dafe5"
+          }
+        ]
+      },
+      "seed": 20272005,
+      "status": "PASS",
+      "supported_guard": true,
+      "variant": 2
+    }
+  ],
+  "clean_false_positives": 0,
+  "clean_projects": 36,
+  "created_at": "2026-10-03T02:33:52.006567+00:00",
+  "detected_faults": 30,
+  "engine_sha256": "1632a7117a671242b9733ae8606ccaced50dc1c11c5773e0f7c070af0fd3830c",
+  "errors": [],
+  "factory_version": "3.3.0",
+  "failures": [],
+  "families": {
+    "below_chance_result": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "entity_leakage": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "fabricated_origin": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 0,
+      "detection_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "detection_fraction": 0.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": "author-declared provenance does not authenticate acquisition",
+      "supported_guard": false
+    },
+    "favorable_attempt_selection": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "forged_receipt": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "group_leakage": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "label_peeking": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 0,
+      "detection_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "detection_fraction": 0.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": "label secrecy is not enforced by the same-user backend",
+      "supported_guard": false
+    },
+    "padded_review": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "temporal_leakage": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "test_tuned_threshold": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "unfrozen_payload": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    },
+    "wrong_inference_unit": {
+      "assessed_pairs": 3,
+      "cases": 3,
+      "clean_false_positives": 0,
+      "detected": 3,
+      "detection_binomial_95_ci": [
+        0.2924017738212866,
+        1.0
+      ],
+      "detection_fraction": 1.0,
+      "false_positive_binomial_95_ci": [
+        0.0,
+        0.7075982261787135
+      ],
+      "false_positive_fraction": 0.0,
+      "known_limit": null,
+      "supported_guard": true
+    }
+  },
+  "fault_projects": 36,
+  "interval_scope": "exact binomial 95% intervals per family assume independent cases from that synthetic generator; no pooled iid interval or real-project detection-rate claim",
+  "known_limits_observed": 6,
+  "limitations": [
+    "Constructed fixture variants are not independent real research projects or a representative benchmark.",
+    "Known unsupported label secrecy and acquisition authenticity are counted as undetected, not security successes.",
+    "Post-freeze threshold mutation tests frozen-plan integrity, not every form of adaptive test use.",
+    "Tiny per-family samples yield wide conditional intervals; no universal detection or false-positive guarantee."
+  ],
+  "schema_version": 1,
+  "scope": "matched synthetic QA fixtures through real CLI; PASS means supported guards and clean controls behave as registered, not all flaws detected",
+  "seed": 20261003,
+  "status": "PASS",
+  "supported_faults": 30,
+  "supported_faults_detected": 30,
+  "variants_per_family": 3
+}

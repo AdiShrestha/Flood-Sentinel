@@ -1,0 +1,996 @@
+{
+  "baseline": {
+    "collection_errors": [],
+    "command": [
+      "python",
+      "-B",
+      "run_mutation_checks.py",
+      "--worker",
+      "test_audit_integrity.AuditIntegrityTests.test_extra_output_membership_blocks",
+      "test_audit_integrity.AuditIntegrityTests.test_stale_freeze_binding_even_with_valid_signature",
+      "test_audit_integrity.AuditIntegrityTests.test_unrelated_review_evidence_blocks",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_added_source_cannot_evade_directory_freezing",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_distinct_experiment_ids_do_not_make_duplicate_seeds_independent",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_cohort_identity_is_rejected_directly",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_prediction_is_rejected_with_complete_membership",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_source_identity_is_rejected_directly",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_engine_freeze_binding_is_checked_before_run_validation",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_plan_snapshot_is_checked_before_history_validation",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_receipt_verification_is_required_in_the_run_validator",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_repetitive_padding_is_rejected_even_with_an_evidence_citation",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_schema_version_must_be_an_integer",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_seed_scope_is_required_without_comparative_prose",
+      "test_independent_scientific_review.MutationCriticalGuardsTests.test_stale_review_digest_has_a_specific_rejection",
+      "test_independent_scientific_review.PlanBoundaryTests.test_infeasible_five_seed_superiority_fails_before_execution",
+      "test_publication.PublicationTests.test_annotated_tag_message_cannot_leak",
+      "test_publication.PublicationTests.test_comments_docs_notebooks_and_ci_are_scanned",
+      "test_publication.PublicationTests.test_commit_messages_are_checked_by_real_hook",
+      "test_publication.PublicationTests.test_force_added_internal_file_is_blocked",
+      "test_publication.PublicationTests.test_internal_ref_names_are_blocked",
+      "test_review_regressions.LifecycleAttackTests.test_source_mutation_blocks_audit",
+      "test_v3.LifecycleTests.test_group_leakage",
+      "test_v3.LifecycleTests.test_mutated_plan_invalidates_freeze",
+      "test_v3.LifecycleTests.test_valid_evidence_path"
+    ],
+    "duration_seconds": 6.385,
+    "errors": [],
+    "exit_code": 0,
+    "failures": [],
+    "skipped": [],
+    "status": "PASS",
+    "tests_run": 25
+  },
+  "created_at": "2026-10-03T01:32:36.503733+00:00",
+  "engine_sha256": "a8fb52e4b4b16e8d491685f32298b3841c8c16f5666650d18175b29a5d6d4eed",
+  "equivalent_mutants": [],
+  "errors": [],
+  "factory_version": "3.3.0",
+  "killed": 24,
+  "limitations": [
+    "Focused deletion benchmark, not all possible mutations or repository-wide coverage.",
+    "Kills assert specified guard behavior; redundant defense layers may also block invalid artifacts.",
+    "No equivalent mutants are excluded automatically."
+  ],
+  "minimum_score_percent": 80,
+  "mutants": [
+    {
+      "deleted_call": "need(inventory(self.root,self.p['frozen_paths'])==self.freeze['files'],'frozen input changed, including added/deleted source files')",
+      "file": "engine/audit.py",
+      "function": "Audit.frozen",
+      "id": "M01",
+      "line": 32,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_review_regressions.LifecycleAttackTests.test_source_mutation_blocks_audit",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.325,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M01/factory/tests/test_review_regressions.py\", line 205, in test_source_mutation_blocks_audit\n    self.assertTrue(any(error['code'] == 'FREEZE' for error in evaluate(self.root)['errors']))\nAssertionError: False is not true\n",
+            "test": "test_review_regressions.LifecycleAttackTests.test_source_mutation_blocks_audit"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_review_regressions.LifecycleAttackTests.test_source_mutation_blocks_audit",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(sha(self.root/'project/research_plan.json')==self.freeze['plan_sha256'],'plan changed after freeze')",
+      "file": "engine/audit.py",
+      "function": "Audit.frozen",
+      "id": "M02",
+      "line": 33,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_v3.LifecycleTests.test_mutated_plan_invalidates_freeze",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.294,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M02/factory/tests/test_v3.py\", line 86, in test_mutated_plan_invalidates_freeze\n    self.execute();self.p['population']='changed';write_json(self.r/g.ROOT_PLAN,self.p);self.assertTrue(evaluate(self.r)['errors'])\n                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: [] is not true\n",
+            "test": "test_v3.LifecycleTests.test_mutated_plan_invalidates_freeze"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_v3.LifecycleTests.test_mutated_plan_invalidates_freeze",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(self.engine_hash==self.freeze['engine_sha256'],'active factory code changed after freeze')",
+      "file": "engine/audit.py",
+      "function": "Audit.frozen",
+      "id": "M03",
+      "line": 34,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_engine_freeze_binding_is_checked_before_run_validation",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.225,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M03/factory/tests/test_independent_scientific_review.py\", line 491, in test_engine_freeze_binding_is_checked_before_run_validation\n    with self.assertRaisesRegex(EvidenceError, 'active factory code changed'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_engine_freeze_binding_is_checked_before_run_validation"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_engine_freeze_binding_is_checked_before_run_validation",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(sha(snapshot)==self.freeze['plan_sha256'],'frozen plan snapshot changed or missing')",
+      "file": "engine/audit.py",
+      "function": "Audit.frozen",
+      "id": "M04",
+      "line": 37,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_plan_snapshot_is_checked_before_history_validation",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.233,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M04/factory/tests/test_independent_scientific_review.py\", line 500, in test_plan_snapshot_is_checked_before_history_validation\n    with self.assertRaisesRegex(EvidenceError, 'frozen plan snapshot changed'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_plan_snapshot_is_checked_before_history_validation"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_plan_snapshot_is_checked_before_history_validation",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "verify_execution_record(r,project_id=self.p['project_id'],epoch=self.freeze['epoch'],\n                                           experiment=e,freeze=self.freeze,engine_hash=self.engine_hash)",
+      "file": "engine/audit.py",
+      "function": "Audit.experiment",
+      "id": "M05",
+      "line": 176,
+      "replacement": "{}",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_receipt_verification_is_required_in_the_run_validator",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.302,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M05/factory/tests/test_independent_scientific_review.py\", line 482, in test_receipt_verification_is_required_in_the_run_validator\n    with self.assertRaises(EvidenceError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_receipt_verification_is_required_in_the_run_validator"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_receipt_verification_is_required_in_the_run_validator",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(r.get('freeze_sha256')==sha(self.epoch/'freeze.json'),eid+': stale freeze binding')",
+      "file": "engine/audit.py",
+      "function": "Audit.experiment",
+      "id": "M06",
+      "line": 178,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_audit_integrity.AuditIntegrityTests.test_stale_freeze_binding_even_with_valid_signature",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.307,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M06/factory/tests/test_audit_integrity.py\", line 50, in test_stale_freeze_binding_even_with_valid_signature\n    self.assertTrue(any('stale freeze binding' in error['detail'] for error in evaluate(self.root)['errors']))\nAssertionError: False is not true\n",
+            "test": "test_audit_integrity.AuditIntegrityTests.test_stale_freeze_binding_even_with_valid_signature"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_audit_integrity.AuditIntegrityTests.test_stale_freeze_binding_even_with_valid_signature",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(outputs==r.get('outputs'),eid+': output hash/membership changed since execution')",
+      "file": "engine/audit.py",
+      "function": "Audit.experiment",
+      "id": "M07",
+      "line": 184,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_audit_integrity.AuditIntegrityTests.test_extra_output_membership_blocks",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.31,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M07/factory/tests/test_audit_integrity.py\", line 60, in test_extra_output_membership_blocks\n    self.assertTrue(any('membership changed' in error['detail'] for error in evaluate(self.root)['errors']))\nAssertionError: False is not true\n",
+            "test": "test_audit_integrity.AuditIntegrityTests.test_extra_output_membership_blocks"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_audit_integrity.AuditIntegrityTests.test_extra_output_membership_blocks",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(sid not in data,eid+': duplicate prediction id')",
+      "file": "engine/audit.py",
+      "function": "Audit.experiment",
+      "id": "M08",
+      "line": 199,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_prediction_is_rejected_with_complete_membership",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.31,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M08/factory/tests/test_independent_scientific_review.py\", line 469, in test_duplicate_prediction_is_rejected_with_complete_membership\n    with self.assertRaisesRegex(EvidenceError, 'duplicate prediction id'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_prediction_is_rejected_with_complete_membership"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_prediction_is_rejected_with_complete_membership",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(r['sample_id'] and r['sample_id'] not in self.coh,'empty/duplicate sample_id')",
+      "file": "engine/audit.py",
+      "function": "Audit.cohort",
+      "id": "M09",
+      "line": 133,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_cohort_identity_is_rejected_directly",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.223,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M09/factory/tests/test_independent_scientific_review.py\", line 447, in test_duplicate_cohort_identity_is_rejected_directly\n    with self.assertRaisesRegex(EvidenceError, 'duplicate sample_id'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_cohort_identity_is_rejected_directly"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_cohort_identity_is_rejected_directly",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(r['record_id'] and r['record_id'] not in origins,'empty/duplicate source record_id')",
+      "file": "engine/audit.py",
+      "function": "Audit.cohort",
+      "id": "M10",
+      "line": 127,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_source_identity_is_rejected_directly",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.212,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M10/factory/tests/test_independent_scientific_review.py\", line 453, in test_duplicate_source_identity_is_rejected_directly\n    with self.assertRaisesRegex(EvidenceError, 'duplicate source record_id'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_source_identity_is_rejected_directly"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_duplicate_source_identity_is_rejected_directly",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(not overlaps,f'{name} leakage across splits: {overlaps[:8]}')",
+      "file": "engine/audit.py",
+      "function": "Audit.cohort",
+      "id": "M11",
+      "line": 145,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_v3.LifecycleTests.test_group_leakage",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.213,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M11/factory/tests/test_v3.py\", line 98, in test_group_leakage\n    self.assertTrue(any(x['code']=='COHORT' for x in evaluate(self.r)['errors']))\nAssertionError: False is not true\n",
+            "test": "test_v3.LifecycleTests.test_group_leakage"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_v3.LifecycleTests.test_group_leakage",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(len(set(words))>=12,field+': repetitive or placeholder reasoning')",
+      "file": "engine/audit.py",
+      "function": "_review_text",
+      "id": "M12",
+      "line": 417,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_repetitive_padding_is_rejected_even_with_an_evidence_citation",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.212,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M12/factory/tests/test_independent_scientific_review.py\", line 505, in test_repetitive_padding_is_rejected_even_with_an_evidence_citation\n    with self.assertRaisesRegex(EvidenceError, 'repetitive or placeholder'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_repetitive_padding_is_rejected_even_with_an_evidence_citation"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_repetitive_padding_is_rejected_even_with_an_evidence_citation",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(review.get('evidence_digest')==audit['evidence_digest'],'review stale: must bind current audit evidence_digest')",
+      "file": "engine/audit.py",
+      "function": "verify_review",
+      "id": "M13",
+      "line": 436,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_stale_review_digest_has_a_specific_rejection",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.222,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M13/factory/tests/test_independent_scientific_review.py\", line 519, in test_stale_review_digest_has_a_specific_rejection\n    with self.assertRaisesRegex(EvidenceError, 'review stale'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_stale_review_digest_has_a_specific_rejection"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_stale_review_digest_has_a_specific_rejection",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(path in audit['file_bindings'] or path=='project/audit_report.json','review evidence must belong to current audit')",
+      "file": "engine/audit.py",
+      "function": "_review_evidence",
+      "id": "M14",
+      "line": 428,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_audit_integrity.AuditIntegrityTests.test_unrelated_review_evidence_blocks",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.303,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M14/factory/tests/test_audit_integrity.py\", line 198, in test_unrelated_review_evidence_blocks\n    with self.assertRaises(EvidenceError):verify_review(self.root,self.plan,audit)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_audit_integrity.AuditIntegrityTests.test_unrelated_review_evidence_blocks"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_audit_integrity.AuditIntegrityTests.test_unrelated_review_evidence_blocks",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need('source' in p['frozen_paths'],'freeze the whole source directory, including added files')",
+      "file": "engine/plan.py",
+      "function": "validate",
+      "id": "M15",
+      "line": 150,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_added_source_cannot_evade_directory_freezing",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.217,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M15/factory/tests/test_independent_scientific_review.py\", line 525, in test_added_source_cannot_evade_directory_freezing\n    with self.assertRaisesRegex(EvidenceError, 'freeze the whole source directory'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_added_source_cannot_evade_directory_freezing"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_added_source_cannot_evade_directory_freezing",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "expect_int(p.get('schema_version'),'schema_version',minimum=3,maximum=3)",
+      "file": "engine/plan.py",
+      "function": "_shape",
+      "id": "M16",
+      "line": 48,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_schema_version_must_be_an_integer",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.217,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M16/factory/tests/test_independent_scientific_review.py\", line 530, in test_schema_version_must_be_an_integer\n    with self.assertRaises(ValidationError):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ValidationError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_schema_version_must_be_an_integer"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_schema_version_must_be_an_integer",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(c.get('inference_scope')=='fixed_test_corpus','seed inference requires explicit inference_scope=fixed_test_corpus')",
+      "file": "engine/plan.py",
+      "function": "validate",
+      "id": "M17",
+      "line": 238,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_seed_scope_is_required_without_comparative_prose",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.216,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M17/factory/tests/test_independent_scientific_review.py\", line 536, in test_seed_scope_is_required_without_comparative_prose\n    with self.assertRaisesRegex(EvidenceError, 'explicit inference_scope'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_seed_scope_is_required_without_comparative_prose"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_seed_scope_is_required_without_comparative_prose",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(units>=math.ceil(math.log2(2*len(comparisons))-math.log2(c['alpha'])),\n                 'infeasible two-sided sign-flip resolution for Holm family: '+c['id'])",
+      "file": "engine/plan.py",
+      "function": "validate",
+      "id": "M18",
+      "line": 253,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.PlanBoundaryTests.test_infeasible_five_seed_superiority_fails_before_execution",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.216,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M18/factory/tests/test_independent_scientific_review.py\", line 258, in test_infeasible_five_seed_superiority_fails_before_execution\n    with self.assertRaisesRegex(EvidenceError, 'infeasible'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.PlanBoundaryTests.test_infeasible_five_seed_superiority_fails_before_execution"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.PlanBoundaryTests.test_infeasible_five_seed_superiority_fails_before_execution",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "need(a['seed']==b['seed'] and a['seed'] not in seeds,'paired seeds mismatch or duplicate')",
+      "file": "engine/plan.py",
+      "function": "validate",
+      "id": "M19",
+      "line": 231,
+      "replacement": "None",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_independent_scientific_review.MutationCriticalGuardsTests.test_distinct_experiment_ids_do_not_make_duplicate_seeds_independent",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.224,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M19/factory/tests/test_independent_scientific_review.py\", line 543, in test_distinct_experiment_ids_do_not_make_duplicate_seeds_independent\n    with self.assertRaisesRegex(EvidenceError, 'paired seeds mismatch or duplicate'):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: EvidenceError not raised\n",
+            "test": "test_independent_scientific_review.MutationCriticalGuardsTests.test_distinct_experiment_ids_do_not_make_duplicate_seeds_independent"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_independent_scientific_review.MutationCriticalGuardsTests.test_distinct_experiment_ids_do_not_make_duplicate_seeds_independent",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "_allowed_path(path,policy)",
+      "file": "engine/publication.py",
+      "function": "check",
+      "id": "M20",
+      "line": 355,
+      "replacement": "True",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_publication.PublicationTests.test_force_added_internal_file_is_blocked",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.525,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M20/factory/tests/test_publication.py\", line 76, in test_force_added_internal_file_is_blocked\n    self.assertIn('NON_PROJECT_PATH',self.codes())\nAssertionError: 'NON_PROJECT_PATH' not found in {'INTERNAL_FRAMEWORK'}\n",
+            "test": "test_publication.PublicationTests.test_force_added_internal_file_is_blocked"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_publication.PublicationTests.test_force_added_internal_file_is_blocked",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "_text_findings(text,path)",
+      "file": "engine/publication.py",
+      "function": "_content",
+      "id": "M21",
+      "line": 292,
+      "replacement": "[]",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_publication.PublicationTests.test_comments_docs_notebooks_and_ci_are_scanned",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 0.912,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M21/factory/tests/test_publication.py\", line 90, in test_comments_docs_notebooks_and_ci_are_scanned\n    self.assertIn('INTERNAL_FRAMEWORK',self.codes())\nAssertionError: 'INTERNAL_FRAMEWORK' not found in set()\n",
+            "test": "test_publication.PublicationTests.test_comments_docs_notebooks_and_ci_are_scanned (name='source/main.py')"
+          },
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M21/factory/tests/test_publication.py\", line 90, in test_comments_docs_notebooks_and_ci_are_scanned\n    self.assertIn('INTERNAL_FRAMEWORK',self.codes())\nAssertionError: 'INTERNAL_FRAMEWORK' not found in set()\n",
+            "test": "test_publication.PublicationTests.test_comments_docs_notebooks_and_ci_are_scanned (name='docs/methods.md')"
+          },
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M21/factory/tests/test_publication.py\", line 90, in test_comments_docs_notebooks_and_ci_are_scanned\n    self.assertIn('INTERNAL_FRAMEWORK',self.codes())\nAssertionError: 'INTERNAL_FRAMEWORK' not found in set()\n",
+            "test": "test_publication.PublicationTests.test_comments_docs_notebooks_and_ci_are_scanned (name='notebooks/study.ipynb')"
+          },
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M21/factory/tests/test_publication.py\", line 90, in test_comments_docs_notebooks_and_ci_are_scanned\n    self.assertIn('INTERNAL_FRAMEWORK',self.codes())\nAssertionError: 'INTERNAL_FRAMEWORK' not found in set()\n",
+            "test": "test_publication.PublicationTests.test_comments_docs_notebooks_and_ci_are_scanned (name='.github/workflows/check.yml')"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_publication.PublicationTests.test_comments_docs_notebooks_and_ci_are_scanned",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "_text_findings(text,'commit message')",
+      "file": "engine/publication.py",
+      "function": "check",
+      "id": "M22",
+      "line": 364,
+      "replacement": "[]",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_publication.PublicationTests.test_commit_messages_are_checked_by_real_hook",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 1.3,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M22/factory/tests/test_publication.py\", line 113, in test_commit_messages_are_checked_by_real_hook\n    self.assertNotEqual(result.returncode,0)\nAssertionError: 0 == 0\n",
+            "test": "test_publication.PublicationTests.test_commit_messages_are_checked_by_real_hook"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_publication.PublicationTests.test_commit_messages_are_checked_by_real_hook",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "_text_findings(tag,'tag message')",
+      "file": "engine/publication.py",
+      "function": "check",
+      "id": "M23",
+      "line": 379,
+      "replacement": "[]",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_publication.PublicationTests.test_annotated_tag_message_cannot_leak",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 1.484,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M23/factory/tests/test_publication.py\", line 147, in test_annotated_tag_message_cannot_leak\n    self.assertIn('INTERNAL_FRAMEWORK',self.codes(refs=['refs/tags/v1']))\nAssertionError: 'INTERNAL_FRAMEWORK' not found in set()\n",
+            "test": "test_publication.PublicationTests.test_annotated_tag_message_cannot_leak"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_publication.PublicationTests.test_annotated_tag_message_cannot_leak",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    },
+    {
+      "deleted_call": "_ref_findings(branch)",
+      "file": "engine/publication.py",
+      "function": "check",
+      "id": "M24",
+      "line": 346,
+      "replacement": "[]",
+      "status": "KILLED",
+      "test_result": {
+        "collection_errors": [],
+        "command": [
+          "python",
+          "-B",
+          "run_mutation_checks.py",
+          "--worker",
+          "test_publication.PublicationTests.test_internal_ref_names_are_blocked",
+          "test_v3.LifecycleTests.test_valid_evidence_path"
+        ],
+        "duration_seconds": 1.789,
+        "errors": [],
+        "exit_code": 1,
+        "failures": [
+          {
+            "detail": "Traceback (most recent call last):\n  File \"/private/var/folders/9p/6sf6gv2144l27mm74tx4dqrr0000gn/T/factory-mutation-7hklcd9c/M24/factory/tests/test_publication.py\", line 159, in test_internal_ref_names_are_blocked\n    self.assertIn('INTERNAL_REF_NAME',self.codes())\nAssertionError: 'INTERNAL_REF_NAME' not found in set()\n",
+            "test": "test_publication.PublicationTests.test_internal_ref_names_are_blocked"
+          }
+        ],
+        "skipped": [],
+        "status": "FAIL",
+        "tests_run": 2
+      },
+      "tests": [
+        "test_publication.PublicationTests.test_internal_ref_names_are_blocked",
+        "test_v3.LifecycleTests.test_valid_evidence_path"
+      ]
+    }
+  ],
+  "python_version": "3.12.8 (v3.12.8:2dc476bcb91, Dec  3 2024, 14:43:19) [Clang 13.0.0 (clang-1300.0.29.30)]",
+  "schema_version": 1,
+  "scope": "24 named single-call deletions; selected stdlib regressions; active engine only",
+  "score_percent": 100.0,
+  "snapshot_sha256": "0a14eb00c19603d065caa14aee19c323e0b0bfbb240fce38932db8de6769540c",
+  "source_files": {
+    "AGENT_WORKFLOW.md": "87a858390c76a1797f380b465bb3b63193062e10a85fb20ca9b51b3c0abc2074",
+    "CHANGELOG.md": "accf0d985c23e8f4b9c1e5f77a8e64526d1875384e842255b648be8e05f9939f",
+    "ClaudeInitialization.md": "184edabe9e3218deed2b141a7d269680e63a6377d04ef2f34fe56d6ab9c6a629",
+    "DEEP_RESEARCH.md": "9e842b4597e1eb5bcf9c5331f7d6edb16f74c735ddb7901f6ccea5a18831b3ea",
+    "PUBLICATION_POLICY.md": "12704e89115612ffb5b78ff6d8eaa5a844744af872927b8750c4e9687b363466",
+    "README.md": "1832d695ee5f3f977c8519c8e4f818cc87f54547d9adabb105dba780b6dfcdc1",
+    "SCIENCE_PROTOCOL.md": "ff5735e9620f3276a0cab00698b1aa4546437c4e58b78776783d7a7aa71d6fd5",
+    "SCIENTIFIC_CHECKS.md": "5f89038ea2b1a80b381521a013d6ec59496cdca7df961c4dd66e82c3be67c376",
+    "VERSION": "5eee6c0c5c6901f5e523f0a434bca4106e1ff7136deb451f982b0bb1a7b13716",
+    "architect_spec.md": "81fa685cdc6a155672721bf9ee322ddeaa2b32d90eb29be8284d2fe0fa2fb4a1",
+    "bootstrap_manifest.yaml": "0d0e95aeec966063b2ebb8c6d68468881a1e8d36d59bfb06c50d72c985f65403",
+    "constitution.md": "22f11ea78f32054dbcb80a3e85029ef274ec34e5be594b0153834a8aa20f3187",
+    "constitution_coverage.yaml": "97550162fbc2de46c715bdbd27a14cd0f8ea9d233f8ce425eda7eea886a3d0ff",
+    "domain_checklists.md": "5664456e1d809fedf1af8dabe6252f9f399aefc3b1ca64b39c23fd3a7c1f2b02",
+    "dynamic_rules.md": "50b55374f5daaf12ec11d4d085a4758159fd65a87850bb6c565c4f4daa88901a",
+    "engine/__init__.py": "713fca0bb8ac2d95f2319e5de5584ab516e39aea32c7aed88b73cea5b61e199b",
+    "engine/__main__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "engine/attacks.py": "99849544e22af66ee34acbfa2fae67a58632a3729ed566b18aec260e9f3c96d9",
+    "engine/audit.py": "c87d915c2d28fe0515215d6c8566bbc692db3f5839f1ce2cc0a5d9b0bd32db47",
+    "engine/bundle.py": "ee65d86606ca5b96786eead7ab2e2ae4048bde1b0ce6e5344d11be828b992b52",
+    "engine/contract.py": "f5ae2d26fe6bfa0b4f09e6c316326b6322fbd5df231902725d02577eafa309ee",
+    "engine/io.py": "d2b7773bb7183d08899b8a687a79432e45719b35e58486a9489342dc71f5bd42",
+    "engine/metrics.py": "ff29ba0f0f40611abe56f0a5de39d87bce8c604b2e94e338020c6a49630e0e6a",
+    "engine/plan.py": "3a8dfd73d2ffbe65158a8a0a6c55ac3e74546ad5402aeb206c479483623e4a30",
+    "engine/publication.py": "ba76fda8ec476f43b7d4c4907a05a4c84db5bdcd925d98ce8ea64b1a48ecf343",
+    "engine/schema.py": "25e11b66e79844de9a352f8361f311f269d7f156e40db561992eb15f95e54369",
+    "engine/supervisor.py": "d8db473d5a3c76aad287a72120b97a18ec7d9cc9a7b4bbbe002dfc2dcbb5287f",
+    "factory_spec.md": "82b5653ea8a6a13587200c4b63ea00dd39775cea017d609ff8bc4395acb6304a",
+    "gatekeeper.py": "1205cad577cfafa38629fcd5263ecf7e998a3b71dcaf8f5582c61bd512018adb",
+    "gatekeeper_spec.md": "53a32bd932c5ba5ea6ce0e4f3ecfae9cd923d8319f73038babb1bdb242769dae",
+    "gemini_spec.md": "786ceb5e042c3cea05ee1f87e07cef3cffe9e75f5c7b7e046de2b3ea53b8477d",
+    "implementor_spec.md": "7ce24277a55dd08247d64408e08357ad3f64aa10a809b167a88c1a63fbb07a95",
+    "key_facts_TEMPLATE.md": "f70a1362b8342147ca1a5659dccb7f001bdf73e03d3dbbfebee41df9b938e2cc",
+    "run_mutation_checks.py": "f99e523fdfc24498da4b66a8f10f10477453fa032641cc4ffd708d0d95ea1c96",
+    "run_self_tests.py": "3c4f851c4ed28f3f72c747df098dc6ad5bd60e8aeb31d73a1b391f090cf13fa2",
+    "templates/research_plan_TEMPLATE.json": "4c8180762f1e325cb2b6bd6c2f9fe44ded9138da2ffbc8d78c50074b95e0c82c",
+    "templates/review_TEMPLATE.json": "52eded84e8c3552035f1110453856824590e0437443de08211287035aafcb1ca",
+    "tests/test_audit_integrity.py": "c839f1e44c2c3802080755528b8b401fa39a842d7c5ba8f576a7e5910cdb1044",
+    "tests/test_execution_integrity.py": "a44b443c43036cec0335b40ea67d355abad44318310ba3c8a50196e213e5361c",
+    "tests/test_gatekeeper_cli.py": "b8949f244afb1c6c74a6669b390925b7f8d799483db6c66e5dbc7a0af9e5c813",
+    "tests/test_gatekeeper_v3_0_0.py": "56f5be119325fa6e965fed5a459b64a5cd71fda422951886e451d096f4a529f8",
+    "tests/test_independent_scientific_review.py": "c51188b10084c6981b4b8fba71bf36f3a85be64e221570da0ced66a6f6ab13e6",
+    "tests/test_metrics.py": "5e3afd4ac4e1eb58a131d0148f32edcccf6564a12828c75903ca99e91f669b45",
+    "tests/test_publication.py": "810274c3b648f550127addcb2c50b43a328f9c41146a2df4de903ce92587469f",
+    "tests/test_review_regressions.py": "e9efbd51810d5593c720a1c6842fa9ac1d233cef8f0b365e15f3e6689fd06d8b",
+    "tests/test_scientific_gatekeeper.py": "52fbddbceef603e765230ee2089aa50ac00656b60f2b2e5fb8a9ce6e8047aaef",
+    "tests/test_v3.py": "e39400fe3ce3c4f00c9a3352af8a937eb42272f0b651701fe49daa8b8740b9ac",
+    "tests/test_v3_1_hardening.py": "96becf3a1a82381e1067a155b2e77471678137629f6a7e5d3a1335150051b465",
+    "tests/test_v3_2_hardening.py": "6188a1c50c5fa448d5f4da057bf9c6e7cdee494ea4f20494d5d5aaf77fa325de",
+    "tests/test_v3_3_hardening.py": "69df91957e7550ea02112e857945d43365aa8c6a2cf248880f40038d6de50025",
+    "tests/test_v3_3_stress.py": "c39c54710d687f1995aaf7bf9197c848bc89cd9eb741b5ed89b8105ebaa1cbb5",
+    "venue_requirements_TEMPLATE.md": "1ef4c1e05abddb8e29afff7443108a927adc08cc8232a66791919434a924cd00",
+    "verify_bundle_standalone.py": "57685a23babf0b4101283f63170303d895be4776ba1d85162d0d38bfa6b8271e"
+  },
+  "status": "PASS",
+  "survivors": [],
+  "total": 24
+}

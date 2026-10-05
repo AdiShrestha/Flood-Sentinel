@@ -1,0 +1,8 @@
+{
+  "engine_sha256": "cccdfae6583f61fc6783dfbabbd805e382f93d4a091ce26ba26d7e1a6cfd74d4",
+  "errors": [],
+  "factory_version": "3.3.0",
+  "probe": "receipt_error_with_valid_signature_and_wrapper_binding",
+  "scope": "trusted signing isolates semantic rejection; no research certificate issued",
+  "status": "EVIDENCE_CHECKS_PASSED"
+}
