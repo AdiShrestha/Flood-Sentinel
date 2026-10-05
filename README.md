@@ -1,4 +1,5 @@
-# Flood Sentinel: research rebuild
+# Software Factory 3.3.0
+## Flood Sentinel: research rebuild
 
 This repository contains a corrected engine foundation, a forensic audit of the legacy project and a detailed research completion plan. **It is not submission ready. There is no validated flood-performance result, trained research model or operational warning service in this tree.**
 
