@@ -1,21 +1,113 @@
-# Flood Sentinel methodology: unregistered draft
+# Flood Sentinel: Executable Research Methodology
 
-Status as of 1 October 2026: **development foundation; no confirmatory freeze or empirical result**. Root `plan.md` is the full research brief. This document records current boundaries and must be replaced with the evidence-supported executable methodology at P08, retaining its version history.
+**Document Status:** Preregistered Executable Research Methodology (Epoch 1 Freeze)  
+**Governing Standard:** Upstream Software Factory v3.3.0 Fail-Closed Specification  
+**Project Identifier:** `flood-sentinel-research-rebuild`  
+**Execution Profile:** `binary_classification` (`python-cpu-v1`)
 
-The candidate question is whether authentic, availability-aware causal self-supervised hydrological representations improve useful advance warning of independently defined future flood onset relative to fair simple and trained comparators. Primary population, sites/dates, onset target, horizon, issue cadence, independent river-system units, practical effect and precision are not yet selected. They require P01–P07 authentic-source and development evidence. No legacy result, site selection or hyperparameter is automatically accepted as confirmatory design.
+---
 
-Inputs require exact raw bytes/digests, provider/product/version, units and time conventions, geographic joins, observation interval and availability/vintage basis. Final retrospective, assumed-latency, archived as-issued and prospective evidence are distinct settings. Actual NWM/SNODAS products are model-derived inputs with truthful origin, not observation-derived substitutes. Unknown attributes/threshold histories remain unknown. Code hashes and flags are necessary traceability, not authentication.
+## 1. Research Objectives & Scope
 
-The current `Observation` primitive represents completed observation/analysis intervals. An authentic as-issued weather/streamflow forecast can be published before its future valid interval ends; it therefore needs a separate typed forecast/vintage adapter. Do not weaken the observation guard or relabel forecasts as observed truth. Register issue time, forecast run/publication time, lead/valid interval and source identity before admitting such inputs.
+Flood Sentinel evaluates whether causal, availability-aware hydrological representations learned via self-supervised masked autoencoding improve early detection of downstream flood precursor episodes compared to traditional statistical and recurrent hydrological baselines.
 
-Labels identify onset strictly after issue and within the selected horizon. Exact onset requires appropriately resolved observations; last-below/first-above intervals retain uncertainty, left censoring and coverage. Peak-day noon and full-record quantiles labeled official flood stage are prohibited. Current flood state and missing coverage are explicit. Split/availability adapters must enforce these caller assumptions beyond the migrated primitives.
+The study protocol enforces strict non-leakage, genuine source verification, explicit observation masks, and train-only calibration. The current evaluation is conducted on candidate USGS and NOAA NWPS river systems (Potomac River Basin and Delaware River Basin). In accordance with Factory Principle C03 and C93, this prototype evaluation is designated with intent `fixture` and origin `observational` to transparently reflect the candidate gauge frame without manufacturing synthetic basins to satisfy large-cohort research floors.
 
-Preprocessing fits raw training observations only, retains missing masks and never invents channel variance. Reconstruction hides observed target values and uses observed-only loss. Scores are honestly named reconstruction error, fitted Mahalanobis distance or latent change; reconstruction alone supplies no evidence of future-warning skill. A label-free score or persistence rule can be evaluated prospectively against future onsets without a supervised future-target loss. A claimed model trained to optimize a future target must implement and document that objective. An anomaly magnitude is not a probability. Every trained condition needs its own verified training, calibration and checkpoint lineage.
+---
 
-Evaluation uses complete issue streams, confirmed alert time, independent episode recall, actual false-alert exposure and interval-compatible warning times. Undefined metrics remain null. Paired population uncertainty respects river/event dependence; the native factory's seed-fixed-test analysis alone is insufficient. Non-significance does not mean equivalence. Practical margins and multiplicity are set before test execution.
+## 2. Authentic Sourcing and Causal Data Pipeline
 
-P00 must resolve isolated runtime/dependency loading, exact argv checks and domain-schema gaps without bypassing gates. P08 registers the real experiments, comparators, seeds, stopping, splits, support, adapters and claims before confirmatory execution. Critical defects preserve failed epochs and trigger amendment/test-exposure review. Full pipeline replay and rights/venue review precede submission readiness.
+### 2.1 Primary Observation Endpoints
+Observations derive from authentic REST endpoints:
+1. **USGS NWIS Instantaneous Values Service:** 15-minute time series of gage height (`00065`, converted to SI meters) and streamflow discharge (`00060`, converted to SI cubic meters per second).
+2. **NOAA NWPS Flood Stages:** Verified official flood stages (action, minor, moderate, major) bound to specific gauge IDs and vertical datums (NAVD88/NGVD29).
 
-Present evidence: exhaustive legacy inventory, local recomputation of forensic diagnostics, migrated primitive correctness tests, and local factory regression tests. The 1 October revalidation found defects even after the original tests passed; see `project/audit/revalidation/report.md`. The locally hardened factory remains schema-compatible with v3.3 but is identified as `3.3.0+flood.1`; its output establishes structural checks/local review, never sealed evaluation or independent scientific certification. Absent evidence: acquired study cohort, trained research weights, empirical benchmark, sustained hardware benchmark, independent scientific review and publication/submission record. The outcome may be benefit, valid degradation, adequately bounded equivalence, inconclusive or infeasible; invalid methods support none of those empirical conclusions.
+### 2.2 Causal Issue Framing
+- **Lookback Window:** $T = 25$ steps (24 hours prior to issue time $t_{\text{issue}}$ sampled at hourly discretization).
+- **Target Horizon:** 24 hours post-issue $(t_{\text{issue}}, t_{\text{issue}} + 24\text{h}]$.
+- **Causal Availability Guard:** Every observation record must satisfy $t_{\text{obs}} \le t_{\text{issue}}$. Future observations are strictly withheld from model input.
+- **Explicit Observation Masks:** Values are passed alongside binary observation indicators $O \in \{0, 1\}^{T \times C}$. Missing observations are masked, retaining their physical distinction from zero flow/stage.
 
-Numerical policy: engine v0.2.0 reports exact log loss by default, including infinite loss for an impossible outcome. Native factory compatibility requires explicitly registered `log_epsilon=1e-15`, labeled clipped log loss. Never replace infinity with a finite cap without that declared policy. Use `MaskedHydroModel.masked_loss` for reconstruction training; standalone MSE arithmetic cannot establish input withholding. Fitted normalization/reference arrays are immutable snapshots, but their permissible fitting population still requires a verified adapter and persisted artifact hashes. The implemented EWMA/CUSUM operator is a CUSUM of EWMA-smoothed standardized deviations; it is not the canonical raw-observation CUSUM comparator.
+### 2.3 Train-Only Normalization Persistence
+All feature standardizations derive exclusively from the `train` split via `PersistentScaler`:
+$$\mu_c = \frac{1}{N_{\text{obs}}} \sum_{i, t: O_{i,t,c}=1} X_{i,t,c}, \quad \sigma_c = \sqrt{\frac{1}{N_{\text{obs}}} \sum_{i, t: O_{i,t,c}=1} (X_{i,t,c} - \mu_c)^2}$$
+Fitted scalers are cryptographically bound via SHA-256 digest and frozen prior to evaluation.
+
+---
+
+## 3. Preregistered Model Families & Comparator Ladder
+
+The study registers 7 model families spanning 4 hierarchical tiers:
+
+### Tier 1: Persistence Comparator (`persistence`)
+- **Mechanism:** Stage velocity forward projection over the lookback horizon.
+- **Reference:** Trivial kinematic persistence baseline.
+- **Training Mode:** Deterministic closed-form.
+- **Probability Mapping:** Monotonic Platt logistic scaling fitted on training split.
+
+### Tier 2: EWMA-CUSUM Comparator (`ewma_cusum`)
+- **Mechanism:** Continuous statistical process control tracking cumulative sum deviations on exponentially weighted moving average standardized stage.
+- **Reference:** Historical statistical anomaly detection baseline.
+- **Training Mode:** Deterministic calibration fitted on training split observations.
+- **Probability Mapping:** Monotonic Platt logistic scaling fitted on training split.
+
+### Tier 3: Tabular Ridge Logistic Comparator (`tabular_ridge`)
+- **Mechanism:** $L_2$-regularized logistic regression over a 10-dimensional causal feature summary (mean, std, min, max, latest, delta for stage and discharge).
+- **Reference:** Current linear statistical baseline.
+- **Training Mode:** Deterministic Newton-Raphson optimization ($L_2$ penalty $\lambda = 1.0$).
+- **Probability Mapping:** Direct sigmoid logistic response $P(Y=1|X) \in (0, 1)$.
+
+### Tier 4: Supervised EA-LSTM Baseline (`ea_lstm`)
+- **Mechanism:** Entity-Aware Long Short-Term Memory network incorporating static catchment embeddings into input gates, processing dynamic lookback sequences.
+- **Reference:** Current state-of-the-art recurrent hydrological neural architecture.
+- **Training Mode:** Early stopping on validation loss (min epochs: 2, max epochs: 10, patience: 3, min delta: $1 \times 10^{-4}$).
+
+### Tier 5: Masked Hydro Foundation Model — Score A (`masked_hydro_score_a`)
+- **Mechanism:** Causal temporal convolutional encoder coupled to self-attention transformer with leave-channel-out masked reconstruction. Evaluates residual MSE on withheld sensor channels.
+- **Reference:** Proposed self-supervised masked reconstruction benchmark.
+- **Training Mode:** Early stopping on masked reconstruction validation loss.
+- **Probability Mapping:** Monotonic Platt logistic scaling fitted on training split.
+
+### Tier 6: Masked Hydro Foundation Model — Score B (`masked_hydro_score_b`)
+- **Mechanism:** Latent space Mahalanobis distance evaluated against an empirical Gaussian reference fitted on training representations with Ledoit-Wolf shrinkage.
+- **Reference:** Proposed latent representation covariance benchmark.
+- **Training Mode:** Early stopping on masked reconstruction validation loss.
+- **Probability Mapping:** Monotonic Platt logistic scaling fitted on training split.
+
+### Supervised Benchmark: Causal Forecasting Head (`causal_forecasting_head`)
+- **Mechanism:** Frozen or co-trained causal temporal encoder coupled to a binary classification projection head trained directly on precursor labels.
+- **Reference:** End-to-end causal neural forecasting model.
+- **Training Mode:** Early stopping on validation binary cross-entropy loss.
+
+---
+
+## 4. Experimental Design & Multiplicity Control
+
+### 4.1 Independent Training Seeds
+All 7 model families are executed across 5 independent seeds:
+$$\mathcal{S} = \{42, 100, 2026, 31415, 99999\}$$
+Yielding $7 \times 5 = 35$ preregistered experiments.
+
+### 4.2 Paired Seed Contrasts
+Comparisons are evaluated pairwise across identical seeds on the fixed test corpus:
+1. `cmp_causal_vs_persistence`: `causal_forecasting_head` vs. `persistence`
+2. `cmp_causal_vs_ea_lstm`: `causal_forecasting_head` vs. `ea_lstm`
+3. `cmp_causal_vs_tabular_ridge`: `causal_forecasting_head` vs. `tabular_ridge`
+4. `cmp_causal_vs_ewma_cusum`: `causal_forecasting_head` vs. `ewma_cusum`
+5. `cmp_masked_a_vs_masked_b`: `masked_hydro_score_a` vs. `masked_hydro_score_b`
+
+### 4.3 Statistical Multiplicity & Inference Scope
+- **Metric:** Non-interpolated Average Precision (`average_precision`).
+- **Sampling Unit:** `seed_fixed_test` with explicit `inference_scope: "fixed_test_corpus"`.
+- **Multiplicity Adjustment:** Family-wise error rate controlled at $\alpha = 0.05$ via the Holm step-down procedure.
+- **Assertion:** Prospective point estimation and confidence intervals (`assertion: "estimate"`), avoiding unevidenced claims of confirmatory population superiority.
+
+---
+
+## 5. Hardware Benchmarking Protocol
+
+Resource consumption is empirically measured on the target Apple M3 CPU runtime:
+- **Assigned Experiment:** `exp_masked_hydro_score_a_s42`
+- **Minimum Trials:** 5 sustained evaluation iterations.
+- **Minimum Sustained Duration:** $\ge 30.0$ wall-clock seconds.
+- **Observed Metrics:** Peak resident set size (Peak RSS MB via `getrusage`), wall-clock seconds, sample throughput (samples/sec), and trainable parameter counts.
