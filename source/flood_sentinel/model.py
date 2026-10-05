@@ -257,3 +257,27 @@ class MaskedReconstructionHead(nn.Module):
         # z shape: (B, T, D) -> x_hat shape: (B, T, C_out)
         _tensor(z, self.proj[0].in_features)
         return _finite_output(self.proj(z))
+
+
+class CausalForecastingHead(nn.Module):
+    """Causal forecasting projection head predicting future physical channel targets."""
+
+    def __init__(self, d_model: int = 64, out_dim: int = 2) -> None:
+        super().__init__()
+        positive_int(d_model)
+        positive_int(out_dim)
+        self.proj = nn.Sequential(
+            nn.Linear(d_model, d_model),
+            nn.GELU(),
+            nn.Linear(d_model, out_dim)
+        )
+
+    def forward(self, z: torch.Tensor) -> torch.Tensor:
+        # z shape: (B, T, D) -> predict at final causal step, or (B, D)
+        if z.ndim == 3:
+            z = z[:, -1, :]
+        if z.ndim != 2:
+            raise ValueError("Expected 2D tensor (B, D) or 3D tensor (B, T, D)")
+        _tensor(z.unsqueeze(1), self.proj[0].in_features)
+        return _finite_output(self.proj(z))
+
