@@ -1,17 +1,24 @@
 # Local interpreter/build/cache state
 __pycache__/
 *.py[cod]
+*.pyc
+*.pyo
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
 .coverage
 htmlcov/
 .DS_Store
+__MACOSX/
+.AppleDouble/
+.ipynb_checkpoints/
+node_modules/
 .venv/
 venv/
 *.egg-info/
 build/
 dist/
+*.tmp
 
 # Credentials and machine-local configuration
 .env
@@ -22,6 +29,7 @@ dist/
 .agents/
 *.pem
 *.key
+*.key.pub
 
 # Local factory state is preserved for evidence, not automatically published.
 # Selected releases/handoffs must archive required attempts and hashes explicitly.
