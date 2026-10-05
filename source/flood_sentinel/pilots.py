@@ -194,21 +194,22 @@ class TabularRidgeComparator:
 
     @staticmethod
     def extract_features(sample: CausalHydroSample) -> np.ndarray:
-        """Extract a 10-dimensional causal summary feature vector from a 24h lookback sequence."""
+        """Extract a 10-dimensional causal relative dynamic feature vector from a 24h lookback sequence."""
         feats: list[float] = []
         for ch in [0, 1]:  # 0: stage, 1: discharge
             if ch < sample.values.shape[1]:
                 vals = sample.values[:, ch].numpy()
                 obs = sample.observed[:, ch].numpy()
                 observed_vals = vals[obs]
-                if len(observed_vals) > 0:
-                    feats.append(float(np.mean(observed_vals)))
-                    feats.append(float(np.std(observed_vals)))
+                if len(observed_vals) > 1:
+                    base = observed_vals[0]
+                    feats.append(float(observed_vals[-1] - base))       # delta
+                    feats.append(float(np.std(observed_vals)))          # std
                     if ch == 0:
-                        feats.append(float(np.min(observed_vals)))
-                        feats.append(float(np.max(observed_vals)))
-                    feats.append(float(observed_vals[-1]))
-                    feats.append(float(observed_vals[-1] - observed_vals[0]))
+                        feats.append(float(np.min(observed_vals) - base))   # min rel
+                        feats.append(float(np.max(observed_vals) - base))   # max rel
+                    feats.append(float(np.max(observed_vals) - np.min(observed_vals))) # range
+                    feats.append(float(observed_vals[-1] - np.mean(observed_vals)))    # diff from mean
                 else:
                     feats.extend([0.0] * (6 if ch == 0 else 4))
             else:
@@ -227,12 +228,11 @@ class TabularRidgeComparator:
         X = np.stack(X_list, axis=0)  # (N, D)
         y = np.array(y_list, dtype=np.float64)  # (N,)
 
-        # Simple Newton-Raphson / gradient descent for L2-regularized logistic regression
         N, D = X.shape
         w = np.zeros(D, dtype=np.float64)
         b = 0.0
-        lr = 0.1
-        for _ in range(100):
+        lr = 0.05
+        for _ in range(300):
             logits = np.dot(X, w) + b
             probs = 1.0 / (1.0 + np.exp(-np.clip(logits, -20.0, 20.0)))
             grad_w = np.dot(X.T, (probs - y)) / N + self.l2_reg * w
@@ -249,7 +249,8 @@ class TabularRidgeComparator:
             raise ValueError("TabularRidgeComparator must be fitted before predict_proba.")
         x = self.extract_features(sample)
         logit = float(np.dot(x, self.weights) + self.bias)
-        return float(1.0 / (1.0 + math.exp(-max(min(logit, 20.0), -20.0))))
+        p = 1.0 / (1.0 + math.exp(-max(min(logit, 20.0), -20.0)))
+        return float(max(min(p, 1.0 - 1e-6), 1e-6))
 
     def evaluate_dataset(self, dataset: CausalHydroDataset) -> list[float]:
         return [self.predict_proba(dataset[i]) for i in range(len(dataset))]
@@ -318,6 +319,7 @@ class EALSTMPilotTrainer:
         start_time = time.perf_counter()
         traces: list[TrainingTrace] = []
         best_val_loss = float("inf")
+        best_epoch = 1
         best_state: dict[str, Any] = {}
         patience_counter = 0
         total_samples = 0
@@ -326,7 +328,7 @@ class EALSTMPilotTrainer:
             self.model.train()
             train_losses: list[float] = []
             for batch in train_loader:
-                x_dyn = batch["values"]
+                x_dyn = batch["values"] - batch["values"][:, :1, :]
                 labels = batch["labels"].float()
                 x_static = self._get_static_features(batch["sample_ids"])
                 total_samples += len(labels)
@@ -345,7 +347,7 @@ class EALSTMPilotTrainer:
             val_losses: list[float] = []
             with torch.no_grad():
                 for batch in val_loader:
-                    x_dyn = batch["values"]
+                    x_dyn = batch["values"] - batch["values"][:, :1, :]
                     labels = batch["labels"].float()
                     x_static = self._get_static_features(batch["sample_ids"])
                     logits = self.model(x_dyn, x_static)
@@ -357,11 +359,12 @@ class EALSTMPilotTrainer:
             # Early stopping check
             if avg_val_loss < (best_val_loss - min_delta):
                 best_val_loss = avg_val_loss
+                best_epoch = epoch
                 best_state = {k: v.cpu().clone() for k, v in self.model.state_dict().items()}
                 patience_counter = 0
             else:
                 patience_counter += 1
-                if patience_counter >= patience and epoch >= 2:
+                if epoch >= 2 and patience_counter >= patience:
                     break
 
         # Load best checkpoint
@@ -370,7 +373,7 @@ class EALSTMPilotTrainer:
 
         profile = measure_hardware_profile(start_time, total_samples, self.model)
         checkpoint_meta = {
-            "best_epoch": traces[-patience_counter - 1].epoch if patience_counter else traces[-1].epoch,
+            "best_epoch": best_epoch,
             "best_val_loss": best_val_loss,
             "total_epochs": len(traces),
         }
@@ -381,7 +384,7 @@ class EALSTMPilotTrainer:
         scores: list[float] = []
         with torch.no_grad():
             for batch in loader:
-                x_dyn = batch["values"]
+                x_dyn = batch["values"] - batch["values"][:, :1, :]
                 x_static = self._get_static_features(batch["sample_ids"])
                 logits = self.model(x_dyn, x_static)
                 probs = torch.sigmoid(logits).tolist()
@@ -432,6 +435,7 @@ class MaskedHydroPilotTrainer:
         start_time = time.perf_counter()
         traces: list[TrainingTrace] = []
         best_val_loss = float("inf")
+        best_epoch = 1
         best_state: dict[str, Any] = {}
         patience_counter = 0
         total_samples = 0
@@ -474,11 +478,12 @@ class MaskedHydroPilotTrainer:
             # Early stopping check
             if avg_val_loss < (best_val_loss - min_delta):
                 best_val_loss = avg_val_loss
+                best_epoch = epoch
                 best_state = {k: v.cpu().clone() for k, v in self.model.state_dict().items()}
                 patience_counter = 0
             else:
                 patience_counter += 1
-                if patience_counter >= patience and epoch >= 2:
+                if epoch >= 2 and patience_counter >= patience:
                     break
 
         if best_state:
@@ -486,7 +491,7 @@ class MaskedHydroPilotTrainer:
 
         profile = measure_hardware_profile(start_time, total_samples, self.model)
         checkpoint_meta = {
-            "best_epoch": traces[-patience_counter - 1].epoch if patience_counter else traces[-1].epoch,
+            "best_epoch": best_epoch,
             "best_val_loss": best_val_loss,
             "total_epochs": len(traces),
         }
