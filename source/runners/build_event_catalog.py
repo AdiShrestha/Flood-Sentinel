@@ -35,9 +35,7 @@ def build_catalog(
     # 1. Historical authentic flood episodes for candidate basins
     # Event 1: Potomac River at Little Falls (USGS 01646500) June 2018 Flood
     # Event 2: Delaware River at Trenton NJ (USGS 01463500) Sept 2021 Hurricane Ida
-    # Additional baseline records from data/source_records.csv
-    import urllib.request
-    import gzip
+    import csv
 
     all_episodes: list[EventEpisode] = []
 
@@ -46,14 +44,28 @@ def build_catalog(
         {
             "site_no": "01646500",
             "name": "Potomac River Little Falls (June 2018 Flood)",
-            "url": "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=01646500&startDT=2018-06-01&endDT=2018-06-08&parameterCd=00065",
+            "start": "2018-06-01T04:00:00Z",
+            "end": "2018-06-08T23:59:59Z",
         },
         {
             "site_no": "01463500",
             "name": "Delaware River Trenton (Sept 2021 Hurricane Ida)",
-            "url": "https://waterservices.usgs.gov/nwis/iv/?format=json&sites=01463500&startDT=2021-09-01&endDT=2021-09-06&parameterCd=00065",
+            "start": "2021-09-01T00:00:00Z",
+            "end": "2021-09-06T23:59:59Z",
         },
     ]
+
+    # Load authentic stage observations directly from data/source_records.csv
+    stage_obs_by_site: dict[str, list[tuple[datetime, float]]] = {}
+    if source_records_path.is_file():
+        with source_records_path.open("r", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                if row.get("parameter") == "gage_height_m" and row.get("value_si"):
+                    s = row["site_no"]
+                    ts = datetime.fromisoformat(row["timestamp_utc"])
+                    val = float(row["value_si"])
+                    stage_obs_by_site.setdefault(s, []).append((ts, val))
 
     for spec in event_specs:
         site_no = spec["site_no"]
@@ -61,39 +73,27 @@ def build_catalog(
         if not thresh_map:
             continue
 
-        req = urllib.request.Request(
-            spec["url"],
-            headers={"User-Agent": "FloodSentinel-Research/1.0", "Accept-Encoding": "gzip, deflate"},
-        )
-        try:
-            with urllib.request.urlopen(req, timeout=30) as resp:
-                raw = resp.read()
-                if resp.headers.get("Content-Encoding") == "gzip":
-                    raw = gzip.decompress(raw)
-                data = json.loads(raw.decode("utf-8"))
-                ts = data["value"]["timeSeries"][0]["values"][0]["value"]
-                obs = [
-                    (datetime.fromisoformat(v["dateTime"]), feet_to_meters(float(v["value"])))
-                    for v in ts
-                    if v.get("value")
-                ]
+        obs = [
+            (ts, val)
+            for ts, val in stage_obs_by_site.get(site_no, [])
+            if spec["start"] <= ts.isoformat() <= spec["end"]
+        ]
+        obs.sort(key=lambda x: x[0])
 
-            for cat in ["action", "minor", "moderate", "major"]:
-                thresh = registry.get(site_no, cat)
-                if thresh:
-                    eps = detect_episodes(
-                        site_no=site_no,
-                        observations=obs,
-                        threshold_si=thresh.value_si,
-                        threshold_raw=thresh.value_raw,
-                        category=cat,
-                        vertical_datum=thresh.vertical_datum,
-                        separation_hours=24.0,
-                        all_thresholds_si=thresh_map,
-                    )
-                    all_episodes.extend(eps)
-        except Exception as ex:
-            print(f"Warning: Could not fetch real-time event for {site_no}: {ex}", file=sys.stderr)
+        for cat in ["action", "minor", "moderate", "major"]:
+            thresh = registry.get(site_no, cat)
+            if thresh:
+                eps = detect_episodes(
+                    site_no=site_no,
+                    observations=obs,
+                    threshold_si=thresh.value_si,
+                    threshold_raw=thresh.value_raw,
+                    category=cat,
+                    vertical_datum=thresh.vertical_datum,
+                    separation_hours=24.0,
+                    all_thresholds_si=thresh_map,
+                )
+                all_episodes.extend(eps)
 
     # Sort episodes deterministically
     all_episodes.sort(key=lambda e: (e.site_no, e.onset_upper_utc, e.category))
