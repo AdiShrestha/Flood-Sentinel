@@ -17,5 +17,5 @@ include = ["flood_sentinel*"]
 flood_sentinel = ["LICENSE"]
 
 [tool.pytest.ini_options]
-pythonpath = ["source"]
-testpaths = ["source/tests"]
+pythonpath = [".", "source"]
+testpaths = ["source/tests", "project/tests"]
