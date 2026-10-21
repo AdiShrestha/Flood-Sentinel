@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 import hashlib
 from typing import Mapping, Sequence
+from flood_sentinel.identifiers import require_identifier, split_source_ids, validate_record_lookup
 
 
 class SourceDuplicationError(ValueError):
@@ -28,7 +29,7 @@ class RecordAncestry:
         parameters: Set of physical parameters (e.g. gage_height_m, discharge_cms).
         start_time_utc: Earliest observation timestamp in the constituent records.
         end_time_utc: Latest observation timestamp in the constituent records.
-        ancestry_digest: Cryptographic SHA-256 digest binding all source IDs and raw hashes.
+        ancestry_digest: Local SHA-256 digest over supplied source IDs and raw hashes; not authentication.
     """
     sample_id: str
     source_ids: tuple[str, ...]
@@ -39,10 +40,11 @@ class RecordAncestry:
     ancestry_digest: str
 
     def __post_init__(self) -> None:
-        if not self.sample_id:
-            raise ValueError("sample_id must be non-empty.")
+        require_identifier(self.sample_id, field="sample_id")
         if not self.source_ids:
             raise ValueError(f"sample_id {self.sample_id} must have at least one source record.")
+        for source_id in self.source_ids:
+            require_identifier(source_id, field="source_id")
         if len(self.source_ids) != len(set(self.source_ids)):
             raise SourceDuplicationError(
                 f"Sample {self.sample_id} contains duplicate source_ids in ancestry."
@@ -50,19 +52,22 @@ class RecordAncestry:
 
 
 class AncestryAdapter:
-    """Adapter verifying multi-origin record ancestry against authoritative catalogs."""
+    """Bind ancestry to supplied catalogs without authenticating provider origin or release."""
 
     @staticmethod
     def compute_ancestry_digest(
         source_ids: Sequence[str],
         source_records_lookup: Mapping[str, Mapping[str, str]],
     ) -> str:
-        """Compute an immutable SHA-256 digest of constituent source records.
+        """Compute a deterministic local SHA-256 digest of supplied source records.
 
         Sorted strictly by source_id to ensure canonical hashing regardless of delimiter order.
+        The digest detects later byte changes only if its reference is trusted; it
+        is not a provider signature or proof of historical availability.
         """
+        validate_record_lookup(source_records_lookup)
         h = hashlib.sha256()
-        sorted_ids = sorted(source_ids)
+        sorted_ids = sorted(require_identifier(s, field="source_id") for s in source_ids)
         for sid in sorted_ids:
             rec = source_records_lookup.get(sid)
             if rec is None:
@@ -81,6 +86,9 @@ class AncestryAdapter:
         source_records_lookup: Mapping[str, Mapping[str, str]],
     ) -> RecordAncestry:
         """Resolve a cohort sample into an audited RecordAncestry object."""
+        sample_id = require_identifier(sample_id, field="sample_id")
+        validate_record_lookup(source_records_lookup)
+        source_ids = tuple(require_identifier(s, field="source_id") for s in source_ids)
         if not source_ids:
             raise ValueError(f"Sample {sample_id} has empty source_ids.")
 
@@ -132,7 +140,7 @@ class AncestryAdapter:
         """Validate an entire cohort's ancestry, ensuring 0 missing records and 0 duplicated IDs."""
         resolved: dict[str, RecordAncestry] = {}
         for row in cohort_rows:
-            sid = row["sample_id"]
-            raw_sids = [s for s in row["source_ids"].split("|") if s]
+            sid = require_identifier(row.get("sample_id"), field="sample_id")
+            raw_sids = split_source_ids(row.get("source_ids"))
             resolved[sid] = cls.resolve_sample_ancestry(sid, raw_sids, source_records_lookup)
         return resolved

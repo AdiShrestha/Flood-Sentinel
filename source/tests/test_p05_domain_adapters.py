@@ -177,83 +177,59 @@ def test_ancestry_adapter_missing_source_rejection(source_records_lookup):
 # 3. Causal Availability Adapter Tests
 # =========================================================================
 
+# FABRICATION-DISCLOSURE: hand-constructed timing/onset cases only.
+def fixture_record(time, available=None):
+    return dict(record_id="fixture-record", observation_start_utc=time,
+                observation_end_utc=time, available_utc=available or time,
+                availability_basis="observed", raw_sha256="0"*64)
+
+
 def test_availability_adapter_causality():
-    t_issue = datetime(2021, 9, 1, 12, 0, tzinfo=timezone.utc)
-    records = [
-        {"record_id": "r1", "timestamp_utc": "2021-09-01T10:00:00+00:00", "parameter": "gage_height_m"},
-        {"record_id": "r2", "timestamp_utc": "2021-09-01T12:00:00+00:00", "parameter": "gage_height_m"},
-    ]
-    res = AvailabilityAdapter.audit_sample_causality("s1", t_issue, records)
-    assert res.is_causally_valid is True
-    assert res.record_count == 2
+    t = datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
+    assert AvailabilityAdapter.audit_sample_causality("fixture", t,
+        [fixture_record("2000-01-01T12:00:00Z")]).is_causally_valid
+    with pytest.raises(CausalLeakageError):
+        AvailabilityAdapter.audit_sample_causality("fixture", t,
+            [dict(record_id="fixture",timestamp_utc="2000-01-01T12:00:00Z")])
 
 
 def test_availability_adapter_future_leakage_rejection():
-    t_issue = datetime(2021, 9, 1, 12, 0, tzinfo=timezone.utc)
-    records = [
-        {"record_id": "r1", "timestamp_utc": "2021-09-01T10:00:00+00:00", "parameter": "gage_height_m"},
-        {"record_id": "r2_future", "timestamp_utc": "2021-09-01T12:15:00+00:00", "parameter": "gage_height_m"},
-    ]
+    t = datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
     with pytest.raises(CausalLeakageError, match="observation timestamp"):
-        AvailabilityAdapter.audit_sample_causality("s_leak", t_issue, records)
+        AvailabilityAdapter.audit_sample_causality("fixture",t,[fixture_record("2000-01-01T12:15:00Z")])
 
 
 def test_availability_adapter_latency_leakage_rejection():
-    t_issue = datetime(2021, 9, 1, 12, 0, tzinfo=timezone.utc)
-    records = [
-        {
-            "record_id": "r1",
-            "timestamp_utc": "2021-09-01T11:00:00+00:00",
-            "available_utc": "2021-09-01T13:00:00+00:00",  # Available 1 hour AFTER issue time!
-            "parameter": "gage_height_m",
-        },
-    ]
+    t = datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
     with pytest.raises(CausalLeakageError, match="available timestamp"):
-        AvailabilityAdapter.audit_sample_causality("s_latency", t_issue, records)
+        AvailabilityAdapter.audit_sample_causality("fixture",t,
+            [fixture_record("2000-01-01T11:00:00Z","2000-01-01T13:00:00Z")])
 
 
-# =========================================================================
-# 4. Event & Exposure Adapter Tests
-# =========================================================================
-
-def test_exposure_adapter_matching(event_intervals):
-    # Delaware at Trenton (01463500) during Hurricane Ida
-    # Issue at 2021-09-01 06:00:00 UTC (flood onset was around 2021-09-01 17:30 UTC)
-    t_issue = datetime(2021, 9, 1, 6, 0, tzinfo=timezone.utc)
-    exp = ExposureAdapter.compute_sample_exposure(
-        sample_id="test_exp_ida",
-        site_no="01463500",
-        issue_time_utc=t_issue,
-        event_intervals=event_intervals,
-        horizon_hours=24.0,
-    )
-    assert exp.has_flood_event is True
-    assert exp.lead_time_lower_hours is not None
-    assert exp.lead_time_lower_hours > 0  # True forecast lead time!
-    assert exp.peak_stage_excess_m > 0
+def test_exposure_adapter_matching():
+    t = datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
+    events=[dict(site_no="fixture",event_id="fixture-event",
+        onset_lower_utc="2000-01-01T13:00:00Z",onset_upper_utc="2000-01-01T14:00:00Z")]
+    result=ExposureAdapter.compute_sample_exposure("fixture_20000101T120000Z","fixture",t,events,
+        currently_below_threshold=True,coverage_complete=False,ongoing=False)
+    assert result.has_flood_event is True
+    assert result.lead_time_lower_hours==1 and result.lead_time_upper_hours==2
 
 
-def test_exposure_adapter_negative_control(event_intervals):
-    # Delaware at Trenton on 2021-08-30 (pre-event baseflow)
-    t_issue = datetime(2021, 8, 30, 12, 0, tzinfo=timezone.utc)
-    exp = ExposureAdapter.compute_sample_exposure(
-        sample_id="test_exp_baseflow",
-        site_no="01463500",
-        issue_time_utc=t_issue,
-        event_intervals=event_intervals,
-        horizon_hours=24.0,
-    )
-    assert exp.has_flood_event is False
-    assert exp.lead_time_lower_hours is None
+def test_exposure_adapter_negative_control():
+    t = datetime(2000, 1, 1, 12, tzinfo=timezone.utc)
+    assert ExposureAdapter.compute_sample_exposure("fixture_20000101T120000Z","fixture",t,[]).has_flood_event is None
+    result=ExposureAdapter.compute_sample_exposure("fixture_20000101T120000Z","fixture",t,[],
+        coverage_complete=True,currently_below_threshold=True,ongoing=False)
+    assert result.has_flood_event is False
+    assert result.peak_stage_excess_m is None
 
 
-def test_exposure_adapter_label_consistency_error(event_intervals):
-    # Deliberately falsify cohort label: label='1' for non-flooding baseflow
-    t_issue = datetime(2021, 8, 30, 12, 0, tzinfo=timezone.utc)
-    fake_cohort_row = [{"sample_id": "fake_1", "label": "1"}]
-    meta = {"fake_1": ("01463500", t_issue)}
+def test_exposure_adapter_label_consistency_error():
+    t = datetime(2000,1,1,tzinfo=timezone.utc)
     with pytest.raises(LabelConsistencyError):
-        ExposureAdapter.validate_cohort_exposure(fake_cohort_row, meta, event_intervals)
+        ExposureAdapter.validate_cohort_exposure([dict(sample_id="fixture_20000101T000000Z",label="0")],
+            {"fixture_20000101T000000Z":("fixture",t)},[])
 
 
 # =========================================================================

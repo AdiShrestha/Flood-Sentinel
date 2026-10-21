@@ -92,7 +92,7 @@ class PersistenceComparator:
         obs = sample.observed[:, stage_channel_idx].numpy()
         observed_indices = np.where(obs)[0]
         if len(observed_indices) == 0:
-            return 0.0
+            return None
         latest_idx = observed_indices[-1]
         latest_val = float(vals[latest_idx])
         # Persistence score is normalized latest stage
@@ -118,7 +118,9 @@ class EWMACUSUMComparator:
         slack: float = 0.5,
     ) -> None:
         self.mean = calibration_mean
-        self.scale = max(calibration_scale, 1e-6)
+        if not math.isfinite(calibration_scale) or calibration_scale <= 0:
+            raise ValueError('Unsupported reference scale')
+        self.scale = calibration_scale
         self.alpha = alpha
         self.slack = slack
 
@@ -131,12 +133,8 @@ class EWMACUSUMComparator:
         slack: float = 0.5,
     ) -> EWMACUSUMComparator:
         """Fit calibration mean and scale strictly on train observations."""
-        all_stage_obs: list[float] = []
-        for i in range(len(train_dataset)):
-            s = train_dataset[i]
-            vals = s.values[:, stage_channel_idx].numpy()
-            obs = s.observed[:, stage_channel_idx].numpy()
-            all_stage_obs.extend(vals[obs].tolist())
+        raw = train_dataset.get_raw_observations_matrix()[:, stage_channel_idx]
+        all_stage_obs = raw[np.isfinite(raw)].tolist()
 
         if not all_stage_obs:
             raise ValueError("No observed training stage records found for EWMA-CUSUM.")
@@ -144,34 +142,13 @@ class EWMACUSUMComparator:
         mean_v = float(np.mean(all_stage_obs))
         scale_v = float(np.std(all_stage_obs))
         if scale_v <= 0:
-            scale_v = 1.0
+            raise ValueError('Constant reference cannot support SPC scaling')
 
         return cls(calibration_mean=mean_v, calibration_scale=scale_v, alpha=alpha, slack=slack)
 
     def evaluate_sample(self, sample: CausalHydroSample, stage_channel_idx: int = 0) -> float:
-        """Run EWMA-CUSUM across the 24h lookback sequence, returning the terminal CUSUM score."""
-        vals = sample.values[:, stage_channel_idx].numpy()
-        obs = sample.observed[:, stage_channel_idx].numpy()
-        # For gaps, forward fill the last observed value
-        series = np.array(vals)
-        last_v = self.mean
-        for t in range(len(series)):
-            if obs[t]:
-                last_v = series[t]
-            else:
-                series[t] = last_v
-
-        scores, state = ewma_cusum(
-            series,
-            calibration_mean=self.mean,
-            calibration_scale=self.scale,
-            alpha=self.alpha,
-            slack=self.slack,
-            initial_ewma=float(series[0]),
-            initial_cusum=0.0,
-        )
-        return float(state["cusum"])
-
+        """Reject window evaluation; comparator state requires chronological updates."""
+        raise ValueError('Window-reset SPC is quarantined; use chronological state updates')
     def evaluate_dataset(self, dataset: CausalHydroDataset) -> list[float]:
         return [self.evaluate_sample(dataset[i]) for i in range(len(dataset))]
 
@@ -293,20 +270,8 @@ class EALSTMPilotTrainer:
         self.static_dim = static_dim
 
     def _get_static_features(self, sample_ids: Sequence[str]) -> torch.Tensor:
-        """Construct deterministic static catchment embedding from site number."""
-        static = torch.zeros((len(sample_ids), self.static_dim), dtype=torch.float32)
-        for i, sid in enumerate(sample_ids):
-            # One-hot encoding of known basins
-            if "01646500" in sid:
-                static[i, 0] = 1.0
-            elif "01463500" in sid:
-                static[i, 1] = 1.0
-            elif "01434000" in sid:
-                static[i, 2] = 1.0
-            else:
-                static[i, 3] = 1.0
-        return static
-
+        """Reject the retired station-ID feature path pending genuine attributes."""
+        raise ValueError('Station-ID embeddings are not authenticated catchment attributes')
     def train_pilot(
         self,
         train_loader: DataLoader,

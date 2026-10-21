@@ -5,6 +5,7 @@ import math
 import re
 from typing import Iterable
 from .validation import real_scalar
+from .identifiers import require_identifier
 
 
 def utc(value: datetime) -> datetime:
@@ -79,7 +80,7 @@ class OnsetInterval:
     upper: datetime
 
     def __post_init__(self):
-        if not isinstance(self.event_id,str) or not self.event_id.strip(): raise ValueError('An event ID is required.')
+        require_identifier(self.event_id, field='event_id')
         utc(self.upper)
         if self.lower is not None and utc(self.lower) > utc(self.upper):
             raise ValueError('Onset interval is inverted.')
