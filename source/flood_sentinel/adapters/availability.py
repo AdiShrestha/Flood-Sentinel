@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from typing import Mapping, Sequence
+from flood_sentinel.identifiers import require_identifier, split_source_ids, validate_record_lookup
+from flood_sentinel.temporal import utc
 
 
 class CausalLeakageError(ValueError):
@@ -13,7 +15,12 @@ class CausalLeakageError(ValueError):
 
 @dataclass(frozen=True)
 class AvailabilityAuditResult:
-    """Audit receipt verifying causal timing compliance for an issue sample."""
+    """Temporal-consistency result for caller-supplied availability fields.
+
+    `is_causally_valid` means only that supplied interval/release timestamps obey
+    the chronology checks. The `availability_basis` string and any local digest
+    do not authenticate a provider's historical release or arrival time.
+    """
     sample_id: str
     issue_time_utc: datetime
     lookback_start_utc: datetime
@@ -21,6 +28,7 @@ class AvailabilityAuditResult:
     latest_obs_utc: datetime
     record_count: int
     is_causally_valid: bool
+    availability_evidence_status: str = "unverified_caller_claim"
 
 
 class AvailabilityAdapter:
@@ -32,8 +40,9 @@ class AvailabilityAdapter:
         issue_time_utc: datetime,
         source_records: Sequence[Mapping[str, str]],
         lookback_hours: float = 24.0,
+        *, allow_assumed: bool = False,
     ) -> AvailabilityAuditResult:
-        """Audit that all constituent source records for an issue strictly precede issue time.
+        """Check supplied observation/release chronology; do not authenticate vintages.
 
         Args:
             sample_id: Unique issue identifier.
@@ -45,27 +54,44 @@ class AvailabilityAdapter:
             CausalLeakageError: If any observation timestamp is strictly greater than issue time,
                                 or if telemetry publication timestamp is after issue time.
         """
+        sample_id = require_identifier(sample_id, field="sample_id")
         if not source_records:
             raise ValueError(f"Sample {sample_id} has zero source records to audit.")
 
-        if issue_time_utc.tzinfo is None:
-            issue_time_utc = issue_time_utc.replace(tzinfo=timezone.utc)
+        issue_time_utc = utc(issue_time_utc)
+        if type(allow_assumed) is not bool:
+            raise ValueError("Explicit allow_assumed boolean required")
+        if not 0 < lookback_hours < float("inf"):
+            raise ValueError("Finite positive lookback required")
 
         t_lookback_start = issue_time_utc - timedelta(hours=lookback_hours)
 
+        record_ids: list[str] = []
+        for record in source_records:
+            if not isinstance(record, Mapping):
+                raise ValueError("Source record mappings are required")
+            record_ids.append(require_identifier(record.get("record_id"), field="record_id"))
+        if len(record_ids) != len(set(record_ids)):
+            raise ValueError("Duplicate source record IDs")
+
         timestamps: list[datetime] = []
         for r in source_records:
-            rec_id = r.get("record_id", "UNKNOWN")
-            ts_str = r.get("timestamp_utc")
-            if not ts_str:
-                continue
-
-            dt = datetime.fromisoformat(ts_str)
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
+            rec_id = require_identifier(r.get("record_id"), field="record_id")
+            ts_str = r.get("observation_end_utc")
+            start_str = r.get("observation_start_utc")
+            if not ts_str or not start_str:
+                raise CausalLeakageError("Missing physical observation interval")
+            dt = utc(datetime.fromisoformat(ts_str))
+            start = utc(datetime.fromisoformat(start_str))
+            if start > dt:
+                raise CausalLeakageError("Inverted observation interval")
+            basis = r.get("availability_basis")
+            if basis != "observed" and not (basis == "assumed" and allow_assumed):
+                raise CausalLeakageError("Missing actual release/vintage evidence; assumed replay must be explicit")
+            if not r.get("available_utc"):
+                raise CausalLeakageError("Missing release/vintage timestamp")
 
             timestamps.append(dt)
-
             # Strict Causality Check 1: Observation time cannot be in the future
             if dt > issue_time_utc:
                 raise CausalLeakageError(
@@ -88,8 +114,9 @@ class AvailabilityAdapter:
             avail_str = r.get("available_utc")
             if avail_str:
                 avail_dt = datetime.fromisoformat(avail_str)
-                if avail_dt.tzinfo is None:
-                    avail_dt = avail_dt.replace(tzinfo=timezone.utc)
+                avail_dt = utc(avail_dt)
+                if avail_dt < dt:
+                    raise CausalLeakageError("Release precedes physical closure")
                 if avail_dt > issue_time_utc:
                     raise CausalLeakageError(
                         f"Publication latency violation in sample '{sample_id}' (record '{rec_id}'): "
@@ -107,6 +134,7 @@ class AvailabilityAdapter:
             latest_obs_utc=max(timestamps),
             record_count=len(source_records),
             is_causally_valid=True,
+            availability_evidence_status="unverified_caller_claim",
         )
 
     @classmethod
@@ -118,13 +146,19 @@ class AvailabilityAdapter:
         lookback_hours: float = 24.0,
     ) -> dict[str, AvailabilityAuditResult]:
         """Audit causal availability across an entire cohort."""
+        validate_record_lookup(source_records_lookup)
+        if set(issue_times_lookup) != {require_identifier(row.get("sample_id"), field="sample_id")
+                                      for row in cohort_rows}:
+            raise ValueError("Issue-time lookup keys must exactly match cohort sample IDs")
         results: dict[str, AvailabilityAuditResult] = {}
         for row in cohort_rows:
-            sid = row["sample_id"]
+            sid = require_identifier(row.get("sample_id"), field="sample_id")
             t_issue = issue_times_lookup.get(sid)
             if t_issue is None:
                 raise ValueError(f"Missing issue time for sample {sid}")
-            sids = [s for s in row["source_ids"].split("|") if s]
-            records = [source_records_lookup[s] for s in sids if s in source_records_lookup]
+            sids = split_source_ids(row.get("source_ids"))
+            if any(s not in source_records_lookup for s in sids):
+                raise ValueError("Unresolved source ID")
+            records = [source_records_lookup[s] for s in sids]
             results[sid] = cls.audit_sample_causality(sid, t_issue, records, lookback_hours)
         return results
