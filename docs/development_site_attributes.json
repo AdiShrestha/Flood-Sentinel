@@ -1,0 +1,110 @@
+{
+  "source": {
+    "title": "Falcone (2011), GAGES-II September 30, 2011 release",
+    "citation": "https://doi.org/10.5066/P96CPHOT",
+    "archive_url": "https://water.usgs.gov/GIS/dsdl/basinchar_and_report_sept_2011.zip",
+    "archive_sha256": "1d1b292932784bd94cc3e1a078437cd8b1fe9224f322f573209f942508fc942e",
+    "archive_bytes": 55147470,
+    "nested_csv_member": "spreadsheets-in-csv-format.zip/conterm_hydromod_dams.txt",
+    "workbook_member_and_sheet": "gagesII_sept30_2011_conterm.xlsx / HydroMod_Dams",
+    "source_epoch": "Enhanced 2009 National Inventory of Dams; historical catchment attributes"
+  },
+  "field_units_verbatim": {
+    "NDAMS_2009": "number of dams",
+    "STOR_NID_2009": "megaliters/sq km",
+    "STOR_NOR_2009": "megaliters/sq km",
+    "MAJ_NDAMS_2009": "number of major dams",
+    "RAW_DIS_NEAREST_MAJ_DAM": "kilometers",
+    "RAW_AVG_DIS_ALL_MAJ_DAMS": "kilometers"
+  },
+  "storage_conversion_to_ML_per_km2": 1,
+  "rows": {
+    "01013500": {
+      "NDAMS_2009": {
+        "csv": "3",
+        "worksheet_xml_numeric_text": "3"
+      },
+      "STOR_NID_2009": {
+        "csv": "0.81",
+        "worksheet_xml_numeric_text": "0.81006935689502724"
+      },
+      "STOR_NOR_2009": {
+        "csv": "0.77",
+        "worksheet_xml_numeric_text": "0.76901854489021171"
+      },
+      "MAJ_NDAMS_2009": {
+        "csv": "0",
+        "worksheet_xml_numeric_text": "0"
+      },
+      "RAW_DIS_NEAREST_MAJ_DAM": {
+        "csv": "-999.0",
+        "worksheet_xml_numeric_text": "-999"
+      },
+      "RAW_AVG_DIS_ALL_MAJ_DAMS": {
+        "csv": "-999.0",
+        "worksheet_xml_numeric_text": "-999"
+      }
+    },
+    "01022500": {
+      "NDAMS_2009": {
+        "csv": "3",
+        "worksheet_xml_numeric_text": "3"
+      },
+      "STOR_NID_2009": {
+        "csv": "19.21",
+        "worksheet_xml_numeric_text": "19.20649141580396"
+      },
+      "STOR_NOR_2009": {
+        "csv": "14.94",
+        "worksheet_xml_numeric_text": "14.943875581720105"
+      },
+      "MAJ_NDAMS_2009": {
+        "csv": "1",
+        "worksheet_xml_numeric_text": "1"
+      },
+      "RAW_DIS_NEAREST_MAJ_DAM": {
+        "csv": "17.0",
+        "worksheet_xml_numeric_text": "17.022359999999999"
+      },
+      "RAW_AVG_DIS_ALL_MAJ_DAMS": {
+        "csv": "17.0",
+        "worksheet_xml_numeric_text": "17.022359999999999"
+      }
+    },
+    "01030500": {
+      "NDAMS_2009": {
+        "csv": "2",
+        "worksheet_xml_numeric_text": "2"
+      },
+      "STOR_NID_2009": {
+        "csv": "31.53",
+        "worksheet_xml_numeric_text": "31.531258602698678"
+      },
+      "STOR_NOR_2009": {
+        "csv": "7.70",
+        "worksheet_xml_numeric_text": "7.6998521831949116"
+      },
+      "MAJ_NDAMS_2009": {
+        "csv": "1",
+        "worksheet_xml_numeric_text": "1"
+      },
+      "RAW_DIS_NEAREST_MAJ_DAM": {
+        "csv": "38.5",
+        "worksheet_xml_numeric_text": "38.462069999999997"
+      },
+      "RAW_AVG_DIS_ALL_MAJ_DAMS": {
+        "csv": "38.5",
+        "worksheet_xml_numeric_text": "38.462069999999997"
+      }
+    }
+  },
+  "comparison": "All 29 columns for each fixed station agree between CSV and original worksheet XML when workbook numbers are rounded HALF_UP to the precision present in each CSV cell. Selected original CSV and XML lexical values are retained above.",
+  "documented_sentinel": "-999 in the selected major-dam distance columns means no major dam in the source inventory, not zero distance or absence of all dams.",
+  "limits": [
+    "The inventory counts dams at every selected historical reference site. Reference classification is not a dam-free designation.",
+    "Normal and NID storage differ in meaning; NID storage is generally but not always maximum storage, with documented source errors.",
+    "No 50 ML/km² screen was applied or scientifically justified.",
+    "These 2009 attributes do not establish operations, flood control, natural flow or unchanged regulation through 2025.",
+    "Data-source attribution is retained; this file does not assign a blanket license to provider data."
+  ]
+}

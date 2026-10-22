@@ -41,6 +41,7 @@ CELLS = (
     ("ref_unflagged_eval_unflagged", "unflagged_only", False),
 )
 HORIZONS = (24, 48, 72)
+ISSUE_TIME_CONTRACT = "12:00:00Z each UTC calendar date"
 
 
 def sha256_bytes(raw: bytes) -> str:
@@ -122,6 +123,11 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
         site_map[site] = entry
         series_seen.add(series)
     expected_dates = manifest.get("date_scope", {})
+    if expected_dates.get("issue_time") != ISSUE_TIME_CONTRACT:
+        raise ValueError("this replay requires the declared 12:00:00Z issue time")
+    availability = manifest.get("availability")
+    if not isinstance(availability, dict) or availability.get("historical_release_and_arrival") != "unknown":
+        raise ValueError("historical release and arrival must remain unknown in this replay")
     raw_start = _date(expected_dates.get("raw_query_inclusive", [None, None])[0], "raw start")
     raw_last = _date(expected_dates.get("raw_query_inclusive", [None, None])[1], "raw end")
     mat = expected_dates.get("materialized_calendar_half_open")
@@ -267,6 +273,8 @@ def parse_capture(manifest: dict[str, Any], raw_dir: Path) -> tuple[dict[str, di
             raise ValueError(f"same raw page referenced twice: {name}")
         seen_page_names.add(name)
         path = raw_dir / name
+        if path.is_symlink() or path.resolve().parent != raw_dir.resolve():
+            raise ValueError(f"raw page must be a regular file inside the raw directory: {name}")
         if not path.is_file():
             raise ValueError(f"missing caller-supplied raw page: {path}")
         raw = path.read_bytes()
@@ -754,7 +762,9 @@ def _write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
 
 
 def write_replay(result: dict[str, Any], manifest: dict[str, Any], output_dir: Path,
-                 manifest_path: Path) -> dict[str, Any]:
+                 manifest_path: Path, *, consumed_manifest_sha256: str) -> dict[str, Any]:
+    if sha256_file(manifest_path) != consumed_manifest_sha256:
+        raise ValueError("source manifest changed after it was consumed")
     if output_dir.exists():
         raise FileExistsError(f"refusing to overwrite replay destination: {output_dir}")
     output_dir.mkdir(parents=True)
@@ -780,7 +790,7 @@ def write_replay(result: dict[str, Any], manifest: dict[str, Any], output_dir: P
     }
     out_manifest = {
         "manifest_version": "flood-sentinel-daily-quality-replay-output-v1",
-        "input_manifest": {"name": manifest_path.name, "sha256": sha256_file(manifest_path)},
+        "input_manifest": {"name": manifest_path.name, "sha256": consumed_manifest_sha256},
         "raw_pages": result["capture_audit"]["pages"],
         "counts_derived_from_consumed_pages": counts,
         "quality_thresholds_exact": {
@@ -801,6 +811,9 @@ def write_replay(result: dict[str, Any], manifest: dict[str, Any], output_dir: P
 
 
 def replay(manifest_path: Path, raw_dir: Path, output_dir: Path) -> dict[str, Any]:
-    manifest = read_manifest(manifest_path)
+    manifest_bytes = manifest_path.read_bytes()
+    manifest = _strict_json(manifest_bytes, str(manifest_path))
+    validate_manifest(manifest)
     result = derive_replay(manifest, raw_dir)
-    return write_replay(result, manifest, output_dir, manifest_path)
+    return write_replay(result, manifest, output_dir, manifest_path,
+                        consumed_manifest_sha256=sha256_bytes(manifest_bytes))
