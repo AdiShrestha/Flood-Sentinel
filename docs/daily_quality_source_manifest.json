@@ -1,0 +1,405 @@
+{
+  "attribution_and_redistribution": {
+    "USGS": "USGS Water Data for the Nation; DOI 10.5066/F7P55KJN. Provider terms are source-specific. This manifest publishes hashes and provenance metadata only; captured raw responses are caller-provided/local and are not bundled or blanket-licensed.",
+    "replay_identity": "Exact captured pages must match listed hashes. Re-querying current USGS data may yield revised values and different hashes."
+  },
+  "availability": {
+    "data": "current final-product retrospective capture",
+    "historical_release_and_arrival": "unknown",
+    "last_modified": "preserved as a source field, not interpreted as first release/availability",
+    "replay": "assumption only; never authenticated arrival or evidence against revision leakage"
+  },
+  "civil_time_assumption": {
+    "basis": "USGS ADAPS OFR 03-123 documents daily values from local midnight to local midnight, including 23/25-hour DST days; captured site metadata reports EST and uses_daylight_savings=Y. IANA zone identity is a conditional explicit assignment, not provider-supplied historical series semantics.",
+    "historical_rules": "1987-2006: first Sunday in April / last Sunday in October; 2007 onward: second Sunday in March / first Sunday in November; runtime zoneinfo must be recorded and historical mapping remains conditional.",
+    "release": "2026e",
+    "timezone_database_reference": "https://data.iana.org/time-zones/tzdb-2026e/northamerica",
+    "zone": "America/New_York"
+  },
+  "date_scope": {
+    "evaluation_issue_dates_inclusive": [
+      "2010-01-01",
+      "2025-12-31"
+    ],
+    "horizons_elapsed_hours": [
+      24,
+      48,
+      72
+    ],
+    "issue_time": "12:00:00Z each UTC calendar date",
+    "materialized_calendar_half_open": [
+      "1990-01-01",
+      "2026-01-01"
+    ],
+    "raw_query_inclusive": [
+      "1990-01-01",
+      "2025-12-31"
+    ],
+    "reference_half_open": [
+      "1990-01-01",
+      "2010-01-01"
+    ]
+  },
+  "manifest_version": "flood-sentinel-daily-quality-capture-v1",
+  "matrix_cells": [
+    {
+      "cell_id": "ref_estimated_eval_estimated",
+      "evaluation_quality": "estimated_retaining",
+      "reference_quality": "estimated_retaining"
+    },
+    {
+      "cell_id": "ref_estimated_eval_unflagged",
+      "evaluation_quality": "unflagged_only",
+      "reference_quality": "estimated_retaining"
+    },
+    {
+      "cell_id": "ref_unflagged_eval_estimated",
+      "evaluation_quality": "estimated_retaining",
+      "reference_quality": "unflagged_only"
+    },
+    {
+      "cell_id": "ref_unflagged_eval_unflagged",
+      "evaluation_quality": "unflagged_only",
+      "reference_quality": "unflagged_only"
+    }
+  ],
+  "output_contract": {
+    "actual_release": "unknown",
+    "input_policy": "latest expected complete local day closed by the 12:00Z issue; only its exact row may score if approved/unflagged; no search farther back; final-product replay is assumed and actual release remains unknown.",
+    "methods": "software reproduction of an exposed development diagnostic; not preregistration, freeze, empirical model evaluation, or scientific certification.",
+    "physical_state_onset_warning_lead": "always unknown/null in this analysis",
+    "unknown_targets": "preserved, never coerced to a binary outcome"
+  },
+  "provider": {
+    "DOI": "10.5066/F7P55KJN",
+    "collection": "daily",
+    "name": "USGS Water Data for the Nation",
+    "source_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily"
+  },
+  "purpose": "Reproduce the exposed 2x2 reference-quality by evaluation-quality aggregate completion diagnostic from caller-supplied exact captured USGS daily response bodies.",
+  "quality_contract": {
+    "approval": "exact scalar Approved or singleton [Approved] only",
+    "estimated": "Approved with sole ESTIMATED qualifier; retained flagged in estimated-retaining truth policy only",
+    "missing": "Absence remains an explicit missing_date slot; null values and unusable quality do not become zero.",
+    "other": "Preserve verbatim, unusable for either lane until meaning is verified",
+    "unflagged": "Approved with null/empty qualifier",
+    "value": "Retain provider string verbatim; finite nonnegative decimals are computationally usable only when quality policy permits."
+  },
+  "raw_capture": {
+    "attempt_contract_sha256": "02c36288d7a0457400207d4872c4f3c3c5a27ddf2c1db8e3d1d3b50b563004a6",
+    "attempt_finished_utc": "2026-10-22T02:27:03.264400+00:00",
+    "attempt_started_utc": "2026-10-22T02:26:31.001009+00:00",
+    "attempt_status": 0,
+    "pages": [
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 3316399,
+        "raw_file": "ac59859661183c520fe9846f501d1404c93c468d0e0c56bb4d405d40941d3a69.body",
+        "raw_sha256": "ac59859661183c520fe9846f501d1404c93c468d0e0c56bb4d405d40941d3a69",
+        "request_started_utc": "2026-10-22T02:26:31.001675+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000",
+        "response_received_utc": "2026-10-22T02:26:34.598794+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 1,
+        "series_id": "aa8ac20eb72d4fa58ea9c0eaf61e10ee",
+        "site_id": "USGS-01013500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 3315243,
+        "raw_file": "79b8b74700f214e85806e53c173cfdcc2417043a7492a075eaf722bc4c216d35.body",
+        "raw_sha256": "79b8b74700f214e85806e53c173cfdcc2417043a7492a075eaf722bc4c216d35",
+        "request_started_utc": "2026-10-22T02:26:34.622980+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=NjBmZTUxMGQtMzRlOC00YzBjLWFiM2QtZTRhZmY5Y2Q2MWE3&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "response_received_utc": "2026-10-22T02:26:38.026767+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=NjBmZTUxMGQtMzRlOC00YzBjLWFiM2QtZTRhZmY5Y2Q2MWE3&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 2,
+        "series_id": "aa8ac20eb72d4fa58ea9c0eaf61e10ee",
+        "site_id": "USGS-01013500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 2089290,
+        "raw_file": "92d5c3a72f5541a6121f83f189c5ec49d1f6f29ae77b6446a885f4cd8de9c74d.body",
+        "raw_sha256": "92d5c3a72f5541a6121f83f189c5ec49d1f6f29ae77b6446a885f4cd8de9c74d",
+        "request_started_utc": "2026-10-22T02:26:38.049909+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=YzM1Yjg5NzAtNmJiNS00NjIzLTk1YTEtYWQwMDA2MThmM2Yz&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "response_received_utc": "2026-10-22T02:26:41.158519+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=YzM1Yjg5NzAtNmJiNS00NjIzLTk1YTEtYWQwMDA2MThmM2Yz&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 3,
+        "series_id": "aa8ac20eb72d4fa58ea9c0eaf61e10ee",
+        "site_id": "USGS-01013500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 3343535,
+        "raw_file": "a658f5cdc595d340575702dfaf49ef998eb19dd5aad2301e3d812564dc270a00.body",
+        "raw_sha256": "a658f5cdc595d340575702dfaf49ef998eb19dd5aad2301e3d812564dc270a00",
+        "request_started_utc": "2026-10-22T02:26:41.177119+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=02fec7bdbbe64d49a3d5414cabfa7ea8&monitoring_location_id=USGS-01022500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000",
+        "response_received_utc": "2026-10-22T02:26:44.756376+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=02fec7bdbbe64d49a3d5414cabfa7ea8&monitoring_location_id=USGS-01022500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 4,
+        "series_id": "02fec7bdbbe64d49a3d5414cabfa7ea8",
+        "site_id": "USGS-01022500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 3343587,
+        "raw_file": "f7b0ae44ef18b444f243c6e6694eaf86b25c1530204b67f6fe0ddb043d5efa9c.body",
+        "raw_sha256": "f7b0ae44ef18b444f243c6e6694eaf86b25c1530204b67f6fe0ddb043d5efa9c",
+        "request_started_utc": "2026-10-22T02:26:44.781013+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=NjA3NmY5YzktOTVmZi00NmJhLWIwYTEtZjk5YzU2MmE5YWVk&time_series_id=02fec7bdbbe64d49a3d5414cabfa7ea8&monitoring_location_id=USGS-01022500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "response_received_utc": "2026-10-22T02:26:48.839754+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=NjA3NmY5YzktOTVmZi00NmJhLWIwYTEtZjk5YzU2MmE5YWVk&time_series_id=02fec7bdbbe64d49a3d5414cabfa7ea8&monitoring_location_id=USGS-01022500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 5,
+        "series_id": "02fec7bdbbe64d49a3d5414cabfa7ea8",
+        "site_id": "USGS-01022500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 2106453,
+        "raw_file": "5e220e958b0fe8a25f254b163e62178eca3255a166f69ed077cd832fbadde669.body",
+        "raw_sha256": "5e220e958b0fe8a25f254b163e62178eca3255a166f69ed077cd832fbadde669",
+        "request_started_utc": "2026-10-22T02:26:48.863638+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=YzI1NmVjZjgtMzdjYy00ZTI5LWFhYjctMGQ1NzVkYTkxMTQ0&time_series_id=02fec7bdbbe64d49a3d5414cabfa7ea8&monitoring_location_id=USGS-01022500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "response_received_utc": "2026-10-22T02:26:52.326004+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=YzI1NmVjZjgtMzdjYy00ZTI5LWFhYjctMGQ1NzVkYTkxMTQ0&time_series_id=02fec7bdbbe64d49a3d5414cabfa7ea8&monitoring_location_id=USGS-01022500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 6,
+        "series_id": "02fec7bdbbe64d49a3d5414cabfa7ea8",
+        "site_id": "USGS-01022500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 3365010,
+        "raw_file": "f429d0d266048c2833d734ef28140ca80920518745efc8dc2bc620bf0be2fb6b.body",
+        "raw_sha256": "f429d0d266048c2833d734ef28140ca80920518745efc8dc2bc620bf0be2fb6b",
+        "request_started_utc": "2026-10-22T02:26:52.343833+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=b997d85e35254d278725c7506bf74fab&monitoring_location_id=USGS-01030500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000",
+        "response_received_utc": "2026-10-22T02:26:56.150384+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=b997d85e35254d278725c7506bf74fab&monitoring_location_id=USGS-01030500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 7,
+        "series_id": "b997d85e35254d278725c7506bf74fab",
+        "site_id": "USGS-01030500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 3362591,
+        "raw_file": "fe143f4057718345c3145db39d689b5a2f72149b9270c52a2c354d9bab9d6bb2.body",
+        "raw_sha256": "fe143f4057718345c3145db39d689b5a2f72149b9270c52a2c354d9bab9d6bb2",
+        "request_started_utc": "2026-10-22T02:26:56.174990+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=NjEzNmRiYzQtMDA4NC00NDRlLWE4MjAtMTZjZjVjNTgxMWNl&time_series_id=b997d85e35254d278725c7506bf74fab&monitoring_location_id=USGS-01030500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "response_received_utc": "2026-10-22T02:27:00.064528+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=NjEzNmRiYzQtMDA4NC00NDRlLWE4MjAtMTZjZjVjNTgxMWNl&time_series_id=b997d85e35254d278725c7506bf74fab&monitoring_location_id=USGS-01030500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 8,
+        "series_id": "b997d85e35254d278725c7506bf74fab",
+        "site_id": "USGS-01030500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "http_status": 200,
+        "parameter_code": "00060",
+        "raw_bytes": 2118739,
+        "raw_file": "abaa877a91fb25b0d5c5f78498131dfd2e39f0dc2c7255738f162157cb33c161.body",
+        "raw_sha256": "abaa877a91fb25b0d5c5f78498131dfd2e39f0dc2c7255738f162157cb33c161",
+        "request_started_utc": "2026-10-22T02:27:00.082985+00:00",
+        "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=YzI1YTAyZTAtMDg5Mi00ZWIyLWI5NzQtZDc5ZTlkZGYwZDJh&time_series_id=b997d85e35254d278725c7506bf74fab&monitoring_location_id=USGS-01030500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "response_received_utc": "2026-10-22T02:27:03.245907+00:00",
+        "response_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=YzI1YTAyZTAtMDg5Mi00ZWIyLWI5NzQtZDc5ZTlkZGYwZDJh&time_series_id=b997d85e35254d278725c7506bf74fab&monitoring_location_id=USGS-01030500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+        "row_schema": {
+          "approval_verbatim": "properties.approval_status",
+          "date": "properties.time",
+          "last_modified_verbatim": "properties.last_modified",
+          "parameter_code": "properties.parameter_code",
+          "provider_record_id": "feature.id",
+          "qualifier_verbatim": "properties.qualifier",
+          "series_id": "properties.time_series_id",
+          "site_id": "properties.monitoring_location_id",
+          "statistic_id": "properties.statistic_id",
+          "unit": "properties.unit_of_measure",
+          "value_verbatim": "properties.value"
+        },
+        "sequence": 9,
+        "series_id": "b997d85e35254d278725c7506bf74fab",
+        "site_id": "USGS-01030500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      }
+    ],
+    "total_response_body_bytes": 26360847
+  },
+  "selection": {
+    "rule": "The first three lexicographically sorted unique candidate IDs in the captured CAMELS catalogue, recorded before the Section 22 daily outcome acquisition.",
+    "sites": [
+      {
+        "computation": "Mean",
+        "computation_period": "Daily",
+        "nominal_begin": "1903-07-29T05:00:00+00:00",
+        "nominal_end": "2026-10-19T04:00:00+00:00",
+        "parameter_code": "00060",
+        "primary": "Primary",
+        "series_id": "aa8ac20eb72d4fa58ea9c0eaf61e10ee",
+        "site_id": "USGS-01013500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "computation": "Mean",
+        "computation_period": "Daily",
+        "nominal_begin": "1948-02-05T05:00:00+00:00",
+        "nominal_end": "2026-10-19T04:00:00+00:00",
+        "parameter_code": "00060",
+        "primary": "Primary",
+        "series_id": "02fec7bdbbe64d49a3d5414cabfa7ea8",
+        "site_id": "USGS-01022500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      },
+      {
+        "computation": "Mean",
+        "computation_period": "Daily",
+        "nominal_begin": "1934-10-01T05:00:00+00:00",
+        "nominal_end": "2026-10-19T04:00:00+00:00",
+        "parameter_code": "00060",
+        "primary": "Primary",
+        "series_id": "b997d85e35254d278725c7506bf74fab",
+        "site_id": "USGS-01030500",
+        "statistic_id": "00003",
+        "unit": "ft^3/s"
+      }
+    ]
+  },
+  "target_contract": {
+    "name": "T1a-DV-completion-v1",
+    "not_claimed": "These are assigned daily-aggregate completion events, not physical flood onset, instantaneous current state, warning lead, or independent storms.",
+    "state": "initially unknown; three consecutive usable complete below-or-equal daily means arm; next high aggregate completes at assigned local-day closure; gaps/unusable dates make state unresolved; highs before arming are censored; three subsequent below-or-equal dates rearm.",
+    "threshold": "per site/reference lane, exact Hyndman-Fan Type 8 Q99 of usable values only in reference dates; comparison is strict >"
+  }
+}

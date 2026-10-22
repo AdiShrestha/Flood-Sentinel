@@ -10,6 +10,6 @@ The immediate work is to derive complete issue streams and labels from verified 
 
 Any future results will report actual sample support, false-alert exposure, confirmed warning-time bounds, uncertainty, missing data, failed attempts and measured resource use. Current cohort sizes, compressed-storage estimates, power calculations and laptop execution schedules are prospective planning models, not empirical achievements. A small retrospective pilot cannot establish population generalization or operational access to revised historical data.
 
-See [research status and scientific boundaries](docs/research_status.md) and the [bounded daily quality/support analysis](docs/daily_quality_feasibility.md). Public reproduction artifacts will accompany supported results once source access, methods and rights are verified. No manuscript submission or acceptance is claimed.
+See [research status and scientific boundaries](docs/research_status.md), the [bounded daily quality/support analysis](docs/daily_quality_feasibility.md), and the [captured daily-source manifest](docs/daily_quality_source_manifest.json). The daily aggregate matrix has a standalone raw-page replay command; the nine exact response bodies remain local and are hash-checked by that runner. No manuscript submission or acceptance is claimed.
 
 Retain applicable code notices, including the [inherited engine notice](source/flood_sentinel/LICENSE). Provider data and newly written components require their own applicable rights; no blanket data license is asserted.
