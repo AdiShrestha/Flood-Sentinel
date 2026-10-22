@@ -5,11 +5,12 @@ import hashlib
 import json
 import tempfile
 import unittest
+from unittest.mock import patch
 from datetime import date, timedelta
 from pathlib import Path
 from urllib.parse import urlencode
 
-from flood_sentinel.daily_quality_replay import derive_replay, parse_capture
+from flood_sentinel.daily_quality_replay import derive_replay, parse_capture, replay
 
 
 SITE = "TEST-SITE-0001"
@@ -106,6 +107,49 @@ def _fixture(root: Path, *, mutate=None, omit: date | None = None):
 
 
 class DailyQualityReplayBoundaryTests(unittest.TestCase):
+    def test_output_cannot_bind_a_manifest_replaced_after_consumption(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest, raw_dir = _fixture(root / "capture")
+            manifest_path = root / "manifest.json"
+            manifest_path.write_text(json.dumps(manifest))
+            output = root / "result"
+
+            def derive_then_replace(current, directory):
+                result = derive_replay(current, directory)
+                manifest["date_scope"]["issue_time"] = "06:00:00Z each UTC calendar date"
+                manifest_path.write_text(json.dumps(manifest))
+                return result
+
+            with patch("flood_sentinel.daily_quality_replay.derive_replay", side_effect=derive_then_replace):
+                with self.assertRaisesRegex(ValueError, "manifest changed"):
+                    replay(manifest_path, raw_dir, output)
+            self.assertFalse(output.exists())
+
+    def test_unsupported_issue_clock_and_release_claim_are_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest, raw_dir = _fixture(Path(tmp) / "clock")
+            manifest["date_scope"]["issue_time"] = "06:00:00Z each UTC calendar date"
+            with self.assertRaisesRegex(ValueError, "issue time"):
+                derive_replay(manifest, raw_dir)
+
+            manifest, raw_dir = _fixture(Path(tmp) / "release")
+            manifest["availability"]["historical_release_and_arrival"] = "verified historical access"
+            with self.assertRaisesRegex(ValueError, "must remain unknown"):
+                parse_capture(manifest, raw_dir)
+
+    def test_raw_page_symlink_cannot_replace_a_capture_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            manifest, raw_dir = _fixture(root / "capture")
+            page = raw_dir / manifest["raw_capture"]["pages"][0]["raw_file"]
+            outside = root / "outside_capture.body"
+            outside.write_bytes(page.read_bytes())
+            page.unlink()
+            page.symlink_to(outside)
+            with self.assertRaisesRegex(ValueError, "regular file inside"):
+                parse_capture(manifest, raw_dir)
+
     def test_value_and_quality_changes_alter_source_derived_labels(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
