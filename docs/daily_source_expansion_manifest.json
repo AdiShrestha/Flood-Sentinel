@@ -1,0 +1,893 @@
+{
+  "capture_date_utc": "2026-10-22",
+  "limits": {
+    "historical_release_arrival_and_vintages": "unknown",
+    "independent_units_and_population_inference": "not established",
+    "models": "none",
+    "new_site_labels": "not admitted",
+    "new_site_utc_intervals": "not assigned",
+    "physical_onset_and_warning_lead": "unknown",
+    "raw_redistribution": "not included; check source-specific terms"
+  },
+  "new_response_body_bytes_including_metadata_and_spotchecks": 43919926,
+  "new_response_body_cap": 100000000,
+  "provider": "USGS Water Data for the Nation",
+  "provider_doi": "10.5066/F7P55KJN",
+  "quality_policy": "Approved null/empty qualifier is unflagged; sole ESTIMATED is separately retained; absent qualifier, other qualifiers and non-Approved states are unusable for these diagnostics.",
+  "reference_interval": "[1990-01-01,2010-01-01)",
+  "reference_quantile": "Exact rational Hyndman-Fan Type 8, p=99/100; diagnostic only, not study admission.",
+  "requested_date_end": "2025-12-31",
+  "requested_date_start": "1990-01-01",
+  "schema_version": "daily-date-only-source-feasibility-v1",
+  "selection": "First lexicographic CAMELS gauge ID in each fixed HUC 01,03,07,10,14,17; development probes, not representative or independent units.",
+  "sites": [
+    {
+      "captured_rows": 13149,
+      "computation": "Mean",
+      "control_reused": true,
+      "daily_pages": [
+        {
+          "raw_bytes": 3316399,
+          "raw_file": "ac59859661183c520fe9846f501d1404c93c468d0e0c56bb4d405d40941d3a69.body",
+          "raw_sha256": "ac59859661183c520fe9846f501d1404c93c468d0e0c56bb4d405d40941d3a69",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000",
+          "sequence": 1
+        },
+        {
+          "raw_bytes": 3315243,
+          "raw_file": "79b8b74700f214e85806e53c173cfdcc2417043a7492a075eaf722bc4c216d35.body",
+          "raw_sha256": "79b8b74700f214e85806e53c173cfdcc2417043a7492a075eaf722bc4c216d35",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=NjBmZTUxMGQtMzRlOC00YzBjLWFiM2QtZTRhZmY5Y2Q2MWE3&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+          "sequence": 2
+        },
+        {
+          "raw_bytes": 2089290,
+          "raw_file": "92d5c3a72f5541a6121f83f189c5ec49d1f6f29ae77b6446a885f4cd8de9c74d.body",
+          "raw_sha256": "92d5c3a72f5541a6121f83f189c5ec49d1f6f29ae77b6446a885f4cd8de9c74d",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?cursor=YzM1Yjg5NzAtNmJiNS00NjIzLTk1YTEtYWQwMDA2MThmM2Yz&time_series_id=aa8ac20eb72d4fa58ea9c0eaf61e10ee&monitoring_location_id=USGS-01013500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F2025-12-31&limit=5000&f=json",
+          "sequence": 3
+        }
+      ],
+      "expected_dates": 13149,
+      "fresh_metadata_pages": [],
+      "nominal_current_uses_daylight_savings": "Y",
+      "nominal_current_zone_abbreviation": "EST",
+      "parameter_code": "00060",
+      "period": "Daily",
+      "quality_counts": {
+        "approved_estimated": 3729,
+        "approved_unflagged": 9393,
+        "approved_unknown_qualifier": 27
+      },
+      "reference_diagnostics": {
+        "estimated_retaining": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 7305,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "27062/3",
+          "source_quality_excluded_or_missing_among_unique_dates": 0,
+          "unsupported_or_ambiguous_reference_dates": 0
+        },
+        "unflagged_only": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 5235,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "143288/15",
+          "source_quality_excluded_or_missing_among_unique_dates": 2070,
+          "unsupported_or_ambiguous_reference_dates": 0
+        }
+      },
+      "series_id": "aa8ac20eb72d4fa58ea9c0eaf61e10ee",
+      "site_id": "USGS-01013500",
+      "statistic_id": "00003",
+      "unit": "ft^3/s"
+    },
+    {
+      "captured_rows": 13149,
+      "computation": "Mean",
+      "control_reused": false,
+      "daily_pages": [
+        {
+          "date_end": "1992-12-31",
+          "date_start": "1990-01-01",
+          "raw_bytes": 730905,
+          "raw_file": "0021.3b46593949ec57f910136efe2baa8c18d8ca20e425a204b558dc4a060daa13ad.body",
+          "raw_sha256": "3b46593949ec57f910136efe2baa8c18d8ca20e425a204b558dc4a060daa13ad",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F1992-12-31&limit=5000",
+          "sequence": 1
+        },
+        {
+          "date_end": "1995-12-31",
+          "date_start": "1993-01-01",
+          "raw_bytes": 731671,
+          "raw_file": "0022.0ba58530150ba65ec408ecc5c9c5608cb0854a4dd22de9cba410e853f001504b.body",
+          "raw_sha256": "0ba58530150ba65ec408ecc5c9c5608cb0854a4dd22de9cba410e853f001504b",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=1993-01-01%2F1995-12-31&limit=5000",
+          "sequence": 2
+        },
+        {
+          "date_end": "1998-12-31",
+          "date_start": "1996-01-01",
+          "raw_bytes": 733226,
+          "raw_file": "0023.8e8736911989f06e2eef2dda6c6812af80a6c024492ca23ae2d256916d8c4480.body",
+          "raw_sha256": "8e8736911989f06e2eef2dda6c6812af80a6c024492ca23ae2d256916d8c4480",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=1996-01-01%2F1998-12-31&limit=5000",
+          "sequence": 3
+        },
+        {
+          "date_end": "2001-12-31",
+          "date_start": "1999-01-01",
+          "raw_bytes": 730646,
+          "raw_file": "0024.968e3014625cef37486a4427e24a24b791d778d2457ab2bfc26daf0f43e9df8d.body",
+          "raw_sha256": "968e3014625cef37486a4427e24a24b791d778d2457ab2bfc26daf0f43e9df8d",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=1999-01-01%2F2001-12-31&limit=5000",
+          "sequence": 4
+        },
+        {
+          "date_end": "2004-12-31",
+          "date_start": "2002-01-01",
+          "raw_bytes": 730077,
+          "raw_file": "0025.bd32190af2f83465fbf402ada5bd380805b93702876bcb74ff6b9128718c7aad.body",
+          "raw_sha256": "bd32190af2f83465fbf402ada5bd380805b93702876bcb74ff6b9128718c7aad",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=2002-01-01%2F2004-12-31&limit=5000",
+          "sequence": 5
+        },
+        {
+          "date_end": "2007-12-31",
+          "date_start": "2005-01-01",
+          "raw_bytes": 730239,
+          "raw_file": "0026.47d00495e23a658a5a15df52c6dcf0cc1a8d3f84605ebf207a1731aec4f326da.body",
+          "raw_sha256": "47d00495e23a658a5a15df52c6dcf0cc1a8d3f84605ebf207a1731aec4f326da",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=2005-01-01%2F2007-12-31&limit=5000",
+          "sequence": 6
+        },
+        {
+          "date_end": "2010-12-31",
+          "date_start": "2008-01-01",
+          "raw_bytes": 731307,
+          "raw_file": "0027.8c6aee0e4b107f1e961ac3ef39a7ffd3200f99e5c64a0b52d62392405bd9519b.body",
+          "raw_sha256": "8c6aee0e4b107f1e961ac3ef39a7ffd3200f99e5c64a0b52d62392405bd9519b",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=2008-01-01%2F2010-12-31&limit=5000",
+          "sequence": 7
+        },
+        {
+          "date_end": "2013-12-31",
+          "date_start": "2011-01-01",
+          "raw_bytes": 729523,
+          "raw_file": "0028.4b9ee363079fab774db9b9c9599609e7aabc27583523ebad393637098a791f92.body",
+          "raw_sha256": "4b9ee363079fab774db9b9c9599609e7aabc27583523ebad393637098a791f92",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=2011-01-01%2F2013-12-31&limit=5000",
+          "sequence": 8
+        },
+        {
+          "date_end": "2016-12-31",
+          "date_start": "2014-01-01",
+          "raw_bytes": 729724,
+          "raw_file": "0029.0d8d85390313eaff34424615c14093b2f7bac21c6ce86e11c8a8cff138a9692b.body",
+          "raw_sha256": "0d8d85390313eaff34424615c14093b2f7bac21c6ce86e11c8a8cff138a9692b",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=2014-01-01%2F2016-12-31&limit=5000",
+          "sequence": 9
+        },
+        {
+          "date_end": "2019-12-31",
+          "date_start": "2017-01-01",
+          "raw_bytes": 734196,
+          "raw_file": "0030.8a1686b7d474c2f9e0effed11d122f0de433c4da407a9b728099170b029b9e5f.body",
+          "raw_sha256": "8a1686b7d474c2f9e0effed11d122f0de433c4da407a9b728099170b029b9e5f",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=2017-01-01%2F2019-12-31&limit=5000",
+          "sequence": 10
+        },
+        {
+          "date_end": "2022-12-31",
+          "date_start": "2020-01-01",
+          "raw_bytes": 731487,
+          "raw_file": "0031.9a32986a85e32379ef3a0d0d741845141b2b3491a959cf4e32d2029f81ee66fc.body",
+          "raw_sha256": "9a32986a85e32379ef3a0d0d741845141b2b3491a959cf4e32d2029f81ee66fc",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=2020-01-01%2F2022-12-31&limit=5000",
+          "sequence": 11
+        },
+        {
+          "date_end": "2025-12-31",
+          "date_start": "2023-01-01",
+          "raw_bytes": 730265,
+          "raw_file": "0032.b9b31be86aa9f57b0a04c3a9f8fb98a016a46191e5bde5eb9cd2531cfb92385a.body",
+          "raw_sha256": "b9b31be86aa9f57b0a04c3a9f8fb98a016a46191e5bde5eb9cd2531cfb92385a",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=bda4e8ff4e684f5c90bccaba0517e217&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&datetime=2023-01-01%2F2025-12-31&limit=5000",
+          "sequence": 12
+        }
+      ],
+      "expected_dates": 13149,
+      "fresh_metadata_pages": [
+        {
+          "kind": "location",
+          "raw_bytes": 3494,
+          "raw_sha256": "80688a53bae4739544faaf81e792fe0d4791edf9555e6df2b5791c5497e51c43",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items?f=json&id=USGS-02046000&limit=10"
+        },
+        {
+          "kind": "series",
+          "raw_bytes": 2650,
+          "raw_sha256": "f57ae8244696cc8def387746a33c10e61d27c6079595a87dcf85d57036690c2b",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/items?f=json&monitoring_location_id=USGS-02046000&parameter_code=00060&statistic_id=00003&limit=1000"
+        }
+      ],
+      "nominal_current_uses_daylight_savings": "Y",
+      "nominal_current_zone_abbreviation": "EST",
+      "parameter_code": "00060",
+      "period": "Daily",
+      "quality_counts": {
+        "approved_estimated": 617,
+        "approved_unflagged": 12348,
+        "approved_unknown_qualifier": 97,
+        "not_approved_or_unknown_status": 87
+      },
+      "reference_diagnostics": {
+        "estimated_retaining": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 7305,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "969",
+          "source_quality_excluded_or_missing_among_unique_dates": 0,
+          "unsupported_or_ambiguous_reference_dates": 0
+        },
+        "unflagged_only": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 6818,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "56729/60",
+          "source_quality_excluded_or_missing_among_unique_dates": 487,
+          "unsupported_or_ambiguous_reference_dates": 0
+        }
+      },
+      "series_id": "bda4e8ff4e684f5c90bccaba0517e217",
+      "site_id": "USGS-02046000",
+      "statistic_id": "00003",
+      "unit": "ft^3/s"
+    },
+    {
+      "captured_rows": 13149,
+      "computation": "Mean",
+      "control_reused": false,
+      "daily_pages": [
+        {
+          "date_end": "1992-12-31",
+          "date_start": "1990-01-01",
+          "raw_bytes": 733282,
+          "raw_file": "0033.e583c24047e374a768b901a497d24a35b6685268fdd4c5d6eba0bff4e7756915.body",
+          "raw_sha256": "e583c24047e374a768b901a497d24a35b6685268fdd4c5d6eba0bff4e7756915",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F1992-12-31&limit=5000",
+          "sequence": 1
+        },
+        {
+          "date_end": "1995-12-31",
+          "date_start": "1993-01-01",
+          "raw_bytes": 738362,
+          "raw_file": "0034.7ccf669434bfc5380adf0c74321783e448d5d350785feb44685a2f53355fa9d2.body",
+          "raw_sha256": "7ccf669434bfc5380adf0c74321783e448d5d350785feb44685a2f53355fa9d2",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=1993-01-01%2F1995-12-31&limit=5000",
+          "sequence": 2
+        },
+        {
+          "date_end": "1998-12-31",
+          "date_start": "1996-01-01",
+          "raw_bytes": 738667,
+          "raw_file": "0035.84ede2b370f5e55c98af534a4707df81236f09c33ee07fc978f72c08561c2b52.body",
+          "raw_sha256": "84ede2b370f5e55c98af534a4707df81236f09c33ee07fc978f72c08561c2b52",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=1996-01-01%2F1998-12-31&limit=5000",
+          "sequence": 3
+        },
+        {
+          "date_end": "2001-12-31",
+          "date_start": "1999-01-01",
+          "raw_bytes": 739005,
+          "raw_file": "0036.738aa2cb4a5c85acc40c67fa3ef6a6f4a9583e858f941aa05864f3af2efc3cc4.body",
+          "raw_sha256": "738aa2cb4a5c85acc40c67fa3ef6a6f4a9583e858f941aa05864f3af2efc3cc4",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=1999-01-01%2F2001-12-31&limit=5000",
+          "sequence": 4
+        },
+        {
+          "date_end": "2004-12-31",
+          "date_start": "2002-01-01",
+          "raw_bytes": 742952,
+          "raw_file": "0037.774bb0b549d8e343a88b7a6bea2e684020fd97a3ee96bc4fd77b24e2bd4e472f.body",
+          "raw_sha256": "774bb0b549d8e343a88b7a6bea2e684020fd97a3ee96bc4fd77b24e2bd4e472f",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=2002-01-01%2F2004-12-31&limit=5000",
+          "sequence": 5
+        },
+        {
+          "date_end": "2007-12-31",
+          "date_start": "2005-01-01",
+          "raw_bytes": 739421,
+          "raw_file": "0038.c520b2a16a7ce62a74166cc60f31edf8120ce8f1c643ebcc49dd8820721a32fb.body",
+          "raw_sha256": "c520b2a16a7ce62a74166cc60f31edf8120ce8f1c643ebcc49dd8820721a32fb",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=2005-01-01%2F2007-12-31&limit=5000",
+          "sequence": 6
+        },
+        {
+          "date_end": "2010-12-31",
+          "date_start": "2008-01-01",
+          "raw_bytes": 738461,
+          "raw_file": "0039.b84f57cb0245b6590e4d8d063c411eb9de063fbdc5836f7f0b74980ba3ce5d20.body",
+          "raw_sha256": "b84f57cb0245b6590e4d8d063c411eb9de063fbdc5836f7f0b74980ba3ce5d20",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=2008-01-01%2F2010-12-31&limit=5000",
+          "sequence": 7
+        },
+        {
+          "date_end": "2013-12-31",
+          "date_start": "2011-01-01",
+          "raw_bytes": 739658,
+          "raw_file": "0040.e7285bf6af1541c0b402f36a51f5fd5204c664c01406b4e42a9e7fbbc071bf57.body",
+          "raw_sha256": "e7285bf6af1541c0b402f36a51f5fd5204c664c01406b4e42a9e7fbbc071bf57",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=2011-01-01%2F2013-12-31&limit=5000",
+          "sequence": 8
+        },
+        {
+          "date_end": "2016-12-31",
+          "date_start": "2014-01-01",
+          "raw_bytes": 738918,
+          "raw_file": "0041.30253e81b92584ff87407286639237ec0930ee7ea5400ff22fa4885f82e9575c.body",
+          "raw_sha256": "30253e81b92584ff87407286639237ec0930ee7ea5400ff22fa4885f82e9575c",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=2014-01-01%2F2016-12-31&limit=5000",
+          "sequence": 9
+        },
+        {
+          "date_end": "2019-12-31",
+          "date_start": "2017-01-01",
+          "raw_bytes": 738661,
+          "raw_file": "0042.c52fd3967e750778ff27612b0ed9ebe44ed7f6dffa18fe53add868fc3a8b5eb1.body",
+          "raw_sha256": "c52fd3967e750778ff27612b0ed9ebe44ed7f6dffa18fe53add868fc3a8b5eb1",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=2017-01-01%2F2019-12-31&limit=5000",
+          "sequence": 10
+        },
+        {
+          "date_end": "2022-12-31",
+          "date_start": "2020-01-01",
+          "raw_bytes": 739857,
+          "raw_file": "0043.d6292e402ab2694d6c3dcc87ff6405c98fa26ce7ca3548a9c630774e230d0448.body",
+          "raw_sha256": "d6292e402ab2694d6c3dcc87ff6405c98fa26ce7ca3548a9c630774e230d0448",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=2020-01-01%2F2022-12-31&limit=5000",
+          "sequence": 11
+        },
+        {
+          "date_end": "2025-12-31",
+          "date_start": "2023-01-01",
+          "raw_bytes": 740624,
+          "raw_file": "0044.caeb77fc366833129d6afc8b9fa445c424dc9192c73c2424473bc38b51ce4dd0.body",
+          "raw_sha256": "caeb77fc366833129d6afc8b9fa445c424dc9192c73c2424473bc38b51ce4dd0",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=daca2f1c0c4842d391c0273df129902d&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&datetime=2023-01-01%2F2025-12-31&limit=5000",
+          "sequence": 12
+        }
+      ],
+      "expected_dates": 13149,
+      "fresh_metadata_pages": [
+        {
+          "kind": "location",
+          "raw_bytes": 3469,
+          "raw_sha256": "465e8601176077cac75748895c82566623adc59c3d72118b6f572fbc53b4b0b5",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items?f=json&id=USGS-05291000&limit=10"
+        },
+        {
+          "kind": "series",
+          "raw_bytes": 2650,
+          "raw_sha256": "c3d0215b716d323ab2a655698adb2a58ae0715913e80b792634633fc091b9824",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/items?f=json&monitoring_location_id=USGS-05291000&parameter_code=00060&statistic_id=00003&limit=1000"
+        }
+      ],
+      "nominal_current_uses_daylight_savings": "Y",
+      "nominal_current_zone_abbreviation": "CST",
+      "parameter_code": "00060",
+      "period": "Daily",
+      "quality_counts": {
+        "approved_estimated": 3989,
+        "approved_unflagged": 9110,
+        "approved_unknown_qualifier": 50
+      },
+      "reference_diagnostics": {
+        "estimated_retaining": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 7305,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "17642/15",
+          "source_quality_excluded_or_missing_among_unique_dates": 0,
+          "unsupported_or_ambiguous_reference_dates": 0
+        },
+        "unflagged_only": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 5139,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "21191/15",
+          "source_quality_excluded_or_missing_among_unique_dates": 2166,
+          "unsupported_or_ambiguous_reference_dates": 0
+        }
+      },
+      "series_id": "daca2f1c0c4842d391c0273df129902d",
+      "site_id": "USGS-05291000",
+      "statistic_id": "00003",
+      "unit": "ft^3/s"
+    },
+    {
+      "captured_rows": 13149,
+      "computation": "Mean",
+      "control_reused": false,
+      "daily_pages": [
+        {
+          "date_end": "1992-12-31",
+          "date_start": "1990-01-01",
+          "raw_bytes": 716240,
+          "raw_file": "0045.a485078c414df2aeb4813f9403b2c13a72f083c7a032568fc39b8d726f16e43e.body",
+          "raw_sha256": "a485078c414df2aeb4813f9403b2c13a72f083c7a032568fc39b8d726f16e43e",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F1992-12-31&limit=5000",
+          "sequence": 1
+        },
+        {
+          "date_end": "1995-12-31",
+          "date_start": "1993-01-01",
+          "raw_bytes": 714064,
+          "raw_file": "0046.dd565afef7eb5274fa9f23e728eeca212ecd165f6751dca8ec36b71ce8180fdd.body",
+          "raw_sha256": "dd565afef7eb5274fa9f23e728eeca212ecd165f6751dca8ec36b71ce8180fdd",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=1993-01-01%2F1995-12-31&limit=5000",
+          "sequence": 2
+        },
+        {
+          "date_end": "1998-12-31",
+          "date_start": "1996-01-01",
+          "raw_bytes": 715445,
+          "raw_file": "0047.c359c2f9af3ecd8ee7b9feba209eec9f615515a90f30a3d12fd223c8ef991b6a.body",
+          "raw_sha256": "c359c2f9af3ecd8ee7b9feba209eec9f615515a90f30a3d12fd223c8ef991b6a",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=1996-01-01%2F1998-12-31&limit=5000",
+          "sequence": 3
+        },
+        {
+          "date_end": "2001-12-31",
+          "date_start": "1999-01-01",
+          "raw_bytes": 714418,
+          "raw_file": "0048.2f049d0500dd95a55801c4b99471b38750f6e79bdbed233d2947a37b0c9ebf13.body",
+          "raw_sha256": "2f049d0500dd95a55801c4b99471b38750f6e79bdbed233d2947a37b0c9ebf13",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=1999-01-01%2F2001-12-31&limit=5000",
+          "sequence": 4
+        },
+        {
+          "date_end": "2004-12-31",
+          "date_start": "2002-01-01",
+          "raw_bytes": 714893,
+          "raw_file": "0049.bed884a428113009358407ed1d234a04f86b9fe0646e9a8708cee8a49bd39ef8.body",
+          "raw_sha256": "bed884a428113009358407ed1d234a04f86b9fe0646e9a8708cee8a49bd39ef8",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=2002-01-01%2F2004-12-31&limit=5000",
+          "sequence": 5
+        },
+        {
+          "date_end": "2007-12-31",
+          "date_start": "2005-01-01",
+          "raw_bytes": 714973,
+          "raw_file": "0050.d1e5d7cdf15a98f25df3771ab2b61d13e35fd5e19029c5a602183349fbdd1d60.body",
+          "raw_sha256": "d1e5d7cdf15a98f25df3771ab2b61d13e35fd5e19029c5a602183349fbdd1d60",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=2005-01-01%2F2007-12-31&limit=5000",
+          "sequence": 6
+        },
+        {
+          "date_end": "2010-12-31",
+          "date_start": "2008-01-01",
+          "raw_bytes": 715775,
+          "raw_file": "0051.6368e478ab421e9ce6714e0fa89f48845748dbd2b0166e8b67e0ceef6019356e.body",
+          "raw_sha256": "6368e478ab421e9ce6714e0fa89f48845748dbd2b0166e8b67e0ceef6019356e",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=2008-01-01%2F2010-12-31&limit=5000",
+          "sequence": 7
+        },
+        {
+          "date_end": "2013-12-31",
+          "date_start": "2011-01-01",
+          "raw_bytes": 715473,
+          "raw_file": "0052.88714dbfabd552af7c741b92c2bf6ff83e833e4d5ce15939308e21f2279c6273.body",
+          "raw_sha256": "88714dbfabd552af7c741b92c2bf6ff83e833e4d5ce15939308e21f2279c6273",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=2011-01-01%2F2013-12-31&limit=5000",
+          "sequence": 8
+        },
+        {
+          "date_end": "2016-12-31",
+          "date_start": "2014-01-01",
+          "raw_bytes": 715417,
+          "raw_file": "0053.40e3c0adb4e0731afc7f22df88756a53b33084c1751877216af6f795eb6c72cd.body",
+          "raw_sha256": "40e3c0adb4e0731afc7f22df88756a53b33084c1751877216af6f795eb6c72cd",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=2014-01-01%2F2016-12-31&limit=5000",
+          "sequence": 9
+        },
+        {
+          "date_end": "2019-12-31",
+          "date_start": "2017-01-01",
+          "raw_bytes": 714483,
+          "raw_file": "0054.e2b5141bbf976037a3ac0f19c36907c65b6599ef3908029d265c939767eedc75.body",
+          "raw_sha256": "e2b5141bbf976037a3ac0f19c36907c65b6599ef3908029d265c939767eedc75",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=2017-01-01%2F2019-12-31&limit=5000",
+          "sequence": 10
+        },
+        {
+          "date_end": "2022-12-31",
+          "date_start": "2020-01-01",
+          "raw_bytes": 715296,
+          "raw_file": "0055.6412e032ae15a2795fe8bfc172c2e567b92e3d77ad069f2555cf3f404c3c0f90.body",
+          "raw_sha256": "6412e032ae15a2795fe8bfc172c2e567b92e3d77ad069f2555cf3f404c3c0f90",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=2020-01-01%2F2022-12-31&limit=5000",
+          "sequence": 11
+        },
+        {
+          "date_end": "2025-12-31",
+          "date_start": "2023-01-01",
+          "raw_bytes": 715935,
+          "raw_file": "0056.8ce5490ea243045fc82b50792748f4429d49ed1a2c265e4e42d8781d484aac93.body",
+          "raw_sha256": "8ce5490ea243045fc82b50792748f4429d49ed1a2c265e4e42d8781d484aac93",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=ce91cad964a24dfc84af951c22a54589&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&datetime=2023-01-01%2F2025-12-31&limit=5000",
+          "sequence": 12
+        }
+      ],
+      "expected_dates": 13149,
+      "fresh_metadata_pages": [
+        {
+          "kind": "location",
+          "raw_bytes": 3811,
+          "raw_sha256": "54b28ade29a8c4f9ca5c901e33c7895b9c0587c1733ee27011e048195979840a",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items?f=json&id=USGS-06037500&limit=10"
+        },
+        {
+          "kind": "series",
+          "raw_bytes": 2637,
+          "raw_sha256": "b349722ddfddd4fd07c02fdb05952ff44c24bf27de7a8a197bcd2c817ccd895f",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/items?f=json&monitoring_location_id=USGS-06037500&parameter_code=00060&statistic_id=00003&limit=1000"
+        }
+      ],
+      "nominal_current_uses_daylight_savings": "Y",
+      "nominal_current_zone_abbreviation": "MST",
+      "parameter_code": "00060",
+      "period": "Daily",
+      "quality_counts": {
+        "approved_estimated": 432,
+        "approved_unflagged": 12695,
+        "approved_unknown_qualifier": 22
+      },
+      "reference_diagnostics": {
+        "estimated_retaining": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 7305,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "24692/15",
+          "source_quality_excluded_or_missing_among_unique_dates": 0,
+          "unsupported_or_ambiguous_reference_dates": 0
+        },
+        "unflagged_only": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 7064,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "1670",
+          "source_quality_excluded_or_missing_among_unique_dates": 241,
+          "unsupported_or_ambiguous_reference_dates": 0
+        }
+      },
+      "series_id": "ce91cad964a24dfc84af951c22a54589",
+      "site_id": "USGS-06037500",
+      "statistic_id": "00003",
+      "unit": "ft^3/s"
+    },
+    {
+      "captured_rows": 13149,
+      "computation": "Mean",
+      "control_reused": false,
+      "daily_pages": [
+        {
+          "date_end": "1992-12-31",
+          "date_start": "1990-01-01",
+          "raw_bytes": 729559,
+          "raw_file": "0057.20d22ac0720695496e30cfa5dc655cf2f1ad42fe3151fb3c25021c9cbc96baeb.body",
+          "raw_sha256": "20d22ac0720695496e30cfa5dc655cf2f1ad42fe3151fb3c25021c9cbc96baeb",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F1992-12-31&limit=5000",
+          "sequence": 1
+        },
+        {
+          "date_end": "1995-12-31",
+          "date_start": "1993-01-01",
+          "raw_bytes": 730766,
+          "raw_file": "0058.d9d3074196ba8f4a2f1a2816d1f8a91d107696e4c362d4f6ff9f9edb8b9d97d8.body",
+          "raw_sha256": "d9d3074196ba8f4a2f1a2816d1f8a91d107696e4c362d4f6ff9f9edb8b9d97d8",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=1993-01-01%2F1995-12-31&limit=5000",
+          "sequence": 2
+        },
+        {
+          "date_end": "1998-12-31",
+          "date_start": "1996-01-01",
+          "raw_bytes": 746806,
+          "raw_file": "0059.55c0b7bc036da8223599f6c7fbcc92bf289a8b4bdc7231b42636b043b76cadb0.body",
+          "raw_sha256": "55c0b7bc036da8223599f6c7fbcc92bf289a8b4bdc7231b42636b043b76cadb0",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=1996-01-01%2F1998-12-31&limit=5000",
+          "sequence": 3
+        },
+        {
+          "date_end": "2001-12-31",
+          "date_start": "1999-01-01",
+          "raw_bytes": 746641,
+          "raw_file": "0060.ac595b127643e1386a357aa40629afcaad3d6fe29b7d7519a40584d496ab2cf2.body",
+          "raw_sha256": "ac595b127643e1386a357aa40629afcaad3d6fe29b7d7519a40584d496ab2cf2",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=1999-01-01%2F2001-12-31&limit=5000",
+          "sequence": 4
+        },
+        {
+          "date_end": "2004-12-31",
+          "date_start": "2002-01-01",
+          "raw_bytes": 747768,
+          "raw_file": "0061.1e04be804029ae67df435a46bfdcf690bb66bf6a06e67daed253e603eca9c31e.body",
+          "raw_sha256": "1e04be804029ae67df435a46bfdcf690bb66bf6a06e67daed253e603eca9c31e",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=2002-01-01%2F2004-12-31&limit=5000",
+          "sequence": 5
+        },
+        {
+          "date_end": "2007-12-31",
+          "date_start": "2005-01-01",
+          "raw_bytes": 736668,
+          "raw_file": "0062.12bcb7ad975dcbfa948154e35ce2d976844b7399e98cbc4bf1a39057f2d1cb87.body",
+          "raw_sha256": "12bcb7ad975dcbfa948154e35ce2d976844b7399e98cbc4bf1a39057f2d1cb87",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=2005-01-01%2F2007-12-31&limit=5000",
+          "sequence": 6
+        },
+        {
+          "date_end": "2010-12-31",
+          "date_start": "2008-01-01",
+          "raw_bytes": 740110,
+          "raw_file": "0063.5e5228c081f2fc734a47f0bacecd23d7b82d26111413d2f44cf6831dc4251960.body",
+          "raw_sha256": "5e5228c081f2fc734a47f0bacecd23d7b82d26111413d2f44cf6831dc4251960",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=2008-01-01%2F2010-12-31&limit=5000",
+          "sequence": 7
+        },
+        {
+          "date_end": "2013-12-31",
+          "date_start": "2011-01-01",
+          "raw_bytes": 737897,
+          "raw_file": "0064.646f08653a611dba2d704fe747fe0a8832da95665d44286e7e13a91886e95735.body",
+          "raw_sha256": "646f08653a611dba2d704fe747fe0a8832da95665d44286e7e13a91886e95735",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=2011-01-01%2F2013-12-31&limit=5000",
+          "sequence": 8
+        },
+        {
+          "date_end": "2016-12-31",
+          "date_start": "2014-01-01",
+          "raw_bytes": 734154,
+          "raw_file": "0065.73337e0c18621e868162395ccf0b18a11d4ccb0a60e022c7c7de638f87341722.body",
+          "raw_sha256": "73337e0c18621e868162395ccf0b18a11d4ccb0a60e022c7c7de638f87341722",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=2014-01-01%2F2016-12-31&limit=5000",
+          "sequence": 9
+        },
+        {
+          "date_end": "2019-12-31",
+          "date_start": "2017-01-01",
+          "raw_bytes": 732296,
+          "raw_file": "0066.8888c2862e5b308777f8a6f8921940d7925165794d6d52dac86cc09c235f8366.body",
+          "raw_sha256": "8888c2862e5b308777f8a6f8921940d7925165794d6d52dac86cc09c235f8366",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=2017-01-01%2F2019-12-31&limit=5000",
+          "sequence": 10
+        },
+        {
+          "date_end": "2022-12-31",
+          "date_start": "2020-01-01",
+          "raw_bytes": 735429,
+          "raw_file": "0067.068beaab81146fd56ebdf49c56196e0a953ef91381adf231e1e6fb1a52595931.body",
+          "raw_sha256": "068beaab81146fd56ebdf49c56196e0a953ef91381adf231e1e6fb1a52595931",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=2020-01-01%2F2022-12-31&limit=5000",
+          "sequence": 11
+        },
+        {
+          "date_end": "2025-12-31",
+          "date_start": "2023-01-01",
+          "raw_bytes": 731371,
+          "raw_file": "0068.498f08be213d67c2561b953ee5a656185175e61da8bc42cdfccc376c54139e18.body",
+          "raw_sha256": "498f08be213d67c2561b953ee5a656185175e61da8bc42cdfccc376c54139e18",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=618e27ff31484993a966dc752b234203&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&datetime=2023-01-01%2F2025-12-31&limit=5000",
+          "sequence": 12
+        }
+      ],
+      "expected_dates": 13149,
+      "fresh_metadata_pages": [
+        {
+          "kind": "location",
+          "raw_bytes": 3421,
+          "raw_sha256": "ffcc20b86cb0bbc510d3c636d6a46415b641876e58384b239ab2a66629c4974b",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items?f=json&id=USGS-09034900&limit=10"
+        },
+        {
+          "kind": "series",
+          "raw_bytes": 2650,
+          "raw_sha256": "96c9fc40e0bc3209bfd3c360e5530ed44c80f4a1122aa92ebde30a2fee5dbb28",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/items?f=json&monitoring_location_id=USGS-09034900&parameter_code=00060&statistic_id=00003&limit=1000"
+        }
+      ],
+      "nominal_current_uses_daylight_savings": "Y",
+      "nominal_current_zone_abbreviation": "MST",
+      "parameter_code": "00060",
+      "period": "Daily",
+      "quality_counts": {
+        "approved_estimated": 3321,
+        "approved_unflagged": 9776,
+        "approved_unknown_qualifier": 9,
+        "not_approved_or_unknown_status": 43
+      },
+      "reference_diagnostics": {
+        "estimated_retaining": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 7305,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "6571/75",
+          "source_quality_excluded_or_missing_among_unique_dates": 0,
+          "unsupported_or_ambiguous_reference_dates": 0
+        },
+        "unflagged_only": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 4824,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "94",
+          "source_quality_excluded_or_missing_among_unique_dates": 2481,
+          "unsupported_or_ambiguous_reference_dates": 0
+        }
+      },
+      "series_id": "618e27ff31484993a966dc752b234203",
+      "site_id": "USGS-09034900",
+      "statistic_id": "00003",
+      "unit": "ft^3/s"
+    },
+    {
+      "captured_rows": 13149,
+      "computation": "Mean",
+      "control_reused": false,
+      "daily_pages": [
+        {
+          "date_end": "1992-12-31",
+          "date_start": "1990-01-01",
+          "raw_bytes": 732687,
+          "raw_file": "0069.0f269fe03d52aa11d1b8ed13591c1ef3281650e7fa8b5e9bd677b72e89c04b18.body",
+          "raw_sha256": "0f269fe03d52aa11d1b8ed13591c1ef3281650e7fa8b5e9bd677b72e89c04b18",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=1990-01-01%2F1992-12-31&limit=5000",
+          "sequence": 1
+        },
+        {
+          "date_end": "1995-12-31",
+          "date_start": "1993-01-01",
+          "raw_bytes": 732646,
+          "raw_file": "0070.3c54f883f9edde59cf745e36f750662acc3bf36f28b92531c782b92213179b12.body",
+          "raw_sha256": "3c54f883f9edde59cf745e36f750662acc3bf36f28b92531c782b92213179b12",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=1993-01-01%2F1995-12-31&limit=5000",
+          "sequence": 2
+        },
+        {
+          "date_end": "1998-12-31",
+          "date_start": "1996-01-01",
+          "raw_bytes": 734059,
+          "raw_file": "0071.6aaa7a3f1c78866ac6ebb23ce809e872add8ad8bb041461759cb43d3a92d4915.body",
+          "raw_sha256": "6aaa7a3f1c78866ac6ebb23ce809e872add8ad8bb041461759cb43d3a92d4915",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=1996-01-01%2F1998-12-31&limit=5000",
+          "sequence": 3
+        },
+        {
+          "date_end": "2001-12-31",
+          "date_start": "1999-01-01",
+          "raw_bytes": 735222,
+          "raw_file": "0072.9fb300ddc21ec4415aa605ecfd07ca70f3beae7adeb54cddeea76a86219a8af1.body",
+          "raw_sha256": "9fb300ddc21ec4415aa605ecfd07ca70f3beae7adeb54cddeea76a86219a8af1",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=1999-01-01%2F2001-12-31&limit=5000",
+          "sequence": 4
+        },
+        {
+          "date_end": "2004-12-31",
+          "date_start": "2002-01-01",
+          "raw_bytes": 732866,
+          "raw_file": "0073.c41c5945d87c68f89f5e7c9ae4eab94c9c366a311a8725d20f786fe0f38bd84a.body",
+          "raw_sha256": "c41c5945d87c68f89f5e7c9ae4eab94c9c366a311a8725d20f786fe0f38bd84a",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=2002-01-01%2F2004-12-31&limit=5000",
+          "sequence": 5
+        },
+        {
+          "date_end": "2007-12-31",
+          "date_start": "2005-01-01",
+          "raw_bytes": 733245,
+          "raw_file": "0074.0eec3e3750d5ebe5c789227ff292c0e76f81188809873a76c5d04839c55ecb8a.body",
+          "raw_sha256": "0eec3e3750d5ebe5c789227ff292c0e76f81188809873a76c5d04839c55ecb8a",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=2005-01-01%2F2007-12-31&limit=5000",
+          "sequence": 6
+        },
+        {
+          "date_end": "2010-12-31",
+          "date_start": "2008-01-01",
+          "raw_bytes": 733874,
+          "raw_file": "0075.541c72154eb3741755431f2b865f274ee8dd8af140f4ace0d4bd030658dccf45.body",
+          "raw_sha256": "541c72154eb3741755431f2b865f274ee8dd8af140f4ace0d4bd030658dccf45",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=2008-01-01%2F2010-12-31&limit=5000",
+          "sequence": 7
+        },
+        {
+          "date_end": "2013-12-31",
+          "date_start": "2011-01-01",
+          "raw_bytes": 734347,
+          "raw_file": "0076.dcc0aa4745b9a871157d0944126ce1e6554689d56d947e0923d8b1325c439698.body",
+          "raw_sha256": "dcc0aa4745b9a871157d0944126ce1e6554689d56d947e0923d8b1325c439698",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=2011-01-01%2F2013-12-31&limit=5000",
+          "sequence": 8
+        },
+        {
+          "date_end": "2016-12-31",
+          "date_start": "2014-01-01",
+          "raw_bytes": 734436,
+          "raw_file": "0077.1bffdbe203547e9581d74749182dd0cf7ab6e2ecb9ff7e8da74c59520ce8e588.body",
+          "raw_sha256": "1bffdbe203547e9581d74749182dd0cf7ab6e2ecb9ff7e8da74c59520ce8e588",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=2014-01-01%2F2016-12-31&limit=5000",
+          "sequence": 9
+        },
+        {
+          "date_end": "2019-12-31",
+          "date_start": "2017-01-01",
+          "raw_bytes": 733926,
+          "raw_file": "0078.326b8428edc4aac2bd6605b1232eef895a7341872b318acc4102fd99cf7f8756.body",
+          "raw_sha256": "326b8428edc4aac2bd6605b1232eef895a7341872b318acc4102fd99cf7f8756",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=2017-01-01%2F2019-12-31&limit=5000",
+          "sequence": 10
+        },
+        {
+          "date_end": "2022-12-31",
+          "date_start": "2020-01-01",
+          "raw_bytes": 734020,
+          "raw_file": "0079.8c52da6fdca4068dfb43fb2bc6d6ec195ae0d4c89900ac01818963e95e3342b4.body",
+          "raw_sha256": "8c52da6fdca4068dfb43fb2bc6d6ec195ae0d4c89900ac01818963e95e3342b4",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=2020-01-01%2F2022-12-31&limit=5000",
+          "sequence": 11
+        },
+        {
+          "date_end": "2025-12-31",
+          "date_start": "2023-01-01",
+          "raw_bytes": 733957,
+          "raw_file": "0080.49b99ca05c1265477ef39a09bf8388fcd542bc049f519a344835b5b2a1b9fe88.body",
+          "raw_sha256": "49b99ca05c1265477ef39a09bf8388fcd542bc049f519a344835b5b2a1b9fe88",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/daily/items?f=json&time_series_id=deec2c4c2b734adc9f77ea62d92fa22d&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&datetime=2023-01-01%2F2025-12-31&limit=5000",
+          "sequence": 12
+        }
+      ],
+      "expected_dates": 13149,
+      "fresh_metadata_pages": [
+        {
+          "kind": "location",
+          "raw_bytes": 3752,
+          "raw_sha256": "e575c5d00bddaffbca0b5447437970d2f74c2a33942294c8de17068a7647e72a",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/monitoring-locations/items?f=json&id=USGS-10396000&limit=10"
+        },
+        {
+          "kind": "series",
+          "raw_bytes": 2653,
+          "raw_sha256": "4aadce07d91814905526f5053d01707480dc8aef6642224284920cb7683fc323",
+          "request_url": "https://api.waterdata.usgs.gov/ogcapi/v1/collections/time-series-metadata/items?f=json&monitoring_location_id=USGS-10396000&parameter_code=00060&statistic_id=00003&limit=1000"
+        }
+      ],
+      "nominal_current_uses_daylight_savings": "Y",
+      "nominal_current_zone_abbreviation": "PST",
+      "parameter_code": "00060",
+      "period": "Daily",
+      "quality_counts": {
+        "approved_estimated": 575,
+        "approved_unflagged": 12562,
+        "approved_unknown_qualifier": 12
+      },
+      "reference_diagnostics": {
+        "estimated_retaining": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 7305,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "18871/25",
+          "source_quality_excluded_or_missing_among_unique_dates": 0,
+          "unsupported_or_ambiguous_reference_dates": 0
+        },
+        "unflagged_only": {
+          "expected_reference_dates": 7305,
+          "n_finite_quality_eligible": 7022,
+          "one_record_reference_dates": 7305,
+          "q99_type8_native_unit": "77033/100",
+          "source_quality_excluded_or_missing_among_unique_dates": 283,
+          "unsupported_or_ambiguous_reference_dates": 0
+        }
+      },
+      "series_id": "deec2c4c2b734adc9f77ea62d92fa22d",
+      "site_id": "USGS-10396000",
+      "statistic_id": "00003",
+      "unit": "ft^3/s"
+    }
+  ]
+}
