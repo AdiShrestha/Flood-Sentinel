@@ -14,6 +14,17 @@ Day windows are conditionally assigned using America/New_York civil time. This m
 
 ## Complete quality matrix
 
+The matrix can be regenerated from the exact captured pages with the standalone public runner. It performs no network requests and requires the nine caller-supplied raw response bodies whose filenames, byte counts and SHA-256 hashes are bound in [`daily_quality_source_manifest.json`](daily_quality_source_manifest.json):
+
+```sh
+python3 source/runners/replay_daily_quality.py \
+  --manifest docs/daily_quality_source_manifest.json \
+  --raw-dir /path/to/the/nine-captured-usgs-pages \
+  --output-dir /path/to/a/new-replay-directory
+```
+
+The raw pages remain local and are not bundled with this repository. The runner derives the matrix, thresholds, issue ledger, support and transition tables from those pages; it also reports exact output hashes. The manifest and local raw-page hashes make this a reproducible replay of the captured bytes, not an independent authentication of USGS origin, historical release time, or scientific validity. Re-querying revised provider data may not reproduce the capture.
+
 Each cell retains 17,532 station/issues at 24 hours, including unknowns. Across three horizons and four cells there are 210,384 rows. Repeated station/dates, overlapping horizons and policy alternatives share observations.
 
 | Reference quality | Evaluation truth quality | Positive at 24 h | Negative at 24 h | Unknown at 24 h | Distinct completion records represented across horizons |
@@ -33,6 +44,6 @@ The [GAGES-II release](https://water.usgs.gov/catalog/datasets/2945b996-7636-4d7
 
 Captured current route queries and catchment polygons show no pairwise links within the queried mainstem routes and no polygon overlaps. [NLDI documentation](https://api.water.usgs.gov/docs/nldi/) describes the indexed NHDPlusV2 network and its navigation. These observations do not establish statistical independence or historical network identity. Regional weather and other dependence remain possible.
 
-Raw records, exact thresholds, the full matrix, both earlier diagonal panels, paired transitions and input/season tables were recomputed using separate software implementations; no differences were found in the stated checks. This is computational agreement on captured records, not external scientific certification. A standalone public raw-to-summary command and complete capture manifest are not yet available; this note is not a complete reproduction package. Re-querying revised provider data need not reproduce the captured hashes. An original pre-acquisition test snapshot is unavailable, so exact replay of that original execution remains incomplete. Current software tests and raw arithmetic are separate evidence.
+Raw records, exact thresholds, the full matrix, both earlier diagonal panels, paired transitions and input/season tables were recomputed using separate software implementations; no differences were found in the stated checks. This is computational agreement on captured records, not external scientific certification. The public runner and capture manifest cover the captured raw-to-summary path, but the raw pages are not bundled. An original pre-acquisition test snapshot is unavailable, so exact replay of that original execution remains incomplete. Current software tests and raw arithmetic are separate evidence.
 
 No learned model, empirical improvement, untouched confirmation, full-cohort eligibility, population inference or submission readiness follows from this feasibility analysis. Source rights and attribution remain provider-specific; no blanket data license is asserted.
