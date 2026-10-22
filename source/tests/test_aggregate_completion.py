@@ -14,6 +14,7 @@ from flood_sentinel.aggregate_completion import (
     evaluate_issue_labels,
     last_admissible_persistence,
     map_local_day_window,
+    previous_closed_day_persistence,
     reference_type8_threshold,
     type8_threshold,
     type8_threshold_fraction,
@@ -393,6 +394,95 @@ def test_persistence_uses_latest_closed_unflagged_input_and_reports_assumption_a
     assert result["actual_release_status"] == "unknown"
     assert result["input_admissibility"] == "assumed_final_product_retrospective_replay"
     assert result["age_hours"] == "24"
+
+
+def _new_york_rows(qualities=("approved_unflagged",) * 4):
+    zone = "America/New_York"
+    basis = "constructed US Eastern local-day interval; no provider observations"
+    rows = [_row(i, 100 + i, zone=zone, basis=basis, quality=qualities[i])
+            for i in range(len(qualities))]
+    return rows, _contract(rows, zone=zone, basis=basis)
+
+
+def test_previous_closed_day_policy_uses_exact_latest_expected_row_and_real_age():
+    rows, calendar = _new_york_rows()
+    issue = datetime(2024, 1, 3, 12, tzinfo=UTC)
+    result = previous_closed_day_persistence({r.local_date: r for r in rows}, issue, calendar)
+    assert result["policy"] == "previous-closed-day-approved-unflagged-v1"
+    assert result["status"] == "scored"
+    assert result["score"] == str(rows[1].value)
+    assert result["source_record_id"] == rows[1].provider_record_id
+    assert result["source_local_date"] == "2024-01-02"
+    assert result["observation_end_utc"] == "2024-01-03T05:00:00Z"
+    assert result["age_hours"] == "7"
+    assert result["actual_release_status"] == "unknown"
+
+
+def test_previous_closed_day_policy_does_not_reach_back_across_missing_latest_date():
+    rows, calendar = _new_york_rows()
+    issue = datetime(2024, 1, 3, 12, tzinfo=UTC)
+    sparse = {r.local_date: r for r in (rows[0], rows[2], rows[3])}
+    result = previous_closed_day_persistence(sparse, issue, calendar)
+    assert result["score"] is None
+    assert result["status"] == "no_score_missing_latest_expected_row"
+    assert result["source_local_date"] == "2024-01-02"
+
+
+def test_previous_closed_day_policy_never_clips_to_an_expired_calendar():
+    rows, calendar = _new_york_rows()
+    issue = datetime(2024, 1, 10, 12, tzinfo=UTC)
+    result = previous_closed_day_persistence({r.local_date: r for r in rows}, issue, calendar)
+    assert result["score"] is None
+    assert result["source_local_date"] == "2024-01-09"
+    assert result["status"] == "no_score_missing_latest_expected_row"
+    # Even an out-of-contract row cannot silently extend the declared source.
+    extra = _row(8, 999, zone=calendar.zone_name, basis=calendar.window_basis)
+    indexed = {r.local_date: r for r in [*rows, extra]}
+    assert previous_closed_day_persistence(indexed, issue, calendar)["score"] is None
+
+
+def test_previous_closed_day_policy_does_not_reach_back_across_estimated_latest_date():
+    rows, calendar = _new_york_rows(("approved_unflagged", "estimated_flagged",
+                                      "approved_unflagged", "approved_unflagged"))
+    issue = datetime(2024, 1, 3, 12, tzinfo=UTC)
+    result = previous_closed_day_persistence({r.local_date: r for r in rows}, issue, calendar)
+    assert result["score"] is None
+    assert result["status"] == "no_score_latest_row_quality_estimated_flagged"
+    assert result["source_local_date"] == "2024-01-02"
+
+
+@pytest.mark.parametrize(
+    "issue,day,expected_hours,expected_age",
+    [
+        (datetime(2006, 4, 3, 12, tzinfo=UTC), date(2006, 4, 2), 23, "8"),
+        (datetime(2007, 3, 12, 12, tzinfo=UTC), date(2007, 3, 11), 23, "8"),
+        (datetime(2006, 10, 30, 12, tzinfo=UTC), date(2006, 10, 29), 25, "7"),
+        (datetime(2007, 11, 5, 12, tzinfo=UTC), date(2007, 11, 4), 25, "7"),
+    ],
+)
+def test_previous_closed_day_policy_selects_actual_dst_transition_closure(
+    issue, day, expected_hours, expected_age,
+):
+    zone_name = "America/New_York"
+    start, end = map_local_day_window(day, ZoneInfo(zone_name), basis=BASIS)
+    assert (end - start) == timedelta(hours=expected_hours)
+    row = replace(_row(0, 123, zone=zone_name), local_date=day,
+                  window_start_utc=start, window_end_utc=end)
+    calendar = _contract([row], zone=zone_name, start=day,
+                         end=day + timedelta(days=1), basis=BASIS)
+    result = previous_closed_day_persistence({day: row}, issue, calendar)
+    assert result["status"] == "scored"
+    assert result["source_local_date"] == day.isoformat()
+    assert result["observation_end_utc"] == end.isoformat().replace("+00:00", "Z")
+    assert result["age_hours"] == expected_age
+
+
+def test_previous_closed_day_policy_rejects_cross_site_or_series_rows():
+    rows, calendar = _new_york_rows()
+    issue = datetime(2024, 1, 3, 12, tzinfo=UTC)
+    bad = replace(rows[1], site_id="USGS-OTHER")
+    with pytest.raises(ValueError, match="bound site/series"):
+        previous_closed_day_persistence({bad.local_date: bad}, issue, calendar)
 
 
 def test_reference_window_excludes_future_mutation():

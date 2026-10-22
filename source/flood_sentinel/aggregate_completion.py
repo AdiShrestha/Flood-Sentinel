@@ -12,7 +12,7 @@ from datetime import date, datetime, time, timedelta, timezone, tzinfo
 from decimal import Decimal
 from fractions import Fraction
 from decimal import localcontext
-from typing import Iterable, Literal, Sequence
+from typing import Iterable, Literal, Mapping, Sequence
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
@@ -662,6 +662,106 @@ def last_admissible_persistence(
         "source_local_date": latest.local_date.isoformat(),
         "observation_end_utc": latest.window_end_utc.isoformat().replace("+00:00", "Z"),
         "age_hours": str(_hours_exact(issue_time_utc - latest.window_end_utc)),
+        "actual_release_status": "unknown",
+        "input_admissibility": "assumed_final_product_retrospective_replay",
+    }
+
+
+def previous_closed_day_persistence(
+    rows_by_local_date: Mapping[date, DailyMean],
+    issue_time_utc: datetime,
+    calendar: DailyCalendarContract,
+) -> dict[str, object]:
+    """Account for a daily-update persistence input without an age-based fallback.
+
+    The policy selects the latest *expected* local-day interval closed by the
+    issue time. Only that exact calendar row can supply the raw persistence
+    value, and it must be approved and unflagged. If that row is absent,
+    estimated, otherwise unusable, or has unresolved interval mapping, this
+    returns no score; it never reaches back to an older observation. Final
+    product availability is an explicit replay assumption, not authenticated
+    historical release evidence.
+    """
+    if not _is_utc(issue_time_utc):
+        raise ValueError("Persistence issue time must be timezone-aware UTC")
+    if not isinstance(calendar, DailyCalendarContract):
+        raise ValueError("A bound daily calendar contract is required")
+    if not isinstance(rows_by_local_date, Mapping):
+        raise ValueError("Rows must be indexed by their expected local date")
+
+    zone = ZoneInfo(calendar.zone_name)
+    local_issue_date = issue_time_utc.astimezone(zone).date()
+    candidate = local_issue_date
+    expected_date: date | None = None
+    expected_start: datetime | None = None
+    expected_end: datetime | None = None
+    while candidate >= calendar.start_date:
+        try:
+            start, end = map_local_day_window(candidate, zone, basis=calendar.window_basis)
+        except ValueError:
+            return {
+                "policy": "previous-closed-day-approved-unflagged-v1",
+                "score": None, "source_record_id": None,
+                "source_local_date": candidate.isoformat(),
+                "observation_end_utc": None, "age_hours": None,
+                "status": "no_score_unresolved_expected_interval",
+                "actual_release_status": "unknown",
+                "input_admissibility": "assumed_final_product_retrospective_replay",
+            }
+        if end <= issue_time_utc:
+            expected_date, expected_start, expected_end = candidate, start, end
+            break
+        candidate -= timedelta(days=1)
+
+    if expected_date is None or expected_start is None or expected_end is None:
+        return {
+            "policy": "previous-closed-day-approved-unflagged-v1",
+            "score": None, "source_record_id": None, "source_local_date": None,
+            "observation_end_utc": None, "age_hours": None,
+            "status": "no_score_no_expected_closed_day",
+            "actual_release_status": "unknown",
+            "input_admissibility": "assumed_final_product_retrospective_replay",
+        }
+
+    row = (rows_by_local_date.get(expected_date)
+           if expected_date < calendar.end_date_exclusive else None)
+    if row is None:
+        status = "no_score_missing_latest_expected_row"
+    else:
+        if row.local_date != expected_date:
+            raise ValueError("Persistence row key does not match its local-date identity")
+        if (row.site_id != calendar.site_id or row.series_id != calendar.series_id
+                or row.parameter_code != calendar.parameter_code
+                or row.statistic_id != calendar.statistic_id or row.unit != calendar.unit):
+            raise ValueError("Persistence row does not match the bound site/series/parameter/unit")
+        if row.interval_mapping_status == "unresolved":
+            status = "no_score_unresolved_latest_row_interval"
+        else:
+            if (row.window_start_utc != expected_start or row.window_end_utc != expected_end
+                    or row.window_basis != calendar.window_basis):
+                raise ValueError("Persistence row interval differs from its expected calendar interval")
+            if row.quality_status != "approved_unflagged":
+                status = f"no_score_latest_row_quality_{row.quality_status}"
+            else:
+                assert row.value is not None and row.provider_record_id is not None
+                return {
+                    "policy": "previous-closed-day-approved-unflagged-v1",
+                    "score": str(row.value),
+                    "source_record_id": row.provider_record_id,
+                    "source_local_date": expected_date.isoformat(),
+                    "observation_end_utc": expected_end.isoformat().replace("+00:00", "Z"),
+                    "age_hours": str(_hours_exact(issue_time_utc - expected_end)),
+                    "status": "scored",
+                    "actual_release_status": "unknown",
+                    "input_admissibility": "assumed_final_product_retrospective_replay",
+                }
+
+    return {
+        "policy": "previous-closed-day-approved-unflagged-v1",
+        "score": None, "source_record_id": None,
+        "source_local_date": expected_date.isoformat(),
+        "observation_end_utc": expected_end.isoformat().replace("+00:00", "Z"),
+        "age_hours": None, "status": status,
         "actual_release_status": "unknown",
         "input_admissibility": "assumed_final_product_retrospective_replay",
     }
