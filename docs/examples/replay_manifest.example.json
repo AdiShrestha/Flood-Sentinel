@@ -1,0 +1,39 @@
+{
+  "schema": "flood-sentinel-local-replay-manifest-v1",
+  "torch_threads": 4,
+  "batch_size": 32,
+  "prediction_atol": 1e-6,
+  "prediction_rtol": 1e-6,
+  "metric_atol": 1e-10,
+  "primary_support_cutoff_utc": "YYYY-MM-DDTHH:MM:SSZ",
+  "output_dir": "./replay-output",
+  "bundle": {
+    "standardized_backing": "./local-data/standardized_backing.pt",
+    "window_index": "./local-data/window_index.pt",
+    "targets": "./local-data/targets.pt",
+    "static_attributes": "./local-data/static_attributes.pt",
+    "issue_times": "./local-data/issue_times.jsonl.gz"
+  },
+  "baseline_predictions": "./local-evidence/frozen_baseline_predictions.jsonl.gz",
+  "expected_paired_metrics": "./local-evidence/paired_metrics.json",
+  "runs": [
+    {
+      "model_kind": "no_ssl_tcn",
+      "seed": 11,
+      "architecture": {
+        "encoder": {
+          "in_channels": 6,
+          "d_model": 32,
+          "tcn_layers": 9,
+          "transformer_layers": 0,
+          "n_heads": 4,
+          "d_ff": 128,
+          "dropout": 0.1
+        }
+      },
+      "checkpoint": "./local-checkpoints/no_ssl_tcn_seed11.pt",
+      "validation_thresholds": "./local-evidence/no_ssl_tcn_seed11_thresholds.json",
+      "saved_predictions": "./local-evidence/no_ssl_tcn_seed11_predictions.jsonl.gz"
+    }
+  ]
+}
