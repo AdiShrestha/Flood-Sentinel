@@ -16,6 +16,32 @@ The comparison below uses the same 4,609 known, scoreable test issues at every h
 
 The TCN has nine dilated causal layers, width 32, no attention and 57,411 trainable parameters. Training completed 14 epochs; the lowest validation unweighted masked BCE selected epoch 6 (0.0462624). Class weights came from training labels. Its sigmoid outputs are uncalibrated. The selected thresholds detected no positive test issues; these initial results establish no consistent TCN advantage or convergence.
 
-The full known test panel contains 14 distinct completing source records across horizons. Repeated horizon labels and training seeds do not multiply the number of hydrological events. Only four sites and one fitted neural seed are represented here; network independence, physical warning lead and population generalization are not established. EA-LSTM seed 11 completed 36 epochs; validation selected epoch 28 (unweighted masked BCE 0.043046372). It has 4,195 parameters and additional static inputs, so the architecture comparison is not capacity/information matched. Its results establish no consistent advantage.
+The full known test panel contains 14 distinct completing source records across horizons. Repeated horizon labels and training seeds do not multiply the number of hydrological events. Only four sites are represented; the initial table reports seed 11 and the completed panel below includes all five fixed seeds. Network independence, physical warning lead and population generalization are not established. EA-LSTM seed 11 completed 36 epochs; validation selected epoch 28 (unweighted masked BCE 0.043046372). It has 4,195 parameters and additional static inputs, so the architecture comparison is not capacity/information matched. Its results establish no consistent advantage.
 
-Future-aggregate pretraining and supervised transfer also executed, but an epoch reducer swapped a loss numerator with its weight denominator. Minibatch gradients used the intended loss; validation checkpoint selection and early stopping used the wrong objective. Those results are retained as diagnostic and excluded from the declared method comparison pending a corrected rerun. The teacher predicts the next completed daily aggregate, whose interval may overlap issue time; it does not establish instantaneous physical warning.
+Future-aggregate pretraining and supervised transfer also executed, but an epoch reducer swapped a loss numerator with its weight denominator. Minibatch gradients used the intended loss; validation checkpoint selection and early stopping used the wrong objective. Those original results remain diagnostic. A fresh corrected pretraining and supervised-transfer panel has now completed for the fixed seeds 11, 23, 47, 71 and 97; selected pretraining epochs are 5, 5, 4, 6 and 4. The seed-11 pretraining process failed during finalization after saving its selected checkpoint; post-fit recovery retained that failure and reused the unchanged selected weights. All fifteen selected supervised checkpoints reproduce their saved validation logits exactly in fresh CPU inference. The teacher predicts the next completed daily aggregate, whose interval may overlap issue time; it does not establish instantaneous physical warning.
+
+
+## Completed fixed-seed comparison
+
+The following AP values use the same primary support described above. Neural entries are mean ± sample standard deviation over all five fixed seeds; deterministic entries are single results. Seed variation measures fitting variability on this corpus and is not event-level uncertainty. No seed was excluded.
+
+| Method | AP 24h | AP 48h | AP 72h |
+|---|---:|---:|---:|
+| Persistence | 0.013222 | 0.018942 | 0.026757 |
+| EWMA | 0.010600 | 0.018390 | 0.027811 |
+| CUSUM | 0.005047 | 0.008757 | 0.013201 |
+| No-pretraining TCN | 0.006566 ± 0.003572 | 0.011960 ± 0.005213 | 0.016089 ± 0.005540 |
+| EA-LSTM | 0.015829 ± 0.004655 | 0.025686 ± 0.005947 | 0.039978 ± 0.009160 |
+| Corrected Score-D-objective encoder transfer | 0.008640 ± 0.001882 | 0.013591 ± 0.003373 | 0.022659 ± 0.004148 |
+
+Corrected pretraining raises mean AP over the no-pretraining TCN in this panel. Its paired differences cross zero at 24 and 48 hours, and its mean remains below the strongest deterministic comparator at every horizon. EA-LSTM has higher mean neural AP, with the static-input and capacity differences stated above. These descriptive results do not isolate the effect of those architectural differences.
+
+All 45 neural seed/method/horizon Brier scores are worse than a constant probability fitted from TRAIN prevalence only. This reference was added after initial outcome exposure and is descriptive. It underscores that ranking gains do not establish calibrated probabilities. The common-support reference Brier scores are:
+
+| Horizon | TRAIN prevalence probability | Reference test Brier |
+|---|---:|---:|
+| 24h | 0.00191504 | 0.00259730 |
+| 48h | 0.00383375 | 0.00496667 |
+| 72h | 0.00566893 | 0.00753988 |
+
+The comparison remains a retrospective daily aggregate benchmark. No operational warning lead, spatial generalization, component-level mechanism, calibrated output or population significance is established.
