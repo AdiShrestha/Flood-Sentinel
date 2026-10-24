@@ -7,9 +7,6 @@
 !/README
 !/README.md
 !/README.rst
-!/LICENSE
-!/LICENSE.md
-!/LICENSE.txt
 !/NOTICE
 !/CITATION.cff
 !/CHANGELOG.md
@@ -52,7 +49,6 @@
 !/docs/
 !/scripts/
 !/examples/
-!/data/
 !/assets/
 !/figures/
 !/results/
@@ -133,3 +129,12 @@ checkpoints/
 *.safetensors
 /outputs/
 /logs/
+
+# Private research materials, factory, and internal documentation
+AGENTS.md
+LICENSE
+bootstrap.sh
+plan.md
+/data/
+/factory/
+/project/
