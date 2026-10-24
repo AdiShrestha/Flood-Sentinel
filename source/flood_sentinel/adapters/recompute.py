@@ -1,8 +1,6 @@
 """Independent metric recomputation tool.
 
-CRITICAL INVARIANT:
-This module contains ZERO imports from factory.engine.metrics or any factory package.
-All arithmetic is derived from first mathematical principles.
+This module independently recomputes reported metrics from the underlying predictions.
 """
 from __future__ import annotations
 

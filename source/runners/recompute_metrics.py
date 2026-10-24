@@ -5,7 +5,7 @@ Usage:
     PYTHONPATH=source python3 source/runners/recompute_metrics.py
 
 CRITICAL INVARIANT:
-This runner does NOT import factory.engine.metrics.
+This runner recomputes metrics independently from saved predictions.
 """
 from __future__ import annotations
 

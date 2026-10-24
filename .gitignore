@@ -110,7 +110,7 @@ dist/
 *.key
 *.key.pub
 
-# Local factory state is preserved for evidence, not automatically published.
+# Local workflow state is preserved for evidence, not automatically published.
 # Selected releases/handoffs must archive required attempts and hashes explicitly.
 inbox_implementor/*
 inbox_gatekeeper/*
@@ -130,11 +130,10 @@ checkpoints/
 /outputs/
 /logs/
 
-# Private research materials, factory, and internal documentation
+# Private research materials and internal documentation
 AGENTS.md
 LICENSE
 bootstrap.sh
 plan.md
 /data/
-/factory/
 /project/

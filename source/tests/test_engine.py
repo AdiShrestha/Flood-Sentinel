@@ -5,8 +5,6 @@
 """
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
-import importlib.util
-from pathlib import Path
 import numpy as np
 import pytest
 import torch
@@ -96,15 +94,6 @@ def test_undefined_auc_is_not_chance_and_raw_scores_not_probabilities():
     assert ranking_metrics([0,0], [1.,2.])['average_precision'] is None
     with pytest.raises(ValueError): probability_metrics([0,1], [-1.,5.], threshold=.5)
     with pytest.raises(ValueError): ranking_metrics([0,1],[np.nan,1.])
-
-
-@pytest.mark.parametrize('p', [[0.,0.,1.,1.],[1.,1.,0.,0.],[.2,.4,.6,.8],[.5,.5,.5,.5]])
-def test_all_probability_metrics_match_factory_independent_oracle(p):
-    path = Path(__file__).resolve().parents[2] / 'factory/engine/metrics.py'
-    spec = importlib.util.spec_from_file_location('factory_reference_metrics',path)
-    module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-    expected = module.binary_metrics([0,0,1,1],p,.5)
-    assert probability_metrics([0,0,1,1],p,threshold=.5,log_epsilon=1e-15) == pytest.approx(expected,abs=1e-12)
 
 
 def test_holm_and_explicit_cluster_interval():
