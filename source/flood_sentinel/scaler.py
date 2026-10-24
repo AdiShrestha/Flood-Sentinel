@@ -2,7 +2,7 @@
 
 Enforces strict separation between training-set distribution fitting and evaluation-time
 transformation. Prohibits fitting scalers on validation or test splits.
-Adheres to Factory Principle C03, C14, and plan.md Section 6.1.
+Fits normalization parameters on training data and applies the frozen parameters later.
 """
 from __future__ import annotations
 

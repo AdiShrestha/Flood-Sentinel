@@ -44,7 +44,7 @@ def probability_metrics(y, probability, *, threshold: float, log_epsilon: float 
     """Exact log loss by default; impossible outcomes have positive infinite loss.
 
     A clipped reporting policy must explicitly declare log_epsilon. The native
-    factory uses 1e-15; agreement requires that declared policy, not a silent cap.
+    Clipping at 1e-15 is a separate reporting policy and must be declared explicitly.
     F1 uses zero when its denominator is zero; this convention is not evidence
     of event-detection performance in a cohort without positives.
     """
