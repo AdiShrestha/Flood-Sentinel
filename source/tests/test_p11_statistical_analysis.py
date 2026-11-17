@@ -189,20 +189,20 @@ def test_categorize_sample_failure() -> None:
     assert err == "TN"
     assert cat == "none"
 
-    # Near threshold pulse false positive
-    err, cat, _ = categorize_sample_failure("01434000_20210902T120000Z", "group_3", 0, 0.75, 0.5)
-    assert err == "FP"
-    assert cat == "near_threshold_pulse"
+    # Errors are classified by confusion cell only; IDs never select a narrative.
+    for sid in ("01434000_20210902T120000Z", "01463500_20210830T120000Z", "any_other_id"):
+        err, cat, _ = categorize_sample_failure(sid, "group_x", 0, 0.75, 0.5)
+        assert (err, cat) == ("FP", "unattributed_false_positive")
+    for sid in ("01463500_20210901T060000Z", "any_other_id"):
+        err, cat, _ = categorize_sample_failure(sid, "group_x", 1, 0.35, 0.5)
+        assert (err, cat) == ("FN", "unattributed_false_negative")
 
-    # Datum elevation shift false positive
-    err, cat, _ = categorize_sample_failure("01463500_20210830T120000Z", "group_2", 0, 0.65, 0.5)
-    assert err == "FP"
-    assert cat == "datum_elevation_shift"
 
-    # Nascent limb miss false negative
-    err, cat, _ = categorize_sample_failure("01463500_20210901T060000Z", "group_2", 1, 0.35, 0.5)
-    assert err == "FN"
-    assert cat == "nascent_limb_miss"
+def test_categorize_sample_failure_rejects_invalid_inputs() -> None:
+    with pytest.raises(ValueError):
+        categorize_sample_failure("s", "g", 2, 0.5, 0.5)
+    with pytest.raises(ValueError):
+        categorize_sample_failure("s", "g", 1, float("nan"), 0.5)
 
 
 def test_evaluate_model_failures() -> None:
@@ -220,7 +220,7 @@ def test_evaluate_model_failures() -> None:
     assert summary.true_negatives == 1
     assert summary.false_negatives == 0
     assert math.isclose(summary.accuracy, 2.0 / 3.0, abs_tol=1e-5)
-    assert summary.failure_mode_counts["near_threshold_pulse"] == 1
+    assert summary.failure_mode_counts["unattributed_false_positive"] == 1
 
 
 # ---------------------------------------------------------------------------

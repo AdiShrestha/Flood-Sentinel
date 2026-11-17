@@ -55,7 +55,19 @@ class ThresholdRegistry:
                 self.register(t)
 
     def register(self, threshold: FloodThreshold) -> None:
+        """Register a threshold; a conflicting entry for the same key fails closed.
+
+        Re-registering an identical threshold is a no-op. A different threshold
+        for an existing ``(site_no, category)`` raises ``ValueError`` instead of
+        silently replacing the earlier value.
+        """
         key = (threshold.site_no, threshold.category)
+        existing = self._by_key.get(key)
+        if existing is not None and existing != threshold:
+            raise ValueError(
+                f"Conflicting threshold for site {key[0]!r}, category {key[1]!r}: "
+                f"{existing!r} already registered, refusing {threshold!r}"
+            )
         self._by_key[key] = threshold
 
     def get(self, site_no: str, category: str) -> FloodThreshold | None:

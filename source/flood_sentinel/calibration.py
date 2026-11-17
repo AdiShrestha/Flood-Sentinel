@@ -339,8 +339,12 @@ class IsotonicCalibrator:
     def fit(self, scores: Sequence[float], labels: Sequence[int | float]) -> IsotonicCalibrator:
         s = np.asarray(scores, dtype=np.float64)
         y = np.asarray(labels, dtype=np.float64)
-        if len(s) != len(y) or len(s) == 0:
+        if s.ndim != 1 or y.ndim != 1 or len(s) != len(y) or len(s) == 0:
             raise ValueError("Scores and labels must be aligned non-empty sequences.")
+        if not np.all(np.isfinite(s)):
+            raise ValueError("Isotonic calibration scores must be finite.")
+        if not np.all((y == 0.0) | (y == 1.0)):
+            raise ValueError("Isotonic calibration labels must be binary 0/1.")
 
         # Sort by score ascending
         order = np.argsort(s)
@@ -377,7 +381,11 @@ class IsotonicCalibrator:
     def predict_proba(self, scores: Sequence[float], eps: float = 1e-6) -> list[float]:
         if not self._fitted:
             raise RuntimeError("IsotonicCalibrator must be fitted before predict_proba.")
+        if not (isinstance(eps, (int, float)) and math.isfinite(eps) and 0.0 <= eps < 0.5):
+            raise ValueError("eps must be finite and in [0, 0.5).")
         s = np.asarray(scores, dtype=np.float64)
+        if not np.all(np.isfinite(s)):
+            raise ValueError("Isotonic calibration scores must be finite.")
         # Piecewise step evaluation
         idx = np.searchsorted(self.thresholds, s, side="right") - 1
         idx = np.clip(idx, 0, len(self.probabilities) - 1)

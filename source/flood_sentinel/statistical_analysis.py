@@ -215,7 +215,7 @@ class SampleFailureRecord:
     predicted_binary: int
     is_correct: bool
     error_type: str  # 'TP', 'TN', 'FP', 'FN'
-    failure_category: str  # 'none', 'near_threshold_pulse', 'datum_elevation_shift', 'nascent_limb_miss', 'baseline_quiescent_fp'
+    failure_category: str  # 'none', 'unattributed_false_positive', 'unattributed_false_negative'
     details: str
 
     def to_dict(self) -> dict[str, Any]:
@@ -229,49 +229,24 @@ def categorize_sample_failure(
     prob: float,
     threshold: float = 0.5,
 ) -> tuple[str, str, str]:
-    """Diagnose hydrological cause of predictive classification."""
+    """Classify a prediction by confusion cell only.
+
+    No hydrological cause is inferred. Attributing an error to a mechanism
+    (for example a datum shift or a sub-threshold pulse) needs separately
+    evidenced, pre-specified review; it is never keyed to sample IDs here.
+    ``sample_id`` and ``group_id`` are accepted for interface compatibility.
+    """
+    if label not in (0, 1):
+        raise ValueError(f"label must be 0 or 1, got {label!r}")
+    if not math.isfinite(prob):
+        raise ValueError(f"probability must be finite, got {prob!r}")
     pred_bin = 1 if prob >= threshold else 0
     if pred_bin == label:
         error_type = "TP" if label == 1 else "TN"
         return error_type, "none", "Correct prediction aligned with ground truth"
-
-    if pred_bin == 1 and label == 0:
-        error_type = "FP"
-        if "01434000_20210902" in sample_id:
-            return (
-                error_type,
-                "near_threshold_pulse",
-                "Sub-threshold hydrograph pulse: Callicoon stage peaked at 2.59m, below 2.74m NOAA Action Stage",
-            )
-        elif "01463500_20210830" in sample_id:
-            return (
-                error_type,
-                "datum_elevation_shift",
-                "Trenton baseline discharge offset without causal relative dynamics",
-            )
-        else:
-            return (
-                error_type,
-                "baseline_quiescent_fp",
-                "Quiescent dry-weather stage variation triggered false alert",
-            )
-
-    if pred_bin == 0 and label == 1:
-        error_type = "FN"
-        if "01463500_20210901T060000Z" in sample_id:
-            return (
-                error_type,
-                "nascent_limb_miss",
-                "Missed early precursor: rapid acceleration limb undetected at 18h advance lead",
-            )
-        else:
-            return (
-                error_type,
-                "peak_precursor_miss",
-                "Immediate flood precursor undetected within 12h horizon",
-            )
-
-    return "UNKNOWN", "unknown", "Unclassified prediction state"
+    if pred_bin == 1:
+        return "FP", "unattributed_false_positive", "False alert; no causal attribution made"
+    return "FN", "unattributed_false_negative", "Missed positive; no causal attribution made"
 
 
 @dataclass(frozen=True)
@@ -310,11 +285,8 @@ def evaluate_model_failures(
     tp = fp = tn = fn = 0
     failure_counts: dict[str, int] = {
         "none": 0,
-        "near_threshold_pulse": 0,
-        "datum_elevation_shift": 0,
-        "nascent_limb_miss": 0,
-        "baseline_quiescent_fp": 0,
-        "peak_precursor_miss": 0,
+        "unattributed_false_positive": 0,
+        "unattributed_false_negative": 0,
     }
 
     for sid, gid, sp, y, p in zip(sample_ids, group_ids, splits, labels, probabilities):

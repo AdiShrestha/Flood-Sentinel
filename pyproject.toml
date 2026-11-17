@@ -7,7 +7,12 @@ name = "flood-sentinel-engine"
 version = "0.2.0"
 description = "Audited primitives for prospective flood-warning research; no validated performance claims"
 requires-python = ">=3.12"
-dependencies = ["numpy", "torch", "scipy"]
+readme = "README.md"
+# Exact versions used for the recorded environment are in source/requirements.lock.
+dependencies = ["numpy", "torch", "scipy", "pyarrow"]
+
+[project.optional-dependencies]
+test = ["pytest", "scikit-learn", "pandas"]
 
 [tool.setuptools.packages.find]
 where = ["source"]
@@ -18,4 +23,4 @@ flood_sentinel = ["LICENSE"]
 
 [tool.pytest.ini_options]
 pythonpath = [".", "source"]
-testpaths = ["source/tests", "project/tests", "tests"]
+testpaths = ["source/tests", "tests"]
