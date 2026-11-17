@@ -110,12 +110,6 @@ dist/
 *.key
 *.key.pub
 
-# Local workflow state is preserved for evidence, not automatically published.
-# Selected releases/handoffs must archive required attempts and hashes explicitly.
-inbox_implementor/*
-inbox_gatekeeper/*
-handoff_*.zip
-
 # Research storage: track acquisition code/manifests and lawful release subsets.
 data/raw/
 data/cache/
@@ -129,11 +123,3 @@ checkpoints/
 *.safetensors
 /outputs/
 /logs/
-
-# Private research materials and internal documentation
-AGENTS.md
-LICENSE
-bootstrap.sh
-plan.md
-/data/
-/project/
